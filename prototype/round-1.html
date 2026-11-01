@@ -1,0 +1,1059 @@
+<!doctype html>
+<!--
+  PROTOTYPE — throwaway. Question: "What should the receiver site look like,
+  and how does a visitor navigate it?"
+  Three structurally different variants on one page, switchable via ?variant=A|B|C
+  and the floating bar at the bottom (or ← / →). Channels deep-link via #hash
+  (#about, #projects, #blog, #blog/<slug>, #contact).
+    A  Head unit     — a car-radio faceplate; numbered preset buttons are the nav.
+    B  Tuning dial   — a band scale you drag/scroll across; stations come in out of static.
+    C  Display bar   — the receiver boots full-screen, then docks as a slim header nav
+                       over an ordinary readable page.
+    D  Full screen, all dots — (default) the whole viewport is one VFD; header, channel bar
+                       and every word of content are dot-matrix. Owner's direction, 2026-11-01.
+    E  Full screen, glass page — the whole page is the display glass; content is phosphor
+                       HTML text (selectable, searchable) under the same mesh and glow.
+  Content is placeholder except the project list (taken from each repo's README).
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PROTOTYPE · receiver</title>
+<style>
+  :root {
+    --phosphor: #e6fbff;
+    --glow: 120, 220, 255;
+    --ink: #d9dee2;
+    --dim: #7c868d;
+    --bg: #050607;
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); }
+  body { min-height: 100vh; }
+  button { font: inherit; color: inherit; }
+  a { color: rgb(var(--glow)); }
+
+  /* ---------- VFD (shared component) ---------- */
+  .vfd { position: relative; display: inline-block; line-height: 0; }
+  .vfd-window {
+    position: relative; overflow: hidden; border-radius: 3px;
+    background:
+      radial-gradient(120% 140% at 50% 55%, #0b1417 0%, #070c0e 55%, #040607 100%);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.04), inset 0 2px 8px rgba(0,0,0,.9);
+  }
+  .vfd canvas { display: block; width: 100%; height: auto; }
+  .vfd canvas.lit {
+    position: absolute; inset: 0;
+    filter:
+      drop-shadow(0 0 1px rgba(200, 245, 255, .95))
+      drop-shadow(0 0 4px rgba(var(--glow), .6))
+      drop-shadow(0 0 12px rgba(var(--glow), .28));
+    animation: vfd-flicker 7s infinite steps(1);
+  }
+  @keyframes vfd-flicker {
+    0%, 100% { opacity: 1; } 31% { opacity: .94; } 31.6% { opacity: 1; }
+    64% { opacity: .97; } 64.4% { opacity: 1; } 88% { opacity: .95; } 88.3% { opacity: 1; }
+  }
+  /* control grid mesh sits just above the anodes: darkens lit dots in a fine weave */
+  .vfd-mesh {
+    position: absolute; inset: 0; pointer-events: none; mix-blend-mode: multiply;
+    background:
+      repeating-linear-gradient(0deg, rgba(0,0,0,.42) 0 1px, transparent 1px 3px),
+      repeating-linear-gradient(90deg, rgba(0,0,0,.32) 0 1px, transparent 1px 3px);
+  }
+  /* filament wires: a few hair-thin horizontal lines across the whole tube */
+  .vfd-filaments {
+    position: absolute; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(180deg, transparent 0 calc(var(--fil, 18px) - 1px), rgba(0,0,0,.55) calc(var(--fil, 18px) - 1px) var(--fil, 18px));
+    opacity: .7;
+  }
+  .vfd-glass {
+    position: absolute; inset: 0; pointer-events: none;
+    background:
+      linear-gradient(172deg, rgba(255,255,255,.07) 0%, rgba(255,255,255,.015) 28%, transparent 46%),
+      radial-gradient(40% 30% at 72% 78%, rgba(255,255,255,.035), transparent 70%);
+  }
+  .vfd-ann { position: absolute; left: 0; top: 0; display: flex; gap: .5em; padding: .35em .6em;
+    font: 700 9px/1 var(--sans); letter-spacing: .08em; line-height: 1; z-index: 2; pointer-events: none; }
+  .vfd-ann span { color: rgba(150, 210, 235, .10); transition: color .15s, text-shadow .15s; }
+  .vfd-ann span.on { color: var(--phosphor); text-shadow: 0 0 2px rgba(200,245,255,.9), 0 0 8px rgba(var(--glow),.6); }
+
+  /* static noise overlay used for transitions */
+  .static-canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0; image-rendering: pixelated; mix-blend-mode: screen; }
+
+  /* ---------- content (shared typography) ---------- */
+  .content { font-size: 17px; line-height: 1.65; }
+  .content h1 { font: 600 clamp(32px, 5vw, 52px)/1.05 var(--sans); letter-spacing: -.02em; margin: .2em 0 .35em; color: #f2f5f7; }
+  .content h2 { font: 600 22px/1.25 var(--sans); margin: 1.6em 0 .5em; color: #eef2f4; }
+  .content p { margin: 0 0 1em; }
+  .content .kicker { font: 600 12px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: rgb(var(--glow)); opacity: .85; }
+  .content .lede { font-size: 20px; color: #c3cad0; max-width: 34em; }
+  .content .muted { color: var(--dim); }
+  .content code { font-family: var(--mono); font-size: .88em; background: #11171a; padding: .1em .35em; border-radius: 3px; }
+  .content pre { background: #0c1113; border: 1px solid #172126; padding: 14px 16px; border-radius: 6px; overflow-x: auto; }
+  .content pre code { background: none; padding: 0; }
+  .content article { font-family: var(--serif); font-size: 19px; }
+  .content article h1, .content article h2 { font-family: var(--sans); }
+  .c-index { list-style: none; padding: 0; margin: 1.6em 0 0; border-top: 1px solid #1a2226; }
+  .c-index a { display: grid; grid-template-columns: 5.5em 9em 1fr; gap: 1em; padding: .8em .2em; border-bottom: 1px solid #1a2226; color: inherit; text-decoration: none; align-items: baseline; }
+  .c-index a:hover { background: #0b1013; }
+  .c-index .f { font-family: var(--mono); color: rgb(var(--glow)); }
+  .c-index .n { font-weight: 600; color: #eef2f4; }
+  .c-index .d { color: var(--dim); }
+  .c-posts { list-style: none; padding: 0; margin: 1em 0; }
+  .c-posts li { padding: 1em 0; border-bottom: 1px solid #1a2226; }
+  .c-posts a { font-weight: 600; font-size: 20px; color: #eef2f4; text-decoration: none; }
+  .c-posts a:hover { color: rgb(var(--glow)); }
+  .c-posts .meta { font: 12px/1.4 var(--mono); color: var(--dim); letter-spacing: .05em; }
+  .c-projects { display: grid; gap: 0; margin-top: 1em; }
+  .c-projects .p { display: grid; grid-template-columns: 11em 1fr; gap: 1.2em; padding: 1em 0; border-bottom: 1px solid #1a2226; }
+  .c-projects .p b { color: #eef2f4; }
+  .c-projects .p a { font: 12px var(--mono); overflow-wrap: anywhere; }
+  @media (max-width: 640px) {
+    .c-index a { grid-template-columns: 4.5em 1fr; } .c-index .d { grid-column: 2; }
+    .c-projects .p { grid-template-columns: 1fr; gap: .2em; }
+  }
+
+  /* ---------- prototype switcher (not part of the design) ---------- */
+  #proto-bar { position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 9999;
+    display: flex; align-items: center; gap: 4px; padding: 4px; border-radius: 999px;
+    background: #fff; color: #111; font: 600 13px/1 var(--sans); box-shadow: 0 6px 24px rgba(0,0,0,.5), 0 0 0 2px #ff3d7f; }
+  #proto-bar button { border: 0; background: #eee; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 15px; }
+  #proto-bar button:hover { background: #ddd; }
+  #proto-bar .lbl { padding: 0 10px; white-space: nowrap; }
+  #proto-bar .state { font: 500 11px var(--mono); color: #666; padding-right: 10px; border-left: 1px solid #ddd; padding-left: 10px; white-space: nowrap; }
+
+  /* ---------- Variant A: head unit ---------- */
+  .va { min-height: 100vh; padding: 6vh 16px 120px;
+    background: radial-gradient(90% 60% at 50% 0%, #121516 0%, #070809 60%, #030303 100%); }
+  .va-unit { position: relative; margin: 0 auto; max-width: 760px; border-radius: 14px; padding: 18px 22px 20px;
+    background: linear-gradient(180deg, #1b1d1f 0%, #121314 45%, #0d0e0f 100%);
+    box-shadow: 0 1px 0 rgba(255,255,255,.06) inset, 0 -1px 0 rgba(0,0,0,.8) inset, 0 30px 60px rgba(0,0,0,.7), 0 0 0 1px #000; }
+  .va-unit::before { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: .5;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .18 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  .va-top { display: flex; justify-content: space-between; align-items: center; font: 700 10px/1 var(--sans); letter-spacing: .25em; color: #4a5054; margin-bottom: 14px; }
+  .va-led { width: 7px; height: 7px; border-radius: 50%; background: #3a0a0a; display: inline-block; margin-right: 8px; vertical-align: middle; }
+  .va-led.on { background: #ff2a1a; box-shadow: 0 0 6px #ff2a1a, 0 0 14px rgba(255,40,20,.6); }
+  .va-mid { display: grid; grid-template-columns: 74px 1fr 74px; gap: 18px; align-items: center; }
+  .va-bezel { padding: 10px; border-radius: 6px; background: #060707; box-shadow: inset 0 2px 6px rgba(0,0,0,.9), 0 1px 0 rgba(255,255,255,.05); }
+  .va-bezel .vfd { width: 100%; }
+  .va-knob { width: 74px; height: 74px; border-radius: 50%; border: 0; cursor: grab; position: relative; touch-action: none;
+    background: radial-gradient(circle at 40% 30%, #3a3d40, #18191a 60%, #0c0c0d);
+    box-shadow: 0 6px 14px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.12), 0 0 0 4px #0a0a0b, 0 0 0 5px #222; }
+  .va-knob::after { content: ""; position: absolute; left: 50%; top: 8px; width: 3px; height: 14px; margin-left: -1.5px; border-radius: 2px; background: #cfd6da; box-shadow: 0 0 4px rgba(var(--glow),.5); }
+  .va-knob .grip { position: absolute; inset: 0; border-radius: 50%; transform: rotate(var(--rot, 0deg)); }
+  .va-knob .grip::after { content: ""; position: absolute; left: 50%; top: 6px; width: 3px; height: 14px; margin-left: -1.5px; border-radius: 2px; background: #cfd6da; }
+  .va-knob::after { display: none; }
+  .va-side { display: flex; flex-direction: column; gap: 8px; align-items: center; font: 700 9px/1 var(--sans); letter-spacing: .15em; color: #5a6064; }
+  .va-btn { border: 0; cursor: pointer; border-radius: 5px; padding: 9px 0; width: 100%;
+    background: linear-gradient(180deg, #2a2c2e, #1a1b1c); color: #aab3b8; font: 700 10px/1 var(--sans); letter-spacing: .12em;
+    box-shadow: 0 2px 0 #050505, 0 3px 6px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.08); }
+  .va-btn:active, .va-btn.down { transform: translateY(2px); box-shadow: 0 0 0 #050505, inset 0 1px 3px rgba(0,0,0,.8); }
+  .va-presets { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 18px; }
+  .va-presets .va-btn { padding: 10px 6px 9px; display: flex; flex-direction: column; gap: 6px; align-items: center; }
+  .va-presets .va-btn b { font: 700 15px/1 var(--sans); color: #d6dde1; }
+  .va-presets .va-btn.active b { color: var(--phosphor); text-shadow: 0 0 6px rgba(var(--glow), .8); }
+  .va-hint { text-align: center; font: 11px var(--mono); color: #4d565b; margin-top: 12px; letter-spacing: .05em; }
+  .va-broadcast { position: relative; max-width: 760px; margin: 34px auto 0; padding: 8px 6px; min-height: 40vh; }
+  @media (max-width: 620px) {
+    .va-mid { grid-template-columns: 1fr; } .va-side { flex-direction: row; } .va-side .va-knob { display: none; }
+    .va-presets .va-btn span { font-size: 8px; }
+  }
+
+  /* ---------- Variant B: tuning dial ---------- */
+  .vb { min-height: 100vh; padding: 0 0 120px; background: #050607; }
+  .vb-tuner { position: sticky; top: 0; z-index: 5; padding: 18px 20px 14px; background: linear-gradient(180deg, #0d0f10 0%, #090a0b 100%); box-shadow: 0 10px 30px rgba(0,0,0,.6), 0 1px 0 #1b2023; }
+  .vb-row { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: minmax(220px, 300px) 1fr; gap: 22px; align-items: center; }
+  .vb-row .vfd { width: 100%; }
+  .vb-dial { position: relative; height: 92px; border-radius: 6px; cursor: ew-resize; touch-action: none; user-select: none;
+    background: linear-gradient(180deg, #0a0f11 0%, #060909 100%); box-shadow: inset 0 0 0 1px #1a2326, inset 0 3px 10px rgba(0,0,0,.9); overflow: hidden; }
+  .vb-scale { position: absolute; left: 3%; right: 3%; top: 0; bottom: 0; }
+  .vb-tick { position: absolute; bottom: 22px; width: 1px; background: rgba(170,205,220,.28); }
+  .vb-tick.major { background: rgba(190,225,240,.55); }
+  .vb-num { position: absolute; bottom: 5px; transform: translateX(-50%); font: 600 11px var(--mono); color: rgba(190,225,240,.55); }
+  .vb-mark { position: absolute; top: 8px; transform: translateX(-50%); font: 700 10px/1 var(--mono); letter-spacing: .1em; color: rgba(190,225,240,.45);
+    background: none; border: 0; cursor: pointer; padding: 3px 4px; white-space: nowrap; }
+  .vb-mark::after { content: ""; display: block; width: 1px; height: 8px; margin: 3px auto 0; background: currentColor; }
+  .vb-mark:hover, .vb-mark.near { color: var(--phosphor); text-shadow: 0 0 6px rgba(var(--glow), .8); }
+  .vb-needle { position: absolute; top: 4px; bottom: 4px; width: 2px; margin-left: -1px; background: #ff4a2a; border-radius: 1px;
+    box-shadow: 0 0 6px rgba(255,80,40,.9), 0 0 16px rgba(255,60,30,.4); pointer-events: none; }
+  .vb-glass { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(175deg, rgba(255,255,255,.06), transparent 40%); }
+  .vb-hint { max-width: 1100px; margin: 8px auto 0; font: 11px var(--mono); color: #4d565b; display: flex; justify-content: space-between; }
+  .vb-meter { display: inline-flex; gap: 2px; vertical-align: middle; margin-left: 8px; }
+  .vb-meter i { width: 4px; height: 9px; background: #1d2629; }
+  .vb-meter i.on { background: rgb(var(--glow)); box-shadow: 0 0 4px rgba(var(--glow), .8); }
+  .vb-reception { position: relative; max-width: 760px; margin: 40px auto 0; padding: 0 18px; min-height: 60vh; }
+  .vb-content { transition: opacity .2s linear, filter .2s linear; }
+  .vb-nosignal { z-index: 2; position: absolute; left: 18px; right: 18px; top: 0; text-align: center; padding-top: 12vh; font: 13px/1.8 var(--mono); color: #6f7a80; pointer-events: none; transition: opacity .2s; }
+  .vb-nosignal b { display: block; font-size: 16px; color: #aab5ba; letter-spacing: .3em; }
+  @media (max-width: 720px) { .vb-row { grid-template-columns: 1fr; } }
+
+  /* ---------- Variant C: display bar ---------- */
+  .vc-stage { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; background: #030404; transition: opacity .5s ease .25s; }
+  .vc-stage .vfd { width: min(860px, 90vw); transform-origin: top left; transition: transform .7s cubic-bezier(.7,0,.2,1); }
+  .vc-stage .skip { position: absolute; bottom: 80px; font: 11px var(--mono); color: #3e474c; letter-spacing: .1em; }
+  .vc-stage.gone { opacity: 0; pointer-events: none; visibility: hidden; transition: opacity .5s ease .25s, visibility 0s .8s; }
+  .vc-bar { position: sticky; top: 0; z-index: 10; background: rgba(6,8,9,.92); backdrop-filter: blur(8px); border-bottom: 1px solid #172024; }
+  .vc-bar-in { max-width: 1040px; margin: 0 auto; padding: 10px 18px; display: flex; gap: 20px; align-items: center; }
+  .vc-bar .vfd { width: 250px; flex: none; }
+  .vc-nav { display: flex; gap: 0; flex-wrap: wrap; flex: 1; }
+  .vc-nav a { font: 600 12px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: #6f7a80; text-decoration: none; padding: 9px 8px; border-radius: 4px; white-space: nowrap; }
+  .vc-nav a small { color: #3f484d; margin-right: 6px; font-size: 10px; }
+  .vc-nav a:hover { color: #cfd8dc; background: #0e1417; }
+  .vc-nav a.active { color: var(--phosphor); text-shadow: 0 0 6px rgba(var(--glow), .7); }
+  .vc-nav a.active small { color: rgba(var(--glow), .7); }
+  .vc-sound { margin-left: auto; background: none; border: 1px solid #1f292d; border-radius: 4px; color: #6f7a80; font: 600 10px/1 var(--mono); letter-spacing: .1em; padding: 7px 8px; cursor: pointer; }
+  .vc-page { position: relative; max-width: 760px; margin: 0 auto; padding: 56px 18px 140px; }
+  @media (max-width: 760px) { .vc-bar-in { flex-wrap: wrap; } .vc-bar .vfd { width: 100%; } }
+
+
+  /* ---------- Variant D: full screen, all dots ---------- */
+  .vd { position: fixed; inset: 0; overflow: hidden; touch-action: none; user-select: none;
+    background: radial-gradient(120% 120% at 50% 45%, #0a1316 0%, #060b0d 60%, #030506 100%); }
+  .vd::after { content: ""; position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 0 160px rgba(0,0,0,.85); }
+  .vd canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .vd canvas.lit { filter: drop-shadow(0 0 1px rgba(200,245,255,.9)) drop-shadow(0 0 5px rgba(var(--glow),.45)); animation: vfd-flicker 7s infinite steps(1); }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* ---------- Variant E: full screen, glass page ---------- */
+  .ve-bg { position: fixed; inset: 0; z-index: 0;
+    background: radial-gradient(circle, rgba(150,210,235,.07) .8px, transparent 1.3px) 0 0 / 4px 4px,
+                radial-gradient(120% 120% at 50% 40%, #0a1417 0%, #060b0d 60%, #020304 100%); }
+  .ve-screen { position: relative; z-index: 1; }
+  .ve-over { position: fixed; inset: 0; z-index: 3; pointer-events: none; box-shadow: inset 0 0 160px rgba(0,0,0,.85); }
+  .ve .vfd-window { background: none; box-shadow: none; }
+  .ve .vfd-window .vfd-mesh, .ve .vfd-window .vfd-glass, .ve .vfd-window .vfd-filaments { display: none; }
+  .ve-head { max-width: 1000px; margin: 0 auto; padding: 22px 20px 0; }
+  .ve-disp { display: block; line-height: 0; }
+  .ve-head .vfd { width: 100%; max-width: none !important; }
+  .ve-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 22px; padding: 14px 0 16px; border-bottom: 1px dashed rgba(200,240,255,.14); font: 600 13px/1 var(--mono); letter-spacing: .12em; }
+  .ve-nav a { color: rgba(230,251,255,.36); text-decoration: none; padding: 6px 0; }
+  .ve-nav a small { opacity: .6; }
+  .ve-nav a:hover { color: rgba(230,251,255,.8); }
+  .ve-nav a.active { color: var(--phosphor); text-shadow: 0 0 2px rgba(200,245,255,.9), 0 0 8px rgba(var(--glow),.6); text-decoration: underline; text-underline-offset: 7px; }
+  .ve-sound { margin-left: auto; background: none; border: 0; color: rgba(230,251,255,.3); font: inherit; letter-spacing: inherit; }
+  .ve-main { position: relative; max-width: 1000px; margin: 0 auto; padding: 40px 20px 140px; }
+  .ve-content { max-width: 720px; font-family: var(--mono); font-size: 16px; line-height: 1.75; color: rgba(230,251,255,.78); transition: opacity .15s;
+    text-shadow: 0 0 1px rgba(200,245,255,.6), 0 0 8px rgba(var(--glow),.35); }
+  .ve-content h1, .ve-content h2, .ve-content strong, .ve-content b, .ve-content .n, .ve-content a, .ve-content .c-posts a { color: var(--phosphor); }
+  .ve-content h1 { font: 700 clamp(28px, 4.5vw, 44px)/1.1 var(--mono); text-transform: uppercase; letter-spacing: .06em;
+    text-shadow: 0 0 2px rgba(200,245,255,.9), 0 0 12px rgba(var(--glow),.55), 0 0 30px rgba(var(--glow),.25); }
+  .ve-content h2 { font: 700 17px/1.3 var(--mono); text-transform: uppercase; letter-spacing: .08em; }
+  .ve-content article { font-family: var(--mono); font-size: 16px; }
+  .ve-content .kicker, .ve-content .muted, .ve-content .d, .ve-content .meta, .ve-content .f { color: rgba(230,251,255,.42); }
+  .ve-content .lede { color: rgba(230,251,255,.9); font-size: 18px; }
+  .ve-content .c-index, .ve-content .c-index a, .ve-content .c-posts li, .ve-content .c-projects .p { border-color: rgba(200,240,255,.1); }
+  .ve-content .c-index a:hover { background: rgba(120,220,255,.05); }
+  .ve-content code, .ve-content pre { background: rgba(120,220,255,.05); border-color: rgba(120,220,255,.12); }
+  .ve-intro { position: fixed; inset: 0; z-index: 2; display: grid; place-items: center; background: #030505; transition: opacity .6s ease .2s, visibility 0s .8s; }
+  .ve-intro .vfd { width: min(860px, 90vw); }
+  .ve-intro.gone { opacity: 0; visibility: hidden; }
+
+  .sound-btn { cursor: pointer; }
+  .sound-btn.on { color: var(--phosphor) !important; text-shadow: 0 0 6px rgba(var(--glow), .8); }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="proto-bar" hidden>
+  <button id="pb-prev" aria-label="Previous variant">←</button>
+  <span class="lbl" id="pb-label"></span>
+  <span class="state" id="pb-state"></span>
+  <button id="pb-next" aria-label="Next variant">→</button>
+</div>
+
+<script>
+/* =====================================================================
+   Content (placeholder unless noted)
+   ===================================================================== */
+const STATIONS = [
+  { id: 'home',     preset: 1, freq: 88.1,  ps: 'JASPER',   title: 'Station ID', blurb: 'Who is broadcasting',
+    rt: 'JASPER LUTZ SEVERINO  *  A MIND ON A FEW FREQUENCIES  *  PICK A CHANNEL TO TUNE IN' },
+  { id: 'about',    preset: 2, freq: 91.3,  ps: 'ABOUT',    title: 'About',      blurb: 'The longer introduction',
+    rt: 'ABOUT  *  WHO I AM AND WHAT I CARE ABOUT' },
+  { id: 'projects', preset: 3, freq: 95.7,  ps: 'PROJECTS', title: 'Projects',   blurb: 'Things I build and run',
+    rt: 'PROJECTS  *  7 ON AIR  *  REPO CANON, SCRIPTORIUM, POSTERN, HOMELAB...' },
+  { id: 'blog',     preset: 4, freq: 99.1,  ps: 'BLOG',     title: 'Blog',       blurb: 'Long-form writing, in Markdown',
+    rt: '' /* filled from latest post */ },
+  { id: 'contact',  preset: 5, freq: 103.9, ps: 'CONTACT',  title: 'Contact',    blurb: 'How to reach me',
+    rt: 'CONTACT  *  GITHUB.COM/LUTZSEVERINO' },
+];
+
+// Real project names + descriptions, copied from each repository's README (2026-11-01).
+const PROJECTS = [
+  ['Repo Canon', 'Shared documentation, contribution, and coding-agent conventions for maintainers who want consistent repositories.', 'https://github.com/lutzseverino/repo-canon'],
+  ['Repository Standards', 'A CLI and agent skills for publishing and applying versioned repository standards.', 'https://github.com/lutzseverino/repo-standards'],
+  ['Scriptorium', 'A self-hosted service that implements ready GitHub issues with coding agents in sandboxes, for maintainers who run it on their own machine.', 'https://github.com/lutzseverino/scriptorium'],
+  ['Postern', 'A Node.js library that gives developers building tools one interface to code hosting platforms such as GitHub, and reports only facts the platform states.', 'https://github.com/lutzseverino/postern'],
+  ['Hemiciclo', "Working code name for a neutral, at-a-glance view of every country's political situation.", 'https://github.com/lutzseverino/hemiciclo'],
+  ['Odonta', 'Dental clinic management software for the web.', 'https://github.com/zarcerog/odonta'],
+  ['Homelab', "Host tooling and operating guidance for a Raspberry Pi and an always-on homeserver.", 'https://github.com/lutzseverino/homelab'],
+];
+
+// In the real site these are .md files (e.g. src/content/blog/*.md) with front matter.
+const POSTS = [
+  { slug: 'tuning-in', date: '2026-10-28', title: 'Tuning in (sample post)', summary: 'Why this site looks like a car radio, and what the channels are.',
+    md: `Placeholder post. Replace with your own words.
+
+My head runs on a handful of frequencies. Some days one of them is loud and the rest are static. This site is a receiver: each channel is one of those frequencies.
+
+## How the dial is laid out
+
+- **88.1** is the station ID: who's broadcasting.
+- **95.7** carries projects.
+- **99.1** carries this blog.
+
+Posts are plain Markdown files in the repository, so writing one is:
+
+\`\`\`
+src/content/blog/tuning-in.md
+\`\`\`
+
+and a push.` },
+  { slug: 'long-wave', date: '2026-10-12', title: 'Long wave, 171 kHz (sample post)', summary: 'A night drive, a dashboard, and a display that glowed like this one.',
+    md: `Placeholder post.
+
+The first frame of this site's intro is a photo: a car's radio at night, tuned to **LW 171 kHz**, the dot-matrix display glowing through its mesh.
+
+Long wave travels far and carries little. That felt right for a blog.` },
+  { slug: 'standards', date: '2026-09-30', title: 'Writing standards down (sample post)', summary: 'Notes on keeping many repositories consistent without a meeting.',
+    md: `Placeholder post about [Repo Canon](https://github.com/lutzseverino/repo-canon).
+
+Short paragraphs, real links, and \`inline code\` all render from Markdown.` },
+];
+STATIONS.find(s => s.id === 'blog').rt = `BLOG  *  LATEST: ${POSTS[0].title.toUpperCase()}`;
+
+const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+function md(src) { // tiny Markdown → HTML, enough for the prototype
+  const inline = t => esc(t)
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+  const out = []; const blocks = src.split(/\n\n+/);
+  for (let i = 0; i < blocks.length; i++) {
+    let b = blocks[i];
+    if (b.startsWith('```')) {
+      while (!b.trimEnd().endsWith('```') || b.trim() === '```') { if (i + 1 >= blocks.length) break; b += '\n\n' + blocks[++i]; }
+      out.push(`<pre><code>${esc(b.replace(/^```\w*\n?/, '').replace(/\n?```\s*$/, ''))}</code></pre>`);
+    } else if (/^## /.test(b)) out.push(`<h2>${inline(b.slice(3))}</h2>`);
+    else if (/^# /.test(b)) out.push(`<h1>${inline(b.slice(2))}</h1>`);
+    else if (/^- /.test(b)) out.push('<ul>' + b.split('\n').map(l => `<li>${inline(l.replace(/^- /, ''))}</li>`).join('') + '</ul>');
+    else out.push(`<p>${inline(b)}</p>`);
+  }
+  return out.join('\n');
+}
+
+const fmtF = f => f.toFixed(1);
+function renderStation(st, sub) {
+  if (!st) return '';
+  switch (st.id) {
+    case 'home': return `
+      <p class="kicker">${fmtF(st.freq)} FM · station ID</p>
+      <h1>Jasper Lutz Severino</h1>
+      <p class="lede">My mind is a handful of frequencies. This site is the receiver. Pick a channel to tune in.</p>
+      <ul class="c-index">${STATIONS.filter(s => s.id !== 'home').map(s =>
+        `<li><a href="#${s.id}"><span class="f">${fmtF(s.freq)}</span><span class="n">${s.title}</span><span class="d">${s.blurb}</span></a></li>`).join('')}</ul>`;
+    case 'about': return `
+      <p class="kicker">${fmtF(st.freq)} FM · about</p>
+      <h1>About</h1>
+      <p class="lede">Placeholder. I build tools for maintainers and the machines that run them.</p>
+      <p>Write the longer version here: what you do, what you're curious about, what you're tuning into lately. This is a plain page, so it can be as long as it needs to be.</p>
+      <p class="muted">Everything on this channel is placeholder copy.</p>`;
+    case 'projects': return `
+      <p class="kicker">${fmtF(st.freq)} FM · projects</p>
+      <h1>Projects</h1>
+      <div class="c-projects">${PROJECTS.map(([n, d, u]) => `<div class="p"><div><b>${n}</b><br><a href="${u}">${u.replace('https://', '')}</a></div><div>${esc(d)}</div></div>`).join('')}</div>`;
+    case 'blog': {
+      const post = sub && POSTS.find(p => p.slug === sub);
+      if (post) return `
+        <p class="kicker"><a href="#blog">← ${fmtF(st.freq)} FM · blog</a></p>
+        <article><h1>${esc(post.title)}</h1><p class="muted" style="font:13px var(--mono)">${post.date}</p>${md(post.md)}</article>`;
+      return `
+        <p class="kicker">${fmtF(st.freq)} FM · blog</p>
+        <h1>Blog</h1>
+        <ul class="c-posts">${POSTS.map(p => `<li><div class="meta">${p.date}</div><a href="#blog/${p.slug}">${esc(p.title)}</a><div class="muted">${esc(p.summary)}</div></li>`).join('')}</ul>`;
+    }
+    case 'contact': return `
+      <p class="kicker">${fmtF(st.freq)} FM · contact</p>
+      <h1>Contact</h1>
+      <p class="lede">The fastest way to reach me is <a href="https://github.com/lutzseverino">github.com/lutzseverino</a>.</p>
+      <p class="muted">Placeholder: add email or other channels here.</p>`;
+  }
+}
+
+/* =====================================================================
+   VFD dot-matrix renderer (shared). 5×7 glyphs, column bytes, bit0 = top.
+   ===================================================================== */
+const G = {
+  ' ': [0,0,0,0,0], '!': [0,0,0x5F,0,0], '"': [0,7,0,7,0], '#': [0x14,0x7F,0x14,0x7F,0x14], '&': [0x36,0x49,0x55,0x22,0x50],
+  "'": [0,5,3,0,0], '(': [0,0x1C,0x22,0x41,0], ')': [0,0x41,0x22,0x1C,0], '*': [0x14,0x08,0x3E,0x08,0x14], '+': [8,8,0x3E,8,8],
+  ',': [0,0x50,0x30,0,0], '-': [8,8,8,8,8], '.': [0,0x60,0x60,0,0], '/': [0x20,0x10,8,4,2], ':': [0,0x36,0x36,0,0],
+  '<': [8,0x14,0x22,0x41,0], '=': [0x14,0x14,0x14,0x14,0x14], '>': [0,0x41,0x22,0x14,8], '?': [2,1,0x51,9,6], '@': [0x32,0x49,0x79,0x41,0x3E],
+  '_': [0x40,0x40,0x40,0x40,0x40], '%': [0x23,0x13,0x08,0x64,0x62], '[': [0,0x7F,0x41,0x41,0], ']': [0,0x41,0x41,0x7F,0], ';': [0,0x56,0x36,0,0], '|': [0,0,0x7F,0,0], '►': [0x7F,0x3E,0x1C,0x08,0], '◄': [0,0x08,0x1C,0x3E,0x7F], '█': [0x7F,0x7F,0x7F,0x7F,0x7F],
+  '0': [0x3E,0x51,0x49,0x45,0x3E], '1': [0,0x42,0x7F,0x40,0], '2': [0x42,0x61,0x51,0x49,0x46], '3': [0x21,0x41,0x45,0x4B,0x31], '4': [0x18,0x14,0x12,0x7F,0x10],
+  '5': [0x27,0x45,0x45,0x45,0x39], '6': [0x3C,0x4A,0x49,0x49,0x30], '7': [1,0x71,9,5,3], '8': [0x36,0x49,0x49,0x49,0x36], '9': [6,0x49,0x49,0x29,0x1E],
+  A: [0x7C,0x12,0x11,0x12,0x7C], B: [0x7F,0x49,0x49,0x49,0x36], C: [0x3E,0x41,0x41,0x41,0x22], D: [0x7F,0x41,0x41,0x22,0x1C], E: [0x7F,0x49,0x49,0x49,0x41],
+  F: [0x7F,9,9,9,1], G: [0x3E,0x41,0x49,0x49,0x7A], H: [0x7F,8,8,8,0x7F], I: [0,0x41,0x7F,0x41,0], J: [0x20,0x40,0x41,0x3F,1],
+  K: [0x7F,8,0x14,0x22,0x41], L: [0x7F,0x40,0x40,0x40,0x40], M: [0x7F,2,0x0C,2,0x7F], N: [0x7F,4,8,0x10,0x7F], O: [0x3E,0x41,0x41,0x41,0x3E],
+  P: [0x7F,9,9,9,6], Q: [0x3E,0x41,0x51,0x21,0x5E], R: [0x7F,9,0x19,0x29,0x46], S: [0x46,0x49,0x49,0x49,0x31], T: [1,1,0x7F,1,1],
+  U: [0x3F,0x40,0x40,0x40,0x3F], V: [0x1F,0x20,0x40,0x20,0x1F], W: [0x3F,0x40,0x38,0x40,0x3F], X: [0x63,0x14,8,0x14,0x63], Y: [7,8,0x70,8,7], Z: [0x61,0x51,0x49,0x45,0x43],
+  a: [0x20,0x54,0x54,0x54,0x78], b: [0x7F,0x48,0x44,0x44,0x38], c: [0x38,0x44,0x44,0x44,0x20], d: [0x38,0x44,0x44,0x48,0x7F], e: [0x38,0x54,0x54,0x54,0x18],
+  f: [8,0x7E,9,1,2], g: [0x0C,0x52,0x52,0x52,0x3E], h: [0x7F,8,4,4,0x78], i: [0,0x44,0x7D,0x40,0], j: [0x20,0x40,0x44,0x3D,0],
+  k: [0x7F,0x10,0x28,0x44,0], l: [0,0x41,0x7F,0x40,0], m: [0x7C,4,0x18,4,0x78], n: [0x7C,8,4,4,0x78], o: [0x38,0x44,0x44,0x44,0x38],
+  p: [0x7C,0x14,0x14,0x14,8], q: [8,0x14,0x14,0x18,0x7C], r: [0x7C,8,4,4,8], s: [0x48,0x54,0x54,0x54,0x20], t: [4,0x3F,0x44,0x40,0x20],
+  u: [0x3C,0x40,0x40,0x20,0x7C], v: [0x1C,0x20,0x40,0x20,0x1C], w: [0x3C,0x40,0x30,0x40,0x3C], x: [0x44,0x28,0x10,0x28,0x44], y: [0x0C,0x50,0x50,0x50,0x3C], z: [0x44,0x64,0x54,0x4C,0x44],
+};
+// signal-strength glyphs ..: five rising bars
+for (let n = 0; n <= 5; n++) G[String.fromCharCode(0xE000 + n)] = [0,1,2,3,4].map(i => { const h = 2 + i; return i < n ? ((1 << h) - 1) << (7 - h) : 0; });
+const SIG = n => String.fromCharCode(0xE000 + Math.max(0, Math.min(5, Math.round(n))));
+const glyph = ch => G[ch] || G[ch.toUpperCase()] || G['?'];
+// 5×8 cells (variant D) have an 8th row: give descenders room, like a 5×10 HD44780 font
+const G8 = { g: [0x18,0xA4,0xA4,0xA4,0x7C], p: [0xFC,0x24,0x24,0x24,0x18], q: [0x18,0x24,0x24,0x24,0xFC], y: [0x1C,0xA0,0xA0,0xA0,0x7C], j: [0x40,0x80,0x84,0x7D,0] };
+const glyph8 = ch => G8[ch] || glyph(ch);
+
+const DISPLAYS = new Set();
+class Vfd {
+  constructor(host, { cols = 16, rows = 2, pitch = 4, ann = [] } = {}) {
+    Object.assign(this, { cols, rows, pitch });
+    const p = pitch, cellGap = p * 0.9, rowGap = p * 2.4, padX = p * 3, padY = p * (ann.length ? 4.6 : 2.6);
+    this.geo = { p, cellGap, rowGap, padX, padY, cw: 5 * p, ch: 7 * p };
+    this.w = Math.round(padX * 2 + cols * 5 * p + (cols - 1) * cellGap);
+    this.h = Math.round(padY + p * 2.6 + rows * 7 * p + (rows - 1) * rowGap);
+    this.dpr = Math.max(2, window.devicePixelRatio || 1);
+    host.classList.add('vfd');
+    host.style.maxWidth = this.w * 1.6 + 'px';
+    host.innerHTML = `<div class="vfd-window"><canvas class="ghost"></canvas><canvas class="lit"></canvas>
+      <div class="vfd-filaments"></div><div class="vfd-mesh"></div><div class="vfd-glass"></div>
+      <div class="vfd-ann">${ann.map(a => `<span data-a="${a}">${a}</span>`).join('')}</div></div>`;
+    this.el = host;
+    const [ghost, lit] = host.querySelectorAll('canvas');
+    for (const c of [ghost, lit]) { c.width = this.w * this.dpr; c.height = this.h * this.dpr; }
+    host.querySelector('.vfd-filaments').style.setProperty('--fil', `${(7 * p + rowGap) / 2 / this.h * 100}%`);
+    this.ctx = lit.getContext('2d'); this.ctx.scale(this.dpr, this.dpr);
+    const n = cols * rows * 35;
+    this.target = new Uint8Array(n); this.level = new Float32Array(n);
+    this.lines = Array(rows).fill(''); this.marquee = Array(rows).fill(null);
+    this.drawGhost(ghost.getContext('2d'));
+    DISPLAYS.add(this); this.dirty = true;
+  }
+  dotXY(i) {
+    const { p, cellGap, rowGap, padX, padY } = this.geo;
+    const cell = Math.floor(i / 35), d = i % 35, col = Math.floor(d / 7), row = d % 7;
+    const cx = cell % this.cols, cy = Math.floor(cell / this.cols);
+    return [padX + cx * (5 * p + cellGap) + col * p, padY + cy * (7 * p + rowGap) + row * p];
+  }
+  drawGhost(ctx) {
+    ctx.scale(this.dpr, this.dpr);
+    const { p, cellGap, rowGap, padX, padY } = this.geo;
+    for (let cy = 0; cy < this.rows; cy++) for (let cx = 0; cx < this.cols; cx++) {
+      const x = padX + cx * (5 * p + cellGap), y = padY + cy * (7 * p + rowGap);
+      ctx.fillStyle = 'rgba(120,170,190,0.035)'; ctx.fillRect(x - p * .35, y - p * .35, 5 * p + p * .5, 7 * p + p * .5);
+      ctx.strokeStyle = 'rgba(0,0,0,0.6)'; ctx.lineWidth = .6; ctx.strokeRect(x - p * .35, y - p * .35, 5 * p + p * .5, 7 * p + p * .5);
+    }
+    ctx.fillStyle = 'rgba(150,210,235,0.075)';
+    const s = p * .8;
+    for (let i = 0; i < this.target.length; i++) { const [x, y] = this.dotXY(i); ctx.fillRect(x, y, s, s); }
+  }
+  write(row, text = '', align = 'left') {
+    this.marquee[row] = null; this.setRow(row, text, align);
+  }
+  setRow(row, text, align = 'left') {
+    let t = text.slice(0, this.cols);
+    if (align === 'right') t = t.padStart(this.cols); else if (align === 'center') t = t.padStart(Math.floor((this.cols + t.length) / 2)).padEnd(this.cols); else t = t.padEnd(this.cols);
+    this.lines[row] = t;
+    for (let c = 0; c < this.cols; c++) {
+      const g = glyph(t[c]); const base = (row * this.cols + c) * 35;
+      for (let col = 0; col < 5; col++) for (let r = 0; r < 7; r++) this.target[base + col * 7 + r] = (g[col] >> r) & 1;
+    }
+    this.dirty = true;
+  }
+  scroll(row, text, stepMs = 260) { // character-step marquee, like RDS radiotext on a head unit
+    if (text.length <= this.cols) return this.write(row, text);
+    this.marquee[row] = { text: text + '     ', pos: 0, stepMs, last: 0 };
+  }
+  fill(on = 1) { this.marquee.fill(null); this.target.fill(on ? 1 : 0); this.dirty = true; }
+  ann(name, on) { const s = this.el.querySelector(`[data-a="${name}"]`); if (s) s.classList.toggle('on', !!on); }
+  tick(now) {
+    for (let r = 0; r < this.rows; r++) { const m = this.marquee[r]; if (m && now - m.last > m.stepMs) {
+      m.last = now; const t = m.text; const s = (t + t).slice(m.pos, m.pos + this.cols); this.setRow(r, s); m.pos = (m.pos + 1) % t.length; } }
+    if (!this.dirty) return;
+    let moving = false; const T = this.target, L = this.level;
+    for (let i = 0; i < T.length; i++) {
+      const l = L[i];
+      if (T[i]) { if (l < 1) { L[i] = l + (1 - l) * 0.6; if (L[i] > .995) L[i] = 1; moving = true; } }
+      else if (l > 0) { L[i] = l * 0.42; if (L[i] < .03) L[i] = 0; moving = true; } // phosphor afterglow
+    }
+    const ctx = this.ctx, s = this.geo.p * .8;
+    ctx.clearRect(0, 0, this.w, this.h);
+    ctx.fillStyle = '#e6fbff';
+    for (let i = 0; i < L.length; i++) if (L[i] > 0) { ctx.globalAlpha = L[i]; const [x, y] = this.dotXY(i); ctx.fillRect(x, y, s, s); }
+    ctx.globalAlpha = 1;
+    this.dirty = moving;
+  }
+}
+(function loop(now) { for (const d of DISPLAYS) if (d.el.isConnected) d.tick(now); requestAnimationFrame(loop); })(0);
+
+/* =====================================================================
+   Static: noise sound (opt-in) + visual noise bursts (shared)
+   ===================================================================== */
+const Sound = {
+  on: false, ctx: null, gain: null, level: 0,
+  toggle() {
+    this.on = !this.on;
+    if (this.on && !this.ctx) {
+      const ctx = this.ctx = new AudioContext();
+      const buf = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate); const d = buf.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      const src = ctx.createBufferSource(); src.buffer = buf; src.loop = true;
+      const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 2200; bp.Q.value = .5;
+      this.gain = ctx.createGain(); this.gain.gain.value = 0;
+      src.connect(bp).connect(this.gain).connect(ctx.destination); src.start();
+    }
+    this.set(this.level);
+    document.querySelectorAll('.sound-btn').forEach(b => { b.classList.toggle('on', this.on); b.textContent = this.on ? 'SOUND ON' : 'SOUND OFF'; });
+    renderState();
+  },
+  set(level) { this.level = level; if (this.gain) this.gain.gain.setTargetAtTime(this.on ? level * 0.12 : 0, this.ctx.currentTime, 0.03); },
+};
+function staticLayer(host) {
+  const c = document.createElement('canvas'); c.className = 'static-canvas'; c.width = 160; c.height = 100; host.appendChild(c);
+  const ctx = c.getContext('2d'); const img = ctx.createImageData(c.width, c.height);
+  let running = false, amount = 0;
+  const frame = () => {
+    if (amount <= 0.01) { running = false; c.style.opacity = 0; return; }
+    for (let i = 0; i < img.data.length; i += 4) { const v = Math.random() * 255 | 0; img.data[i] = v * .8; img.data[i + 1] = v; img.data[i + 2] = v; img.data[i + 3] = 255; }
+    ctx.putImageData(img, 0, 0); c.style.opacity = amount * .32; requestAnimationFrame(frame);
+  };
+  return { set(a) { amount = a; if (!running && a > .01) { running = true; frame(); } } };
+}
+async function burst(layer, ms = 320) { layer.set(1); Sound.set(1); await wait(ms); layer.set(0); Sound.set(0); }
+
+/* =====================================================================
+   Routing + shared helpers
+   ===================================================================== */
+const byId = id => STATIONS.find(s => s.id === id);
+function route() { const [id, sub] = location.hash.slice(1).split('/'); return { st: byId(id) || null, sub: sub || null }; }
+let skipping = false, introActive = true;
+const wait = ms => new Promise(r => { if (skipping) return r(); const t = setTimeout(r, ms); skipHooks.add(() => { clearTimeout(t); r(); }); });
+const skipHooks = new Set();
+function skipIntro() { if (!introActive) return; skipping = true; skipHooks.forEach(f => f()); skipHooks.clear(); }
+const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+function animateFreq(from, to, ms, onStep) {
+  return new Promise(res => {
+    if (skipping) { onStep(to, 1); return res(); }
+    const t0 = performance.now();
+    const step = now => { const k = Math.min(1, (now - t0) / ms); onStep(Math.round((from + (to - from) * ease(k)) * 10) / 10, k); k < 1 ? requestAnimationFrame(step) : res(); };
+    requestAnimationFrame(step);
+  });
+}
+// 16×2 head-unit layout: row 0 = programme service name / radiotext, row 1 = band, preset, frequency
+const freqLine = (f, preset) => `FM1 ${preset ? 'P' + preset : '  '}  ${fmtF(f).padStart(5)}MHz`;
+const showLocked = (vfd, st) => { vfd.scroll(0, st.rt.length > vfd.cols ? st.rt : st.ps); vfd.write(1, freqLine(st.freq, st.preset)); vfd.ann('ST', 1); vfd.ann('RDS', 1); vfd.ann('TP', 1); };
+
+// The intro every variant uses: segment test → the LW 171 kHz frame from the photo → seek → station ID
+async function introSequence(vfd, { onFreq } = {}) {
+  await wait(350);
+  vfd.fill(1); await wait(420); vfd.fill(0); await wait(260);           // power-on segment test
+  vfd.write(1, 'LW       171 kHz'); await wait(1100);                    // homage to the photo
+  vfd.write(0, 'HELLO'); await wait(800);
+  vfd.write(0, 'SEEK ►'); vfd.write(1, 'FM1     87.5MHz'); Sound.set(.8);
+  await animateFreq(87.5, 88.1, 900, f => { vfd.write(1, freqLine(f)); onFreq && onFreq(f); });
+  Sound.set(0); vfd.write(0, 'JASPER'); vfd.ann('ST', 1); vfd.ann('RDS', 1); await wait(900);
+  showLocked(vfd, byId('home'));
+}
+
+/* =====================================================================
+   Variant A — Head unit
+   ===================================================================== */
+function VariantA(root) {
+  root.innerHTML = `<main class="va">
+    <section class="va-unit" aria-label="Receiver">
+      <div class="va-top"><span><i class="va-led"></i>LUTZ · SEVERINO</span><span>RECEIVER MK I</span></div>
+      <div class="va-mid">
+        <div class="va-side"><button class="va-knob" aria-label="Tuning knob: drag or scroll to change channel"><span class="grip"></span></button>TUNE</div>
+        <div class="va-bezel"><div class="vfd-host"></div></div>
+        <div class="va-side"><button class="va-btn" data-seek="1">SEEK ►</button><button class="va-btn" data-seek="-1">◄ SEEK</button><button class="va-btn sound-btn">SOUND OFF</button></div>
+      </div>
+      <div class="va-presets">${STATIONS.map(s => `<button class="va-btn" data-preset="${s.id}"><b>${s.preset}</b><span>${s.title.toUpperCase()}</span></button>`).join('')}</div>
+      <div class="va-hint">presets 1–5 · ↑ ↓ seek · drag the knob</div>
+    </section>
+    <section class="va-broadcast"><div class="content"></div></section></main>`;
+  const vfd = new Vfd(root.querySelector('.vfd-host'), { cols: 16, rows: 2, pitch: 4.5, ann: ['ST', 'TP', 'TA', 'AF', 'RDS'] });
+  const content = root.querySelector('.content'), noise = staticLayer(root.querySelector('.va-broadcast'));
+  const led = root.querySelector('.va-led');
+  let current = null;
+  const paint = () => { root.querySelectorAll('[data-preset]').forEach(b => b.classList.toggle('active', b.dataset.preset === current?.id)); };
+  async function tune(st, sub) {
+    if (current === st) { content.innerHTML = renderStation(st, sub); return; }
+    const from = current ? current.freq : 87.5; current = st; paint(); renderState(st);
+    vfd.write(0, from < st.freq ? 'SEEK ►' : '◄ SEEK'); vfd.ann('ST', 0); vfd.ann('RDS', 0);
+    noise.set(1); Sound.set(1); content.style.opacity = .15;
+    await animateFreq(from, st.freq, 520, f => vfd.write(1, freqLine(f)));
+    noise.set(0); Sound.set(0); content.style.opacity = 1;
+    content.innerHTML = renderStation(st, sub); showLocked(vfd, st);
+  }
+  root.addEventListener('click', e => {
+    const p = e.target.closest('[data-preset]'); if (p) location.hash = p.dataset.preset;
+    const s = e.target.closest('[data-seek]'); if (s) seek(+s.dataset.seek);
+    if (e.target.closest('.sound-btn')) Sound.toggle();
+  });
+  const seek = dir => { const i = STATIONS.indexOf(current || STATIONS[0]); location.hash = STATIONS[(i + dir + STATIONS.length) % STATIONS.length].id; };
+  // knob: drag vertically or wheel; every 45° is a detent
+  const knob = root.querySelector('.va-knob'); let rot = 0, acc = 0;
+  const turn = d => { rot += d; acc += d; knob.style.setProperty('--rot', rot + 'deg'); if (Math.abs(acc) >= 45) { seek(Math.sign(acc)); acc = 0; } };
+  knob.addEventListener('wheel', e => { e.preventDefault(); turn(e.deltaY > 0 ? 15 : -15); }, { passive: false });
+  knob.addEventListener('pointerdown', e => { knob.setPointerCapture(e.pointerId); let y = e.clientY;
+    const mv = ev => { turn((y - ev.clientY) * 1.2); y = ev.clientY; };
+    knob.addEventListener('pointermove', mv); knob.addEventListener('pointerup', () => knob.removeEventListener('pointermove', mv), { once: true }); });
+  onKey(e => { if (/^[1-5]$/.test(e.key)) location.hash = STATIONS[+e.key - 1].id; if (e.key === 'ArrowDown') seek(1); if (e.key === 'ArrowUp') seek(-1); });
+  return {
+    async start() {
+      const r = route(); led.classList.add('on');
+      if (!r.st) { content.innerHTML = '<p class="muted" style="font:12px var(--mono)">(click or press any key to skip)</p>'; await introSequence(vfd); current = byId('home'); paint(); content.innerHTML = renderStation(current); renderState(current); }
+      else { vfd.fill(1); await wait(300); vfd.fill(0); await tune(r.st, r.sub); }
+    },
+    onRoute() { const r = route(); tune(r.st || byId('home'), r.sub); },
+  };
+}
+
+/* =====================================================================
+   Variant B — Tuning dial
+   ===================================================================== */
+function VariantB(root) {
+  const MIN = 87.5, MAX = 108;
+  const pct = f => (f - MIN) / (MAX - MIN) * 100;
+  let ticks = '';
+  for (let f = 88; f <= 108; f += 0.5) { const major = f % 2 === 0; ticks += `<i class="vb-tick${major ? ' major' : ''}" style="left:${pct(f)}%;height:${major ? 14 : 7}px"></i>${major ? `<span class="vb-num" style="left:${pct(f)}%">${f}</span>` : ''}`; }
+  root.innerHTML = `<main class="vb">
+    <section class="vb-tuner">
+      <div class="vb-row">
+        <div class="vfd-host"></div>
+        <div class="vb-dial" role="slider" aria-label="Frequency" tabindex="0"><div class="vb-scale">${ticks}
+          ${STATIONS.map(s => `<button class="vb-mark" data-st="${s.id}" style="left:${pct(s.freq)}%">${s.ps}</button>`).join('')}
+          <div class="vb-needle"></div></div><div class="vb-glass"></div></div>
+      </div>
+      <div class="vb-hint"><span>drag the dial · scroll · ↑ ↓ · or click a station name</span><span><button class="sound-btn" style="background:none;border:0;color:#4d565b;font:inherit;cursor:pointer">SOUND OFF</button> · signal<span class="vb-meter">${'<i></i>'.repeat(5)}</span></span></div>
+    </section>
+    <section class="vb-reception"><div class="content vb-content"></div><div class="vb-nosignal"><b>NO SIGNAL</b>keep tuning, or click a station name on the dial</div></section></main>`;
+  const vfd = new Vfd(root.querySelector('.vfd-host'), { cols: 16, rows: 2, pitch: 3.6, ann: ['ST', 'TP', 'RDS'] });
+  const dial = root.querySelector('.vb-dial'), scale = root.querySelector('.vb-scale'), needle = root.querySelector('.vb-needle');
+  const content = root.querySelector('.vb-content'), nosig = root.querySelector('.vb-nosignal');
+  const noise = staticLayer(root.querySelector('.vb-reception'));
+  const meter = [...root.querySelectorAll('.vb-meter i')];
+  let freq = MIN, shown = null, lockedSub = null, snapAnim = 0;
+  const nearest = f => STATIONS.reduce((a, s) => Math.abs(s.freq - f) < Math.abs(a.freq - f) ? s : a);
+  function setFreq(f, { fromRoute = false } = {}) {
+    freq = Math.round(Math.min(MAX, Math.max(MIN, f)) * 10) / 10;
+    needle.style.left = pct(freq) + '%';
+    const st = nearest(freq), d = Math.abs(st.freq - freq), sig = Math.max(0, 1 - d / 0.8);
+    meter.forEach((m, i) => m.classList.toggle('on', sig * 5 > i + .3));
+    root.querySelectorAll('.vb-mark').forEach(m => m.classList.toggle('near', m.dataset.st === st.id && sig > .5));
+    noise.set(1 - sig); Sound.set(Math.min(1, (1 - sig) * 1.1));
+    content.style.opacity = sig < .35 ? 0 : (sig - .35) / .65; content.style.filter = `blur(${(1 - sig) * 3}px)`;
+    nosig.style.opacity = sig < .35 ? 1 : 0;
+    if (sig > .35 && shown !== st) { shown = st; content.innerHTML = renderStation(st, lockedSub); }
+    if (sig >= .99) { showLocked(vfd, st); renderState(st); if (!fromRoute && route().st !== st) history.replaceState(null, '', '#' + st.id); }
+    else { vfd.write(0, sig > .35 ? st.ps : sig > 0 ? '  ~ ~ ~' : ''); vfd.write(1, `FM1    ${fmtF(freq).padStart(5)}MHz`); vfd.ann('ST', 0); vfd.ann('RDS', sig > .6); vfd.ann('TP', 0); renderState(null, freq); }
+  }
+  async function snapTo(target, ms = 380) { const id = ++snapAnim; await animateFreq(freq, target, ms, f => { if (id === snapAnim) setFreq(f); }); }
+  const autoFine = () => { const st = nearest(freq); if (Math.abs(st.freq - freq) <= 0.5) snapTo(st.freq, 200); };
+  const fFromX = x => { const r = scale.getBoundingClientRect(); return MIN + (x - r.left) / r.width * (MAX - MIN); };
+  dial.addEventListener('pointerdown', e => {
+    if (e.target.closest('.vb-mark')) return;
+    dial.setPointerCapture(e.pointerId); snapAnim++; lockedSub = null; setFreq(fFromX(e.clientX));
+    const mv = ev => setFreq(fFromX(ev.clientX));
+    dial.addEventListener('pointermove', mv);
+    dial.addEventListener('pointerup', () => { dial.removeEventListener('pointermove', mv); autoFine(); }, { once: true });
+  });
+  let wheelT; dial.addEventListener('wheel', e => { e.preventDefault(); snapAnim++; lockedSub = null; setFreq(freq + (e.deltaY > 0 ? .1 : -.1) * (e.shiftKey ? 5 : 1)); clearTimeout(wheelT); wheelT = setTimeout(autoFine, 350); }, { passive: false });
+  root.addEventListener('click', e => { const m = e.target.closest('.vb-mark'); if (m) location.hash = m.dataset.st; if (e.target.closest('.sound-btn')) Sound.toggle(); });
+  onKey(e => {
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') { e.preventDefault(); const dir = e.key === 'ArrowUp' ? 1 : -1;
+      const next = dir > 0 ? STATIONS.find(s => s.freq > freq + .05) : [...STATIONS].reverse().find(s => s.freq < freq - .05);
+      if (next) location.hash = next.id; }
+    if (/^[1-5]$/.test(e.key)) location.hash = STATIONS[+e.key - 1].id;
+  });
+  return {
+    async start() {
+      setFreq(MIN); const r = route();
+      if (!r.st) { await introSequence(vfd, { onFreq: f => { needle.style.left = pct(f) + '%'; } }); setFreq(byId('home').freq); }
+      else { lockedSub = r.sub; await snapTo(r.st.freq, 700); }
+    },
+    onRoute() { const r = route(); if (!r.st) return; lockedSub = r.sub; if (shown === r.st && Math.abs(freq - r.st.freq) < .05) { content.innerHTML = renderStation(r.st, r.sub); return; } shown = null; snapTo(r.st.freq, 450); },
+  };
+}
+
+/* =====================================================================
+   Variant C — Display bar
+   ===================================================================== */
+function VariantC(root) {
+  root.innerHTML = `<div class="vc">
+    <div class="vc-stage"><div class="vfd-host big"></div><div class="skip">click or press any key to skip</div></div>
+    <header class="vc-bar"><div class="vc-bar-in"><a href="#home" style="line-height:0"><div class="vfd-host small"></div></a>
+      <nav class="vc-nav">${STATIONS.map(s => `<a href="#${s.id}" data-st="${s.id}"><small>${fmtF(s.freq)}</small>${s.id === 'home' ? 'Jasper' : s.title}</a>`).join('')}</nav>
+      <button class="vc-sound sound-btn">SOUND OFF</button></div></header>
+    <main class="vc-page"><div class="content"></div></main></div>`;
+  const stage = root.querySelector('.vc-stage');
+  const big = new Vfd(root.querySelector('.vfd-host.big'), { cols: 20, rows: 2, pitch: 6, ann: ['ST', 'TP', 'TA', 'AF', 'RDS'] });
+  const small = new Vfd(root.querySelector('.vfd-host.small'), { cols: 22, rows: 1, pitch: 2.6 });
+  const content = root.querySelector('.content'), noise = staticLayer(root.querySelector('.vc-page'));
+  let current = null;
+  const barText = st => `P${st.preset} ${st.ps.padEnd(8)} ${fmtF(st.freq).padStart(5)}MHz`;
+  async function tune(st, sub) {
+    root.querySelectorAll('.vc-nav a').forEach(a => a.classList.toggle('active', a.dataset.st === st.id));
+    renderState(st);
+    if (current === st) { content.innerHTML = renderStation(st, sub); scrollTo(0, 0); return; }
+    const from = current ? current.freq : 87.5; current = st;
+    noise.set(.8); Sound.set(.8);
+    await animateFreq(from, st.freq, 380, f => small.write(0, `SEEK ${from < st.freq ? '►' : '◄'}      ${fmtF(f).padStart(5)}MHz`));
+    noise.set(0); Sound.set(0);
+    small.write(0, barText(st)); content.innerHTML = renderStation(st, sub); scrollTo(0, 0);
+  }
+  root.addEventListener('click', e => { if (e.target.closest('.sound-btn')) Sound.toggle(); });
+  onKey(e => { if (/^[1-5]$/.test(e.key)) location.hash = STATIONS[+e.key - 1].id; });
+  return {
+    async start() {
+      const r = route();
+      if (r.st) { stage.classList.add('gone'); await tune(r.st, r.sub); return; }
+      big.write(1, ''); await introSequence(big);
+      await wait(1400);
+      stage.classList.add('gone'); // dock: the big display fades into the header bar
+      await tune(byId('home'));
+    },
+    onRoute() { const r = route(); tune(r.st || byId('home'), r.sub); },
+  };
+}
+
+/* =====================================================================
+   Variant D — Full screen, all dots: the whole viewport is one VFD; every word is dot-matrix
+   ===================================================================== */
+function VariantD(root) {
+  document.body.style.overflow = 'hidden';
+  root.innerHTML = `<div class="vd"><canvas class="ghost"></canvas><canvas class="lit"></canvas><div class="vfd-filaments"></div><div class="vfd-mesh"></div><div class="vfd-glass"></div></div><div class="sr-only" aria-live="polite"></div>`;
+  const wrap = root.querySelector('.vd'), sr = root.querySelector('.sr-only');
+  const [gC, lC] = wrap.querySelectorAll('canvas'); const lctx = lC.getContext('2d');
+  const S = { st: null, sub: null, lines: [], scroll: 0, hover: null, focus: null, freq: 87.5, seek: 0, noise: false, phase: null, reveal: Infinity };
+  let G = null;
+  const cellXY = (c, r) => [G.ox + c * (G.cw + G.gx), G.oy + r * (G.chh + G.gy)];
+  const L = () => { const w = Math.min(G.cols - 4, 76); return { top: 5, bottom: G.rows - 3, left: Math.floor((G.cols - w) / 2), w, view: G.rows - 7 }; };
+
+  function build() {
+    const W = innerWidth, H = innerHeight;
+    const p = W >= 1200 ? 3 : W >= 760 ? 2.6 : 2.1;
+    const gx = p * .8, gy = p * 1.5, cw = 5 * p, chh = 8 * p;
+    const cols = Math.floor((W - 6 * p) / (cw + gx)), rows = Math.floor((H - 6 * p) / (chh + gy));
+    const ox = (W - (cols * (cw + gx) - gx)) / 2, oy = (H - (rows * (chh + gy) - gy)) / 2;
+    const dpr = Math.min(2, devicePixelRatio || 1), n = cols * rows;
+    for (const c of [gC, lC]) { c.width = W * dpr; c.height = H * dpr; }
+    G = { W, H, p, gx, gy, cw, chh, cols, rows, ox, oy, n, tgt: new Uint8Array(n * 40), lvl: new Float32Array(n * 40), bri: new Float32Array(n), active: new Set(), regions: [] };
+    wrap.querySelector('.vfd-filaments').style.setProperty('--fil', `${(chh + gy) / 2}px`);
+    const g = gC.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
+    g.fillStyle = 'rgba(150,210,235,0.06)'; const s = p * .8;
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) { const [x, y] = cellXY(c, r); for (let dx = 0; dx < 5; dx++) for (let dy = 0; dy < 8; dy++) g.fillRect(x + dx * p, y + dy * p, s, s); }
+    lctx.setTransform(dpr, 0, 0, dpr, 0, 0); lctx.clearRect(0, 0, W, H); lctx.fillStyle = '#e6fbff';
+    layout();
+  }
+
+  // --- text → lines of segments {t, b(rightness), href} ---
+  function inline(str, b = .8) {
+    const segs = []; const re = /\[([^\]]+)\]\(([^)]+)\)|\*\*([^*]+)\*\*|`([^`]+)`|\*([^*]+)\*/g; let last = 0, m;
+    while ((m = re.exec(str))) {
+      if (m.index > last) segs.push({ t: str.slice(last, m.index), b });
+      if (m[1]) segs.push({ t: m[1], b: 1, href: m[2] }); else if (m[3]) segs.push({ t: m[3], b: 1 }); else if (m[4]) segs.push({ t: m[4], b: .55 }); else segs.push({ t: m[5], b: 1 });
+      last = re.lastIndex;
+    }
+    if (last < str.length) segs.push({ t: str.slice(last), b });
+    return segs;
+  }
+  function wrapSegs(segs, w, indent = 0, first = '') {
+    const toks = []; for (const sg of segs) sg.t.split(/(\s+)/).forEach(t => t && toks.push({ ...sg, t }));
+    const lines = []; let cur = [], len = 0, ls = 0;
+    const start = () => { const pre = lines.length === 0 ? first : ' '.repeat(indent); cur = pre ? [{ t: pre, b: segs[0] ? Math.min(segs[0].b, .6) : .6 }] : []; len = ls = pre.length; };
+    const push = () => { while (cur.length && cur[cur.length - 1].t === ' ') cur.pop(); lines.push({ segs: cur }); start(); };
+    start();
+    for (const tk of toks) {
+      if (/^\s+$/.test(tk.t)) { if (len > ls && len < w) { cur.push({ ...tk, t: ' ' }); len++; } continue; }
+      if (len + tk.t.length > w && len > ls) push();
+      let t = tk.t; while (t.length > w - len) { cur.push({ ...tk, t: t.slice(0, w - len) }); t = t.slice(w - len); push(); }
+      cur.push({ ...tk, t }); len += t.length;
+    }
+    if (len > ls) push();
+    return lines;
+  }
+  function stationLines(st, sub, w) {
+    const out = []; const blank = () => out.push({ segs: [] });
+    const para = (s, b = .8, indent = 0, first = '') => out.push(...wrapSegs(typeof s === 'string' ? inline(s, b) : s, w, indent, first));
+    const head = t => { out.push({ segs: [{ t: t.toUpperCase(), b: 1 }] }); out.push({ segs: [{ t: '='.repeat(Math.min(w, t.length)), b: .3 }] }); blank(); };
+    const kicker = () => { out.push({ segs: [{ t: `${fmtF(st.freq)} FM / ${st.id === 'home' ? 'station id' : st.title.toLowerCase()}`, b: .4 }] }); blank(); };
+    switch (st.id) {
+      case 'home': {
+        const s = Math.max(1, Math.min(5, Math.floor(w * 5 / 36)));
+        out.push({ segs: [], big: { text: 'JASPER', s } }); for (let i = 1; i < Math.ceil(7 * s / 8) + 1; i++) blank();
+        para('Jasper Lutz Severino', 1); blank();
+        para('My mind is a handful of frequencies. This site is the receiver. Pick a channel to tune in.', .72); blank();
+        for (const x of STATIONS.filter(x => x.id !== 'home')) out.push(...wrapSegs([{ t: `${fmtF(x.freq).padStart(5)}  `, b: .45 }, { t: x.title, b: .95, href: '#' + x.id }, { t: `  ${x.blurb}`, b: .42 }], w, 7));
+        break;
+      }
+      case 'about': kicker(); head('About'); para('Placeholder. I build tools for maintainers and the machines that run them.', .95); blank();
+        para("Write the longer version here: what you do, what you're curious about, what you're tuning into lately. It can be as long as it needs to be: the screen scrolls."); blank();
+        para('Everything on this channel is placeholder copy.', .4); break;
+      case 'projects': kicker(); head('Projects');
+        for (const [n, d, u] of PROJECTS) { out.push({ segs: [{ t: n, b: 1, href: u }] }); para(d, .7, 2, '  '); para(u.replace('https://', ''), .32, 2, '  '); blank(); }
+        break;
+      case 'blog': {
+        const post = sub && POSTS.find(p => p.slug === sub);
+        if (post) {
+          out.push({ segs: [{ t: '< all posts', b: .9, href: '#blog' }] }); blank();
+          para(post.title.toUpperCase(), 1); out.push({ segs: [{ t: post.date, b: .4 }] }); blank();
+          const blocks = post.md.split(/\n\n+/);
+          for (let i = 0; i < blocks.length; i++) {
+            let b = blocks[i];
+            if (b.startsWith('```')) { while (!b.trimEnd().endsWith('```') || b.trim() === '```') { if (i + 1 >= blocks.length) break; b += '\n\n' + blocks[++i]; }
+              b.replace(/^```\w*\n?/, '').replace(/\n?```\s*$/, '').split('\n').forEach(l => out.push({ segs: [{ t: '  ' + l, b: .55 }] })); }
+            else if (/^#+ /.test(b)) { blank(); out.push({ segs: [{ t: b.replace(/^#+ /, '').toUpperCase(), b: 1 }] }); }
+            else if (/^- /.test(b)) b.split('\n').forEach(l => para(l.replace(/^- /, ''), .8, 2, '- '));
+            else para(b, .8);
+            blank();
+          }
+        } else {
+          kicker(); head('Blog');
+          for (const p of POSTS) { out.push({ segs: [{ t: p.date, b: .38 }] }); para([{ t: p.title, b: 1, href: '#blog/' + p.slug }]); para(p.summary, .55); blank(); }
+        }
+        break;
+      }
+      case 'contact': kicker(); head('Contact');
+        para('The fastest way to reach me is [github.com/lutzseverino](https://github.com/lutzseverino).', .85); blank();
+        para('Placeholder: add email or other channels here.', .4); break;
+    }
+    return out;
+  }
+  function layout() { S.lines = stationLines(S.st || byId('home'), S.sub, L().w); S.scroll = Math.max(0, Math.min(S.scroll, S.lines.length - L().view)); }
+
+  // --- compose the whole frame, diff it into the dot targets ---
+  function compose() {
+    if (!G) return;
+    const { cols, rows, n } = G;
+    const fch = new Array(n).fill(' '), fb = new Float32Array(n), fu = new Uint8Array(n), fx = new Uint8Array(n), big = new Map(), regions = [];
+    const put = (c, r, str, b, u = 0, href) => {
+      for (let i = 0; i < str.length; i++) { const cc = c + i; if (cc < 0 || cc >= cols || r < 0 || r >= rows) continue; const k = r * cols + cc; fch[k] = str[i]; fb[k] = b; fu[k] = u; }
+      if (href) regions.push({ c0: c, c1: c + str.length - 1, r, href });
+    };
+    const bigText = (text, s, X0, Y0, b, rmin, rmax) => {
+      for (let i = 0; i < text.length; i++) { const g = glyph(text[i]);
+        for (let col = 0; col < 5; col++) for (let row = 0; row < 7; row++) if ((g[col] >> row) & 1)
+          for (let a = 0; a < s; a++) for (let d = 0; d < s; d++) {
+            const X = X0 + (i * 6 + col) * s + a, Y = Y0 + row * s + d, c = Math.floor(X / 5), r = Math.floor(Y / 8);
+            if (c < 0 || c >= cols || r < rmin || r > rmax) continue;
+            const k = r * cols + c; let m = big.get(k); if (!m) big.set(k, m = new Uint8Array(40)); m[(X % 5) * 8 + (Y % 8)] = 1; fb[k] = Math.max(fb[k], b);
+          } }
+    };
+    const mid = Math.floor(rows / 2), cx = Math.floor((cols - 16) / 2);
+    if (S.phase === 'test') { fx.fill(2); fb.fill(1); }
+    else if (S.phase === 'lw') put(cx, mid, 'LW       171 kHz', 1);
+    else if (S.phase === 'seek') { put(cx, mid - 1, 'SEEK ►', 1); put(cx, mid, `FM1     ${fmtF(S.freq).padStart(5)}MHz`, 1); }
+    else if (!S.phase) {
+      const st = S.st || byId('home'), lay = L(), tuning = S.seek !== 0, f = `${fmtF(S.freq).padStart(5)}MHz`;
+      // row 0: the head-unit status line
+      if (cols >= 40) {
+        put(1, 0, `FM1 ${tuning ? '  ' : 'P' + st.preset}  ${f}`, 1);
+        put(22, 0, tuning ? (S.seek > 0 ? 'SEEK ►' : '◄ SEEK') : st.ps, 1);
+        put(cols - 10, 0, 'ST', tuning ? .1 : 1); put(cols - 7, 0, 'RDS', tuning ? .1 : 1); put(cols - 2, 0, SIG(tuning ? 1 : 5), 1);
+      } else {
+        put(0, 0, `${tuning ? 'SEEK' : 'P' + st.preset} ${f}`, 1); if (!tuning) put(cols - 3 - st.ps.length, 0, st.ps, 1); put(cols - 1, 0, SIG(tuning ? 1 : 5), 1);
+      }
+      // row 2: channel bar (presets)
+      const full = STATIONS.map(x => ` ${x.preset} ${x.ps} `).join(' ');
+      const compact = full.length > cols;
+      let c = compact ? 0 : Math.floor((cols - full.length) / 2);
+      for (const x of STATIONS) {
+        const active = x === st, label = compact && !active ? ` ${x.preset} ` : ` ${x.preset} ${x.ps} `;
+        put(c, 2, label, active ? 1 : S.hover === '#' + x.id ? .85 : .36, active ? 1 : 0, '#' + x.id); c += label.length + (compact ? 0 : 1);
+      }
+      put(0, 3, '-'.repeat(cols), .13);
+      // content
+      if (S.noise) { for (let r = lay.top; r <= lay.bottom; r++) for (let c2 = 0; c2 < cols; c2++) { const k = r * cols + c2; fx[k] = 1; fb[k] = .5; } }
+      else {
+        for (let i = 0; i < lay.view; i++) {
+          const li = S.scroll + i; if (li >= S.lines.length || li >= S.reveal) break;
+          let c2 = lay.left; const r = lay.top + i;
+          for (const sg of S.lines[li].segs) {
+            const foc = S.focus && sg.href && S.focus.href === sg.href && S.focus.r === r && S.focus.c0 === c2;
+            const b = sg.href ? (S.hover === sg.href || foc ? 1 : Math.max(.8, sg.b)) : sg.b;
+            put(c2, r, sg.t, b, sg.href ? 1 : 0, sg.href); if (foc) put(lay.left - 2, r, '►', 1); c2 += sg.t.length;
+          }
+        }
+        S.lines.forEach((line, li) => { if (!line.big || li >= S.reveal) return; bigText(line.big.text, line.big.s, lay.left * 5, (lay.top + li - S.scroll) * 8, 1, lay.top, lay.bottom); });
+      }
+      // last row: hints + scroll position
+      put(1, rows - 1, cols >= 64 ? '1-5 channel   up/down scroll   tab + enter follow link' : '1-5 ch  up/dn scroll', .28);
+      if (S.lines.length > lay.view && !S.noise) {
+        const pct = Math.round(S.scroll / (S.lines.length - lay.view) * 100), t = `${pct >= 100 ? 'END ' : 'MORE'} ${String(pct).padStart(3)}%`;
+        put(cols - t.length - 1, rows - 1, t, .45);
+      }
+    }
+    const { tgt, bri, active } = G;
+    for (let k = 0; k < n; k++) {
+      const base = k * 40, g = glyph8(fch[k]), m = big.get(k); let changed = false;
+      for (let col = 0; col < 5; col++) for (let row = 0; row < 8; row++) {
+        let v = fx[k] === 2 ? 1 : fx[k] === 1 ? (Math.random() < .16 ? 1 : 0) : ((g[col] >> row) & 1) | (row === 7 ? fu[k] : 0);
+        if (m && m[col * 8 + row]) v = 1;
+        const i = base + col * 8 + row; if (tgt[i] !== v) { tgt[i] = v; changed = true; }
+      }
+      const blank = fch[k] === ' ' && !m && !fx[k] && !fu[k];
+      const nb = blank ? bri[k] : fb[k]; // keep brightness while a cleared cell fades out
+      if (nb !== bri[k]) { bri[k] = nb; changed = true; }
+      if (changed) active.add(k);
+    }
+    G.regions = regions;
+  }
+  function drawCell(k) {
+    const { cols, p } = G, [x, y] = cellXY(k % cols, (k / cols) | 0), s = p * .8, base = k * 40, b = G.bri[k];
+    lctx.clearRect(x - .5, y - .5, G.cw + 1, G.chh + 1);
+    for (let i = 0; i < 40; i++) { const l = G.lvl[base + i]; if (l > 0) { lctx.globalAlpha = l * b; lctx.fillRect(x + ((i / 8) | 0) * p, y + (i % 8) * p, s, s); } }
+    lctx.globalAlpha = 1;
+  }
+  DISPLAYS.add({ el: wrap, tick() {
+    if (!G) return; const { tgt, lvl, active } = G;
+    for (const k of active) {
+      let moving = false;
+      for (let i = k * 40; i < k * 40 + 40; i++) { const t = tgt[i], l = lvl[i];
+        if (t) { if (l < 1) { const nl = l + (1 - l) * .6; lvl[i] = nl > .995 ? 1 : nl; moving = true; } }
+        else if (l > 0) { const nl = l * .42; lvl[i] = nl < .03 ? 0 : nl; moving = true; } }
+      drawCell(k); if (!moving) active.delete(k);
+    }
+    if (S.noise) compose();
+  } });
+
+  // --- input ---
+  const regionAt = (x, y) => { const c = Math.floor((x - G.ox) / (G.cw + G.gx)), r = Math.floor((y - G.oy) / (G.chh + G.gy)); return G.regions.find(g => g.r === r && c >= g.c0 && c <= g.c1); };
+  const open = href => href.startsWith('#') ? (location.hash = href.slice(1)) : window.open(href, '_blank', 'noopener');
+  const scrollBy = d => { const max = Math.max(0, S.lines.length - L().view), ns = Math.max(0, Math.min(max, S.scroll + d)); if (ns !== S.scroll) { S.scroll = ns; S.focus = null; compose(); } };
+  let drag = null;
+  wrap.addEventListener('pointerdown', e => { drag = { y: e.clientY, moved: false }; });
+  wrap.addEventListener('pointerup', e => { if (drag && !drag.moved && !S.phase) { const g = regionAt(e.clientX, e.clientY); if (g) open(g.href); } drag = null; });
+  wrap.addEventListener('pointermove', e => {
+    if (!G) return;
+    if (drag) { const rowH = G.chh + G.gy, d = drag.y - e.clientY; if (Math.abs(d) > rowH) { drag.moved = true; scrollBy(Math.trunc(d / rowH)); drag.y = e.clientY; } return; }
+    const g = regionAt(e.clientX, e.clientY), h = g ? g.href : null; wrap.style.cursor = g ? 'pointer' : 'default';
+    if (h !== S.hover) { S.hover = h; compose(); }
+  });
+  wrap.addEventListener('wheel', e => { e.preventDefault(); scrollBy(Math.sign(e.deltaY) * 3); }, { passive: false });
+  let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { build(); compose(); }, 150); });
+  onKey(e => {
+    if (S.phase) return;
+    if (/^[1-5]$/.test(e.key)) location.hash = STATIONS[+e.key - 1].id;
+    const v = L().view;
+    if (e.key === 'ArrowDown') scrollBy(1); if (e.key === 'ArrowUp') scrollBy(-1);
+    if (e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); scrollBy(v - 1); } if (e.key === 'PageUp') scrollBy(1 - v);
+    if (e.key === 'Home') scrollBy(-1e6); if (e.key === 'End') scrollBy(1e6);
+    if (e.key === 'Tab') { e.preventDefault(); const links = G.regions.filter(g => g.r >= L().top); if (!links.length) return;
+      let i = S.focus ? links.findIndex(g => g.r === S.focus.r && g.c0 === S.focus.c0) : -1; i = (i + (e.shiftKey ? -1 : 1) + links.length) % links.length; S.focus = links[i]; compose(); }
+    if (e.key === 'Enter' && S.focus) open(S.focus.href);
+    if (e.key === 'Escape' && S.sub) location.hash = S.st.id;
+  });
+
+  async function tune(st, sub) {
+    renderState(st); sr.innerHTML = renderStation(st, sub); sr.querySelectorAll('a').forEach(a => a.tabIndex = -1);
+    S.focus = null;
+    if (S.st === st) { S.sub = sub; S.scroll = 0; layout(); compose(); return; }
+    const from = S.st ? S.st.freq : S.freq; S.seek = st.freq >= from ? 1 : -1; S.noise = true; Sound.set(.9);
+    await animateFreq(from, st.freq, 480, f => { S.freq = f; compose(); });
+    S.seek = 0; S.noise = false; Sound.set(0); S.st = st; S.sub = sub; S.freq = st.freq; S.scroll = 0; layout(); compose();
+  }
+  return {
+    async start() {
+      build(); const r = route();
+      if (r.st) return tune(r.st, r.sub);
+      await wait(300);
+      S.phase = 'test'; compose(); await wait(450); S.phase = 'off'; compose(); await wait(260); // whole-screen segment test
+      S.phase = 'lw'; compose(); await wait(1100);                                               // the photo's frame
+      S.phase = 'seek'; Sound.set(.8); await animateFreq(87.5, 88.1, 900, f => { S.freq = f; compose(); }); Sound.set(0);
+      S.phase = null; S.st = byId('home'); S.freq = 88.1; layout(); S.reveal = 0; compose();
+      while (S.reveal < S.lines.length && !skipping) { S.reveal++; compose(); await wait(45); }    // lines come in one by one
+      S.reveal = Infinity; compose(); renderState(S.st); sr.innerHTML = renderStation(S.st);
+    },
+    onRoute() { const r = route(); tune(r.st || byId('home'), r.sub); },
+  };
+}
+
+/* =====================================================================
+   Variant E — Full screen, glass page: the page is the display glass; text is phosphor HTML
+   ===================================================================== */
+function VariantE(root) {
+  root.innerHTML = `<div class="ve">
+    <div class="ve-bg"></div>
+    <div class="ve-screen">
+      <header class="ve-head"><a href="#home" class="ve-disp" aria-label="Station ID"><div class="vfd-host"></div></a>
+        <nav class="ve-nav">${STATIONS.map(s => `<a href="#${s.id}" data-st="${s.id}"><small>${s.preset}</small> ${s.ps}</a>`).join('')}<button class="sound-btn ve-sound">SOUND OFF</button></nav></header>
+      <main class="ve-main"><div class="content ve-content"></div></main>
+    </div>
+    <div class="ve-intro"><div class="vfd-host"></div></div>
+    <div class="ve-over"><div class="vfd-filaments" style="--fil:23px"></div><div class="vfd-mesh"></div><div class="vfd-glass"></div></div></div>`;
+  const pitch = innerWidth < 600 ? 2.4 : 3.4;
+  const cols = Math.max(22, Math.min(40, Math.floor((Math.min(innerWidth, 1000) - 40) / (pitch * 5.9))));
+  const head = new Vfd(root.querySelector('.ve-head .vfd-host'), { cols, rows: 1, pitch });
+  const big = new Vfd(root.querySelector('.ve-intro .vfd-host'), { cols: 20, rows: 2, pitch: 6, ann: ['ST', 'TP', 'TA', 'AF', 'RDS'] });
+  const intro = root.querySelector('.ve-intro'), content = root.querySelector('.ve-content'), noise = staticLayer(root.querySelector('.ve-main'));
+  const line = (st, f, seek) => { const l = `FM1 ${seek ? 'SEEK' : 'P' + st.preset} ${fmtF(f).padStart(5)}MHz`; return l + (seek ? '' : st.ps).padStart(cols - l.length); };
+  let current = null;
+  async function tune(st, sub) {
+    root.querySelectorAll('.ve-nav a').forEach(a => a.classList.toggle('active', a.dataset.st === st.id)); renderState(st);
+    if (current === st) { content.innerHTML = renderStation(st, sub); scrollTo(0, 0); return; }
+    const from = current ? current.freq : 87.5; current = st;
+    noise.set(.9); Sound.set(.9); content.style.opacity = .1;
+    await animateFreq(from, st.freq, 420, f => head.write(0, line(st, f, true)));
+    noise.set(0); Sound.set(0); content.style.opacity = 1;
+    head.write(0, line(st, st.freq)); content.innerHTML = renderStation(st, sub); scrollTo(0, 0);
+  }
+  root.addEventListener('click', e => { if (e.target.closest('.sound-btn')) Sound.toggle(); });
+  onKey(e => { if (/^[1-5]$/.test(e.key)) location.hash = STATIONS[+e.key - 1].id; });
+  return {
+    async start() {
+      const r = route();
+      if (r.st) { intro.classList.add('gone'); return tune(r.st, r.sub); }
+      await introSequence(big); await wait(1200);
+      intro.classList.add('gone'); await tune(byId('home'));
+    },
+    onRoute() { const r = route(); tune(r.st || byId('home'), r.sub); },
+  };
+}
+
+/* =====================================================================
+   Variant switcher + boot
+   ===================================================================== */
+const VARIANTS = { A: ['Head unit', VariantA], B: ['Tuning dial', VariantB], C: ['Display bar', VariantC], D: ['Full screen, all dots', VariantD], E: ['Full screen, glass page', VariantE] };
+const keyHandlers = []; const onKey = f => keyHandlers.push(f);
+const params = new URLSearchParams(location.search);
+const vKey = VARIANTS[params.get('variant')] ? params.get('variant') : 'D';
+function go(dir) { const ks = Object.keys(VARIANTS); const k = ks[(ks.indexOf(vKey) + dir + ks.length) % ks.length]; params.set('variant', k); location.href = location.pathname + '?' + params.toString() + location.hash; }
+function renderState(st, f) {
+  const el = document.getElementById('pb-state'); if (!el) return;
+  const r = route();
+  el.textContent = st ? `${fmtF(st.freq)} ${st.ps}${r.sub ? '/' + r.sub : ''}` : f ? `${fmtF(f)} (no station)` : 'intro';
+  el.textContent += Sound.on ? ' · sound' : '';
+}
+// The prototype is never a production build; ?bar=0 hides the switcher for screenshots.
+if (params.get('bar') !== '0') {
+  const bar = document.getElementById('proto-bar'); bar.hidden = false;
+  document.getElementById('pb-label').textContent = `${vKey} (${VARIANTS[vKey][0]})`;
+  document.getElementById('pb-prev').onclick = () => go(-1); document.getElementById('pb-next').onclick = () => go(1);
+}
+document.addEventListener('keydown', e => {
+  if (e.target.closest('input, textarea, [contenteditable]')) return;
+  if (!e.metaKey && !e.ctrlKey && !['ArrowLeft', 'ArrowRight'].includes(e.key)) skipIntro();
+  if (e.key === 'ArrowLeft') return go(-1);
+  if (e.key === 'ArrowRight') return go(1);
+  keyHandlers.forEach(f => f(e));
+});
+document.addEventListener('pointerdown', e => { if (!e.target.closest('#proto-bar')) skipIntro(); }, { capture: true });
+const variant = VARIANTS[vKey][1](document.getElementById('app'));
+renderState(null);
+variant.start().then(() => { introActive = false; skipping = false; skipHooks.clear(); window.addEventListener('hashchange', () => variant.onRoute()); if (location.hash) variant.onRoute(); });
+</script>
+</body>
+</html>

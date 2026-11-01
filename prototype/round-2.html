@@ -1,0 +1,985 @@
+<!doctype html>
+<!--
+  PROTOTYPE — throwaway, round 2. Round 1 (all five variants) is in round-1.html; the owner picked D,
+  the full-screen dot-matrix receiver. Question now: "What should the cover panel in front of the
+  display, and the intro, look like?"
+  Variants (?variant=, or the bottom bar / ← →):
+    acrylic  smoked acrylic cover: wiping scratches, swirls, a fingerprint, streetlight reflections;
+             "ignition" intro: filaments glow orange, self-test, LW 171 kHz, the name scans in, radiotext crawl.
+    glass    glass in a bezel, with chipped edges and a specular streak; parallax against the dots;
+             "band scan" intro: the screen becomes a spectrum and each channel rises as a peak.
+    worn     scuffed, hazy plastic; parallax; "bleed-through" intro: tuning through static,
+             fragments of other channels bleed in, then the station ID resolves out of the noise.
+    base     round 1's D exactly as picked, for comparison.
+  Mix any panel with any intro: ?panel=none|acrylic|glass|worn&intro=classic|ignition|scan|bleed&bezel=1&parallax=1
+  Scratches catch the display's own light: they show where the dots behind them are lit.
+  The intro plays on every load; a deep link (#blog/...) gets only a short power-on.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PROTOTYPE · receiver · round 2</title>
+<style>
+  :root {
+    --phosphor: #e6fbff;
+    --glow: 120, 220, 255;
+    --ink: #d9dee2;
+    --dim: #7c868d;
+    --bg: #050607;
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); }
+  body { min-height: 100vh; }
+  button { font: inherit; color: inherit; }
+  a { color: rgb(var(--glow)); }
+
+  /* ---------- VFD (shared component) ---------- */
+  .vfd { position: relative; display: inline-block; line-height: 0; }
+  .vfd-window {
+    position: relative; overflow: hidden; border-radius: 3px;
+    background:
+      radial-gradient(120% 140% at 50% 55%, #0b1417 0%, #070c0e 55%, #040607 100%);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.04), inset 0 2px 8px rgba(0,0,0,.9);
+  }
+  .vfd canvas { display: block; width: 100%; height: auto; }
+  .vfd canvas.lit {
+    position: absolute; inset: 0;
+    filter:
+      drop-shadow(0 0 1px rgba(200, 245, 255, .95))
+      drop-shadow(0 0 4px rgba(var(--glow), .6))
+      drop-shadow(0 0 12px rgba(var(--glow), .28));
+    animation: vfd-flicker 7s infinite steps(1);
+  }
+  @keyframes vfd-flicker {
+    0%, 100% { opacity: 1; } 31% { opacity: .94; } 31.6% { opacity: 1; }
+    64% { opacity: .97; } 64.4% { opacity: 1; } 88% { opacity: .95; } 88.3% { opacity: 1; }
+  }
+  /* control grid mesh sits just above the anodes: darkens lit dots in a fine weave */
+  .vfd-mesh {
+    position: absolute; inset: 0; pointer-events: none; mix-blend-mode: multiply;
+    background:
+      repeating-linear-gradient(0deg, rgba(0,0,0,.42) 0 1px, transparent 1px 3px),
+      repeating-linear-gradient(90deg, rgba(0,0,0,.32) 0 1px, transparent 1px 3px);
+  }
+  /* filament wires: a few hair-thin horizontal lines across the whole tube */
+  .vfd-filaments {
+    position: absolute; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(180deg, transparent 0 calc(var(--fil, 18px) - 1px), rgba(0,0,0,.55) calc(var(--fil, 18px) - 1px) var(--fil, 18px));
+    opacity: .7;
+  }
+  .vfd-glass {
+    position: absolute; inset: 0; pointer-events: none;
+    background:
+      linear-gradient(172deg, rgba(255,255,255,.07) 0%, rgba(255,255,255,.015) 28%, transparent 46%),
+      radial-gradient(40% 30% at 72% 78%, rgba(255,255,255,.035), transparent 70%);
+  }
+  .vfd-ann { position: absolute; left: 0; top: 0; display: flex; gap: .5em; padding: .35em .6em;
+    font: 700 9px/1 var(--sans); letter-spacing: .08em; line-height: 1; z-index: 2; pointer-events: none; }
+  .vfd-ann span { color: rgba(150, 210, 235, .10); transition: color .15s, text-shadow .15s; }
+  .vfd-ann span.on { color: var(--phosphor); text-shadow: 0 0 2px rgba(200,245,255,.9), 0 0 8px rgba(var(--glow),.6); }
+
+  /* static noise overlay used for transitions */
+  .static-canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0; image-rendering: pixelated; mix-blend-mode: screen; }
+
+  /* ---------- content (shared typography) ---------- */
+  .content { font-size: 17px; line-height: 1.65; }
+  .content h1 { font: 600 clamp(32px, 5vw, 52px)/1.05 var(--sans); letter-spacing: -.02em; margin: .2em 0 .35em; color: #f2f5f7; }
+  .content h2 { font: 600 22px/1.25 var(--sans); margin: 1.6em 0 .5em; color: #eef2f4; }
+  .content p { margin: 0 0 1em; }
+  .content .kicker { font: 600 12px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: rgb(var(--glow)); opacity: .85; }
+  .content .lede { font-size: 20px; color: #c3cad0; max-width: 34em; }
+  .content .muted { color: var(--dim); }
+  .content code { font-family: var(--mono); font-size: .88em; background: #11171a; padding: .1em .35em; border-radius: 3px; }
+  .content pre { background: #0c1113; border: 1px solid #172126; padding: 14px 16px; border-radius: 6px; overflow-x: auto; }
+  .content pre code { background: none; padding: 0; }
+  .content article { font-family: var(--serif); font-size: 19px; }
+  .content article h1, .content article h2 { font-family: var(--sans); }
+  .c-index { list-style: none; padding: 0; margin: 1.6em 0 0; border-top: 1px solid #1a2226; }
+  .c-index a { display: grid; grid-template-columns: 5.5em 9em 1fr; gap: 1em; padding: .8em .2em; border-bottom: 1px solid #1a2226; color: inherit; text-decoration: none; align-items: baseline; }
+  .c-index a:hover { background: #0b1013; }
+  .c-index .f { font-family: var(--mono); color: rgb(var(--glow)); }
+  .c-index .n { font-weight: 600; color: #eef2f4; }
+  .c-index .d { color: var(--dim); }
+  .c-posts { list-style: none; padding: 0; margin: 1em 0; }
+  .c-posts li { padding: 1em 0; border-bottom: 1px solid #1a2226; }
+  .c-posts a { font-weight: 600; font-size: 20px; color: #eef2f4; text-decoration: none; }
+  .c-posts a:hover { color: rgb(var(--glow)); }
+  .c-posts .meta { font: 12px/1.4 var(--mono); color: var(--dim); letter-spacing: .05em; }
+  .c-projects { display: grid; gap: 0; margin-top: 1em; }
+  .c-projects .p { display: grid; grid-template-columns: 11em 1fr; gap: 1.2em; padding: 1em 0; border-bottom: 1px solid #1a2226; }
+  .c-projects .p b { color: #eef2f4; }
+  .c-projects .p a { font: 12px var(--mono); overflow-wrap: anywhere; }
+  @media (max-width: 640px) {
+    .c-index a { grid-template-columns: 4.5em 1fr; } .c-index .d { grid-column: 2; }
+    .c-projects .p { grid-template-columns: 1fr; gap: .2em; }
+  }
+
+  /* ---------- prototype switcher (not part of the design) ---------- */
+  #proto-bar { position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 9999;
+    display: flex; align-items: center; gap: 4px; padding: 4px; border-radius: 999px;
+    background: #fff; color: #111; font: 600 13px/1 var(--sans); box-shadow: 0 6px 24px rgba(0,0,0,.5), 0 0 0 2px #ff3d7f; }
+  #proto-bar button { border: 0; background: #eee; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 15px; }
+  #proto-bar button:hover { background: #ddd; }
+  #proto-bar .lbl { padding: 0 10px; white-space: nowrap; }
+  #proto-bar .state { font: 500 11px var(--mono); color: #666; padding-right: 10px; border-left: 1px solid #ddd; padding-left: 10px; white-space: nowrap; }
+
+  /* ---------- Variant D: full screen, all dots ---------- */
+  .vd { position: fixed; inset: 0; overflow: hidden; touch-action: none; user-select: none;
+    background: radial-gradient(120% 120% at 50% 45%, #0a1316 0%, #060b0d 60%, #030506 100%); }
+  .vd::after { content: ""; position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 0 160px rgba(0,0,0,.85); }
+  .vd canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .vd canvas.lit { filter: drop-shadow(0 0 1px rgba(200,245,255,.9)) drop-shadow(0 0 5px rgba(var(--glow),.45)); animation: vfd-flicker 7s infinite steps(1); }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* ---------- round 2: cover panels in front of the tube ---------- */
+  .vd .panel, .vd .panel > * { position: absolute; inset: 0; pointer-events: none; }
+  .vd .panel canvas { width: 100%; height: 100%; }
+  .vd[data-panel="none"] .panel { display: none; }
+  .vd:not([data-panel="none"]) .vfd-glass { display: none; }
+  .panel-glow { mix-blend-mode: screen; filter: drop-shadow(0 0 1.5px rgba(150,230,255,.7)) brightness(1.4); }
+  .panel-ambient { mix-blend-mode: screen;
+    -webkit-mask-image: linear-gradient(160deg, #000 0%, rgba(0,0,0,.4) 32%, rgba(0,0,0,.1) 60%, rgba(0,0,0,.55) 100%);
+            mask-image: linear-gradient(160deg, #000 0%, rgba(0,0,0,.4) 32%, rgba(0,0,0,.1) 60%, rgba(0,0,0,.55) 100%); }
+  .panel-reflect { will-change: transform; }
+  [data-panel="acrylic"] .panel-tint { background: radial-gradient(130% 120% at 50% 50%, rgba(18,10,4,.08), rgba(8,5,2,.5)); }
+  [data-panel="acrylic"] .panel-reflect { background:
+      radial-gradient(16% 9% at 79% 17%, rgba(255,150,60,.055), transparent 70%),
+      radial-gradient(9% 6% at 87% 27%, rgba(255,170,90,.04), transparent 70%),
+      radial-gradient(6% 4% at 70% 9%, rgba(255,200,140,.03), transparent 70%),
+      linear-gradient(165deg, rgba(255,255,255,.05) 0%, rgba(255,255,255,.012) 30%, transparent 45%); }
+  [data-panel="glass"] .panel-tint { background: radial-gradient(140% 130% at 50% 50%, transparent 50%, rgba(0,0,0,.35)); }
+  [data-panel="glass"] .panel-reflect { inset: -40px; background:
+      linear-gradient(118deg, transparent 0 22%, rgba(255,255,255,.05) 22.6%, rgba(255,255,255,.022) 27%, transparent 27.6% 100%),
+      linear-gradient(118deg, transparent 0 29%, rgba(255,255,255,.03) 29.4% 30.4%, transparent 31%),
+      radial-gradient(60% 50% at 18% 8%, rgba(255,255,255,.04), transparent 70%); }
+  [data-panel="worn"] .panel-tint { background: rgba(34,26,10,.2); mix-blend-mode: multiply; }
+  [data-panel="worn"] .panel-reflect { inset: -40px; background:
+      radial-gradient(90% 80% at 50% 50%, transparent 35%, rgba(215,225,230,.045) 100%),
+      linear-gradient(172deg, rgba(255,255,255,.045), transparent 42%); }
+  .bezel { position: absolute; inset: 14px; border-radius: 18px; pointer-events: none;
+    box-shadow: 0 0 0 80px #08090a, inset 0 0 0 1px rgba(255,255,255,.08), inset 0 1px 0 1px rgba(255,255,255,.05), inset 0 0 40px rgba(0,0,0,.9); }
+  .fil-glow { position: absolute; inset: 0; opacity: 0; transition: opacity .8s; pointer-events: none;
+    background: repeating-linear-gradient(180deg, transparent 0 calc(var(--fil, 18px) - 1px), rgba(255,90,30,.55) calc(var(--fil, 18px) - 1px) var(--fil, 18px));
+    filter: blur(.5px) drop-shadow(0 0 3px rgba(255,80,30,.7)); }
+  .vd.fil-on .fil-glow { opacity: .6; }
+  .vd .vfd-filaments { opacity: .35; background: repeating-linear-gradient(180deg, transparent 0 calc(var(--fil, 18px) - 1px), rgba(0,0,0,.55) calc(var(--fil, 18px) - 1px) var(--fil, 18px)); }
+  .sound-btn { cursor: pointer; }
+  .sound-btn.on { color: var(--phosphor) !important; text-shadow: 0 0 6px rgba(var(--glow), .8); }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="proto-bar" hidden>
+  <button id="pb-prev" aria-label="Previous variant">←</button>
+  <span class="lbl" id="pb-label"></span>
+  <span class="state" id="pb-state"></span>
+  <button id="pb-next" aria-label="Next variant">→</button>
+</div>
+
+<script>
+/* =====================================================================
+   Content (placeholder unless noted)
+   ===================================================================== */
+const STATIONS = [
+  { id: 'home',     preset: 1, freq: 88.1,  ps: 'JASPER',   title: 'Station ID', blurb: 'Who is broadcasting',
+    rt: 'JASPER LUTZ SEVERINO  *  A MIND ON A FEW FREQUENCIES  *  PICK A CHANNEL TO TUNE IN' },
+  { id: 'about',    preset: 2, freq: 91.3,  ps: 'ABOUT',    title: 'About',      blurb: 'The longer introduction',
+    rt: 'ABOUT  *  WHO I AM AND WHAT I CARE ABOUT' },
+  { id: 'projects', preset: 3, freq: 95.7,  ps: 'PROJECTS', title: 'Projects',   blurb: 'Things I build and run',
+    rt: 'PROJECTS  *  7 ON AIR  *  REPO CANON, SCRIPTORIUM, POSTERN, HOMELAB...' },
+  { id: 'blog',     preset: 4, freq: 99.1,  ps: 'BLOG',     title: 'Blog',       blurb: 'Long-form writing, in Markdown',
+    rt: '' /* filled from latest post */ },
+  { id: 'contact',  preset: 5, freq: 103.9, ps: 'CONTACT',  title: 'Contact',    blurb: 'How to reach me',
+    rt: 'CONTACT  *  GITHUB.COM/LUTZSEVERINO' },
+];
+
+// Real project names + descriptions, copied from each repository's README (2026-11-01).
+const PROJECTS = [
+  ['Repo Canon', 'Shared documentation, contribution, and coding-agent conventions for maintainers who want consistent repositories.', 'https://github.com/lutzseverino/repo-canon'],
+  ['Repository Standards', 'A CLI and agent skills for publishing and applying versioned repository standards.', 'https://github.com/lutzseverino/repo-standards'],
+  ['Scriptorium', 'A self-hosted service that implements ready GitHub issues with coding agents in sandboxes, for maintainers who run it on their own machine.', 'https://github.com/lutzseverino/scriptorium'],
+  ['Postern', 'A Node.js library that gives developers building tools one interface to code hosting platforms such as GitHub, and reports only facts the platform states.', 'https://github.com/lutzseverino/postern'],
+  ['Hemiciclo', "Working code name for a neutral, at-a-glance view of every country's political situation.", 'https://github.com/lutzseverino/hemiciclo'],
+  ['Odonta', 'Dental clinic management software for the web.', 'https://github.com/zarcerog/odonta'],
+  ['Homelab', "Host tooling and operating guidance for a Raspberry Pi and an always-on homeserver.", 'https://github.com/lutzseverino/homelab'],
+];
+
+// In the real site these are .md files (e.g. src/content/blog/*.md) with front matter.
+const POSTS = [
+  { slug: 'tuning-in', date: '2026-10-28', title: 'Tuning in (sample post)', summary: 'Why this site looks like a car radio, and what the channels are.',
+    md: `Placeholder post. Replace with your own words.
+
+My head runs on a handful of frequencies. Some days one of them is loud and the rest are static. This site is a receiver: each channel is one of those frequencies.
+
+## How the dial is laid out
+
+- **88.1** is the station ID: who's broadcasting.
+- **95.7** carries projects.
+- **99.1** carries this blog.
+
+Posts are plain Markdown files in the repository, so writing one is:
+
+\`\`\`
+src/content/blog/tuning-in.md
+\`\`\`
+
+and a push.` },
+  { slug: 'long-wave', date: '2026-10-12', title: 'Long wave, 171 kHz (sample post)', summary: 'A night drive, a dashboard, and a display that glowed like this one.',
+    md: `Placeholder post.
+
+The first frame of this site's intro is a photo: a car's radio at night, tuned to **LW 171 kHz**, the dot-matrix display glowing through its mesh.
+
+Long wave travels far and carries little. That felt right for a blog.` },
+  { slug: 'standards', date: '2026-09-30', title: 'Writing standards down (sample post)', summary: 'Notes on keeping many repositories consistent without a meeting.',
+    md: `Placeholder post about [Repo Canon](https://github.com/lutzseverino/repo-canon).
+
+Short paragraphs, real links, and \`inline code\` all render from Markdown.` },
+];
+STATIONS.find(s => s.id === 'blog').rt = `BLOG  *  LATEST: ${POSTS[0].title.toUpperCase()}`;
+
+const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+function md(src) { // tiny Markdown → HTML, enough for the prototype
+  const inline = t => esc(t)
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+  const out = []; const blocks = src.split(/\n\n+/);
+  for (let i = 0; i < blocks.length; i++) {
+    let b = blocks[i];
+    if (b.startsWith('```')) {
+      while (!b.trimEnd().endsWith('```') || b.trim() === '```') { if (i + 1 >= blocks.length) break; b += '\n\n' + blocks[++i]; }
+      out.push(`<pre><code>${esc(b.replace(/^```\w*\n?/, '').replace(/\n?```\s*$/, ''))}</code></pre>`);
+    } else if (/^## /.test(b)) out.push(`<h2>${inline(b.slice(3))}</h2>`);
+    else if (/^# /.test(b)) out.push(`<h1>${inline(b.slice(2))}</h1>`);
+    else if (/^- /.test(b)) out.push('<ul>' + b.split('\n').map(l => `<li>${inline(l.replace(/^- /, ''))}</li>`).join('') + '</ul>');
+    else out.push(`<p>${inline(b)}</p>`);
+  }
+  return out.join('\n');
+}
+
+const fmtF = f => f.toFixed(1);
+function renderStation(st, sub) {
+  if (!st) return '';
+  switch (st.id) {
+    case 'home': return `
+      <p class="kicker">${fmtF(st.freq)} FM · station ID</p>
+      <h1>Jasper Lutz Severino</h1>
+      <p class="lede">My mind is a handful of frequencies. This site is the receiver. Pick a channel to tune in.</p>
+      <ul class="c-index">${STATIONS.filter(s => s.id !== 'home').map(s =>
+        `<li><a href="#${s.id}"><span class="f">${fmtF(s.freq)}</span><span class="n">${s.title}</span><span class="d">${s.blurb}</span></a></li>`).join('')}</ul>`;
+    case 'about': return `
+      <p class="kicker">${fmtF(st.freq)} FM · about</p>
+      <h1>About</h1>
+      <p class="lede">Placeholder. I build tools for maintainers and the machines that run them.</p>
+      <p>Write the longer version here: what you do, what you're curious about, what you're tuning into lately. This is a plain page, so it can be as long as it needs to be.</p>
+      <p class="muted">Everything on this channel is placeholder copy.</p>`;
+    case 'projects': return `
+      <p class="kicker">${fmtF(st.freq)} FM · projects</p>
+      <h1>Projects</h1>
+      <div class="c-projects">${PROJECTS.map(([n, d, u]) => `<div class="p"><div><b>${n}</b><br><a href="${u}">${u.replace('https://', '')}</a></div><div>${esc(d)}</div></div>`).join('')}</div>`;
+    case 'blog': {
+      const post = sub && POSTS.find(p => p.slug === sub);
+      if (post) return `
+        <p class="kicker"><a href="#blog">← ${fmtF(st.freq)} FM · blog</a></p>
+        <article><h1>${esc(post.title)}</h1><p class="muted" style="font:13px var(--mono)">${post.date}</p>${md(post.md)}</article>`;
+      return `
+        <p class="kicker">${fmtF(st.freq)} FM · blog</p>
+        <h1>Blog</h1>
+        <ul class="c-posts">${POSTS.map(p => `<li><div class="meta">${p.date}</div><a href="#blog/${p.slug}">${esc(p.title)}</a><div class="muted">${esc(p.summary)}</div></li>`).join('')}</ul>`;
+    }
+    case 'contact': return `
+      <p class="kicker">${fmtF(st.freq)} FM · contact</p>
+      <h1>Contact</h1>
+      <p class="lede">The fastest way to reach me is <a href="https://github.com/lutzseverino">github.com/lutzseverino</a>.</p>
+      <p class="muted">Placeholder: add email or other channels here.</p>`;
+  }
+}
+
+/* =====================================================================
+   VFD dot-matrix renderer (shared). 5×7 glyphs, column bytes, bit0 = top.
+   ===================================================================== */
+const G = {
+  ' ': [0,0,0,0,0], '!': [0,0,0x5F,0,0], '"': [0,7,0,7,0], '#': [0x14,0x7F,0x14,0x7F,0x14], '&': [0x36,0x49,0x55,0x22,0x50],
+  "'": [0,5,3,0,0], '(': [0,0x1C,0x22,0x41,0], ')': [0,0x41,0x22,0x1C,0], '*': [0x14,0x08,0x3E,0x08,0x14], '+': [8,8,0x3E,8,8],
+  ',': [0,0x50,0x30,0,0], '-': [8,8,8,8,8], '.': [0,0x60,0x60,0,0], '/': [0x20,0x10,8,4,2], ':': [0,0x36,0x36,0,0],
+  '<': [8,0x14,0x22,0x41,0], '=': [0x14,0x14,0x14,0x14,0x14], '>': [0,0x41,0x22,0x14,8], '?': [2,1,0x51,9,6], '@': [0x32,0x49,0x79,0x41,0x3E],
+  '_': [0x40,0x40,0x40,0x40,0x40], '%': [0x23,0x13,0x08,0x64,0x62], '[': [0,0x7F,0x41,0x41,0], ']': [0,0x41,0x41,0x7F,0], ';': [0,0x56,0x36,0,0], '|': [0,0,0x7F,0,0], '►': [0x7F,0x3E,0x1C,0x08,0], '◄': [0,0x08,0x1C,0x3E,0x7F], '█': [0x7F,0x7F,0x7F,0x7F,0x7F],
+  '0': [0x3E,0x51,0x49,0x45,0x3E], '1': [0,0x42,0x7F,0x40,0], '2': [0x42,0x61,0x51,0x49,0x46], '3': [0x21,0x41,0x45,0x4B,0x31], '4': [0x18,0x14,0x12,0x7F,0x10],
+  '5': [0x27,0x45,0x45,0x45,0x39], '6': [0x3C,0x4A,0x49,0x49,0x30], '7': [1,0x71,9,5,3], '8': [0x36,0x49,0x49,0x49,0x36], '9': [6,0x49,0x49,0x29,0x1E],
+  A: [0x7C,0x12,0x11,0x12,0x7C], B: [0x7F,0x49,0x49,0x49,0x36], C: [0x3E,0x41,0x41,0x41,0x22], D: [0x7F,0x41,0x41,0x22,0x1C], E: [0x7F,0x49,0x49,0x49,0x41],
+  F: [0x7F,9,9,9,1], G: [0x3E,0x41,0x49,0x49,0x7A], H: [0x7F,8,8,8,0x7F], I: [0,0x41,0x7F,0x41,0], J: [0x20,0x40,0x41,0x3F,1],
+  K: [0x7F,8,0x14,0x22,0x41], L: [0x7F,0x40,0x40,0x40,0x40], M: [0x7F,2,0x0C,2,0x7F], N: [0x7F,4,8,0x10,0x7F], O: [0x3E,0x41,0x41,0x41,0x3E],
+  P: [0x7F,9,9,9,6], Q: [0x3E,0x41,0x51,0x21,0x5E], R: [0x7F,9,0x19,0x29,0x46], S: [0x46,0x49,0x49,0x49,0x31], T: [1,1,0x7F,1,1],
+  U: [0x3F,0x40,0x40,0x40,0x3F], V: [0x1F,0x20,0x40,0x20,0x1F], W: [0x3F,0x40,0x38,0x40,0x3F], X: [0x63,0x14,8,0x14,0x63], Y: [7,8,0x70,8,7], Z: [0x61,0x51,0x49,0x45,0x43],
+  a: [0x20,0x54,0x54,0x54,0x78], b: [0x7F,0x48,0x44,0x44,0x38], c: [0x38,0x44,0x44,0x44,0x20], d: [0x38,0x44,0x44,0x48,0x7F], e: [0x38,0x54,0x54,0x54,0x18],
+  f: [8,0x7E,9,1,2], g: [0x0C,0x52,0x52,0x52,0x3E], h: [0x7F,8,4,4,0x78], i: [0,0x44,0x7D,0x40,0], j: [0x20,0x40,0x44,0x3D,0],
+  k: [0x7F,0x10,0x28,0x44,0], l: [0,0x41,0x7F,0x40,0], m: [0x7C,4,0x18,4,0x78], n: [0x7C,8,4,4,0x78], o: [0x38,0x44,0x44,0x44,0x38],
+  p: [0x7C,0x14,0x14,0x14,8], q: [8,0x14,0x14,0x18,0x7C], r: [0x7C,8,4,4,8], s: [0x48,0x54,0x54,0x54,0x20], t: [4,0x3F,0x44,0x40,0x20],
+  u: [0x3C,0x40,0x40,0x20,0x7C], v: [0x1C,0x20,0x40,0x20,0x1C], w: [0x3C,0x40,0x30,0x40,0x3C], x: [0x44,0x28,0x10,0x28,0x44], y: [0x0C,0x50,0x50,0x50,0x3C], z: [0x44,0x64,0x54,0x4C,0x44],
+};
+// signal-strength glyphs ..: five rising bars
+for (let n = 0; n <= 5; n++) G[String.fromCharCode(0xE000 + n)] = [0,1,2,3,4].map(i => { const h = 2 + i; return i < n ? ((1 << h) - 1) << (7 - h) : 0; });
+const SIG = n => String.fromCharCode(0xE000 + Math.max(0, Math.min(5, Math.round(n))));
+const glyph = ch => G[ch] || G[ch.toUpperCase()] || G['?'];
+// 5×8 cells (variant D) have an 8th row: give descenders room, like a 5×10 HD44780 font
+const G8 = { g: [0x18,0xA4,0xA4,0xA4,0x7C], p: [0xFC,0x24,0x24,0x24,0x18], q: [0x18,0x24,0x24,0x24,0xFC], y: [0x1C,0xA0,0xA0,0xA0,0x7C], j: [0x40,0x80,0x84,0x7D,0] };
+const glyph8 = ch => G8[ch] || glyph(ch);
+
+const DISPLAYS = new Set();
+class Vfd {
+  constructor(host, { cols = 16, rows = 2, pitch = 4, ann = [] } = {}) {
+    Object.assign(this, { cols, rows, pitch });
+    const p = pitch, cellGap = p * 0.9, rowGap = p * 2.4, padX = p * 3, padY = p * (ann.length ? 4.6 : 2.6);
+    this.geo = { p, cellGap, rowGap, padX, padY, cw: 5 * p, ch: 7 * p };
+    this.w = Math.round(padX * 2 + cols * 5 * p + (cols - 1) * cellGap);
+    this.h = Math.round(padY + p * 2.6 + rows * 7 * p + (rows - 1) * rowGap);
+    this.dpr = Math.max(2, window.devicePixelRatio || 1);
+    host.classList.add('vfd');
+    host.style.maxWidth = this.w * 1.6 + 'px';
+    host.innerHTML = `<div class="vfd-window"><canvas class="ghost"></canvas><canvas class="lit"></canvas>
+      <div class="vfd-filaments"></div><div class="vfd-mesh"></div><div class="vfd-glass"></div>
+      <div class="vfd-ann">${ann.map(a => `<span data-a="${a}">${a}</span>`).join('')}</div></div>`;
+    this.el = host;
+    const [ghost, lit] = host.querySelectorAll('canvas');
+    for (const c of [ghost, lit]) { c.width = this.w * this.dpr; c.height = this.h * this.dpr; }
+    host.querySelector('.vfd-filaments').style.setProperty('--fil', `${(7 * p + rowGap) / 2 / this.h * 100}%`);
+    this.ctx = lit.getContext('2d'); this.ctx.scale(this.dpr, this.dpr);
+    const n = cols * rows * 35;
+    this.target = new Uint8Array(n); this.level = new Float32Array(n);
+    this.lines = Array(rows).fill(''); this.marquee = Array(rows).fill(null);
+    this.drawGhost(ghost.getContext('2d'));
+    DISPLAYS.add(this); this.dirty = true;
+  }
+  dotXY(i) {
+    const { p, cellGap, rowGap, padX, padY } = this.geo;
+    const cell = Math.floor(i / 35), d = i % 35, col = Math.floor(d / 7), row = d % 7;
+    const cx = cell % this.cols, cy = Math.floor(cell / this.cols);
+    return [padX + cx * (5 * p + cellGap) + col * p, padY + cy * (7 * p + rowGap) + row * p];
+  }
+  drawGhost(ctx) {
+    ctx.scale(this.dpr, this.dpr);
+    const { p, cellGap, rowGap, padX, padY } = this.geo;
+    for (let cy = 0; cy < this.rows; cy++) for (let cx = 0; cx < this.cols; cx++) {
+      const x = padX + cx * (5 * p + cellGap), y = padY + cy * (7 * p + rowGap);
+      ctx.fillStyle = 'rgba(120,170,190,0.035)'; ctx.fillRect(x - p * .35, y - p * .35, 5 * p + p * .5, 7 * p + p * .5);
+      ctx.strokeStyle = 'rgba(0,0,0,0.6)'; ctx.lineWidth = .6; ctx.strokeRect(x - p * .35, y - p * .35, 5 * p + p * .5, 7 * p + p * .5);
+    }
+    ctx.fillStyle = 'rgba(150,210,235,0.075)';
+    const s = p * .8;
+    for (let i = 0; i < this.target.length; i++) { const [x, y] = this.dotXY(i); ctx.fillRect(x, y, s, s); }
+  }
+  write(row, text = '', align = 'left') {
+    this.marquee[row] = null; this.setRow(row, text, align);
+  }
+  setRow(row, text, align = 'left') {
+    let t = text.slice(0, this.cols);
+    if (align === 'right') t = t.padStart(this.cols); else if (align === 'center') t = t.padStart(Math.floor((this.cols + t.length) / 2)).padEnd(this.cols); else t = t.padEnd(this.cols);
+    this.lines[row] = t;
+    for (let c = 0; c < this.cols; c++) {
+      const g = glyph(t[c]); const base = (row * this.cols + c) * 35;
+      for (let col = 0; col < 5; col++) for (let r = 0; r < 7; r++) this.target[base + col * 7 + r] = (g[col] >> r) & 1;
+    }
+    this.dirty = true;
+  }
+  scroll(row, text, stepMs = 260) { // character-step marquee, like RDS radiotext on a head unit
+    if (text.length <= this.cols) return this.write(row, text);
+    this.marquee[row] = { text: text + '     ', pos: 0, stepMs, last: 0 };
+  }
+  fill(on = 1) { this.marquee.fill(null); this.target.fill(on ? 1 : 0); this.dirty = true; }
+  ann(name, on) { const s = this.el.querySelector(`[data-a="${name}"]`); if (s) s.classList.toggle('on', !!on); }
+  tick(now) {
+    for (let r = 0; r < this.rows; r++) { const m = this.marquee[r]; if (m && now - m.last > m.stepMs) {
+      m.last = now; const t = m.text; const s = (t + t).slice(m.pos, m.pos + this.cols); this.setRow(r, s); m.pos = (m.pos + 1) % t.length; } }
+    if (!this.dirty) return;
+    let moving = false; const T = this.target, L = this.level;
+    for (let i = 0; i < T.length; i++) {
+      const l = L[i];
+      if (T[i]) { if (l < 1) { L[i] = l + (1 - l) * 0.6; if (L[i] > .995) L[i] = 1; moving = true; } }
+      else if (l > 0) { L[i] = l * 0.42; if (L[i] < .03) L[i] = 0; moving = true; } // phosphor afterglow
+    }
+    const ctx = this.ctx, s = this.geo.p * .8;
+    ctx.clearRect(0, 0, this.w, this.h);
+    ctx.fillStyle = '#e6fbff';
+    for (let i = 0; i < L.length; i++) if (L[i] > 0) { ctx.globalAlpha = L[i]; const [x, y] = this.dotXY(i); ctx.fillRect(x, y, s, s); }
+    ctx.globalAlpha = 1;
+    this.dirty = moving;
+  }
+}
+(function loop(now) { for (const d of DISPLAYS) if (d.el.isConnected) d.tick(now); requestAnimationFrame(loop); })(0);
+
+/* =====================================================================
+   Static: noise sound (opt-in) + visual noise bursts (shared)
+   ===================================================================== */
+const Sound = {
+  on: false, ctx: null, gain: null, level: 0,
+  toggle() {
+    this.on = !this.on;
+    if (this.on && !this.ctx) {
+      const ctx = this.ctx = new AudioContext();
+      const buf = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate); const d = buf.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      const src = ctx.createBufferSource(); src.buffer = buf; src.loop = true;
+      const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 2200; bp.Q.value = .5;
+      this.gain = ctx.createGain(); this.gain.gain.value = 0;
+      src.connect(bp).connect(this.gain).connect(ctx.destination); src.start();
+    }
+    this.set(this.level);
+    document.querySelectorAll('.sound-btn').forEach(b => { b.classList.toggle('on', this.on); b.textContent = this.on ? 'SOUND ON' : 'SOUND OFF'; });
+    renderState();
+  },
+  click(vol = .25) { if (!this.on || !this.ctx) return; const ctx = this.ctx, b = ctx.createBuffer(1, ctx.sampleRate * .03 | 0, ctx.sampleRate), d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 6); const src = ctx.createBufferSource(); src.buffer = b; const g = ctx.createGain(); g.gain.value = vol; src.connect(g).connect(ctx.destination); src.start(); },
+  set(level) { this.level = level; if (this.gain) this.gain.gain.setTargetAtTime(this.on ? level * 0.12 : 0, this.ctx.currentTime, 0.03); },
+};
+function staticLayer(host) {
+  const c = document.createElement('canvas'); c.className = 'static-canvas'; c.width = 160; c.height = 100; host.appendChild(c);
+  const ctx = c.getContext('2d'); const img = ctx.createImageData(c.width, c.height);
+  let running = false, amount = 0;
+  const frame = () => {
+    if (amount <= 0.01) { running = false; c.style.opacity = 0; return; }
+    for (let i = 0; i < img.data.length; i += 4) { const v = Math.random() * 255 | 0; img.data[i] = v * .8; img.data[i + 1] = v; img.data[i + 2] = v; img.data[i + 3] = 255; }
+    ctx.putImageData(img, 0, 0); c.style.opacity = amount * .32; requestAnimationFrame(frame);
+  };
+  return { set(a) { amount = a; if (!running && a > .01) { running = true; frame(); } } };
+}
+async function burst(layer, ms = 320) { layer.set(1); Sound.set(1); await wait(ms); layer.set(0); Sound.set(0); }
+
+/* =====================================================================
+   Routing + shared helpers
+   ===================================================================== */
+const byId = id => STATIONS.find(s => s.id === id);
+function route() { const [id, sub] = location.hash.slice(1).split('/'); return { st: byId(id) || null, sub: sub || null }; }
+let skipping = false, introActive = true;
+const wait = ms => new Promise(r => { if (skipping) return r(); const t = setTimeout(r, ms); skipHooks.add(() => { clearTimeout(t); r(); }); });
+const skipHooks = new Set();
+function skipIntro() { if (!introActive) return; skipping = true; skipHooks.forEach(f => f()); skipHooks.clear(); }
+const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+function animateFreq(from, to, ms, onStep) {
+  return new Promise(res => {
+    if (skipping) { onStep(to, 1); return res(); }
+    const t0 = performance.now();
+    const step = now => { const k = Math.min(1, (now - t0) / ms); onStep(Math.round((from + (to - from) * ease(k)) * 10) / 10, k); k < 1 ? requestAnimationFrame(step) : res(); };
+    requestAnimationFrame(step);
+  });
+}
+// 16×2 head-unit layout: row 0 = programme service name / radiotext, row 1 = band, preset, frequency
+const freqLine = (f, preset) => `FM1 ${preset ? 'P' + preset : '  '}  ${fmtF(f).padStart(5)}MHz`;
+const showLocked = (vfd, st) => { vfd.scroll(0, st.rt.length > vfd.cols ? st.rt : st.ps); vfd.write(1, freqLine(st.freq, st.preset)); vfd.ann('ST', 1); vfd.ann('RDS', 1); vfd.ann('TP', 1); };
+
+// The intro every variant uses: segment test → the LW 171 kHz frame from the photo → seek → station ID
+async function introSequence(vfd, { onFreq } = {}) {
+  await wait(350);
+  vfd.fill(1); await wait(420); vfd.fill(0); await wait(260);           // power-on segment test
+  vfd.write(1, 'LW       171 kHz'); await wait(1100);                    // homage to the photo
+  vfd.write(0, 'HELLO'); await wait(800);
+  vfd.write(0, 'SEEK ►'); vfd.write(1, 'FM1     87.5MHz'); Sound.set(.8);
+  await animateFreq(87.5, 88.1, 900, f => { vfd.write(1, freqLine(f)); onFreq && onFreq(f); });
+  Sound.set(0); vfd.write(0, 'JASPER'); vfd.ann('ST', 1); vfd.ann('RDS', 1); await wait(900);
+  showLocked(vfd, byId('home'));
+}
+
+/* =====================================================================
+   Round 2 — the receiver: round 1's variant D, generalised. Each variant is a
+   cover panel (the plastic or glass in front of the tube) plus an intro.
+   ===================================================================== */
+const hash01 = (x, y) => { let h = (x * 374761393 + y * 668265263) | 0; h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967296; };
+const rng = seed => () => { seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+
+// ---- cover panels: procedural wear, lit from behind by the display ----
+const PANELS = {
+  none: null,
+  acrylic: { seed: 7,  hair: 150, swirl: 2, scuffs: 0, smudge: 3, finger: 1, chips: 0, dust: 260, dir: -0.35, ambient: .07, haze: .05 },
+  glass:   { seed: 11, hair: 55,  swirl: 1, scuffs: 0, smudge: 2, finger: 2, chips: 7, dust: 110, dir: 0.2,   ambient: .05, haze: .02 },
+  worn:    { seed: 23, hair: 340, swirl: 4, scuffs: 8, smudge: 4, finger: 1, chips: 0, dust: 420, dir: -0.1,  ambient: .12, haze: .11 },
+};
+function genScratches(W, H, o) {
+  const c = document.createElement('canvas'); c.width = W; c.height = H;
+  const g = c.getContext('2d'), R = rng(o.seed); g.lineCap = 'round';
+  for (let i = 0; i < o.hair; i++) { // hairlines, mostly along one wiping direction
+    const x = R() * W, y = R() * H, len = 30 + Math.pow(R(), 2) * 700, ang = o.dir + (R() - .5) * (R() < .7 ? .35 : 3);
+    const bend = (R() - .5) * len * .15, x2 = x + Math.cos(ang) * len, y2 = y + Math.sin(ang) * len;
+    g.strokeStyle = `rgba(255,255,255,${.03 + Math.pow(R(), 3) * .42})`; g.lineWidth = .35 + R() * .9;
+    g.setLineDash(R() < .5 ? [] : [2 + R() * 30, 1 + R() * 6]);
+    g.beginPath(); g.moveTo(x, y); g.quadraticCurveTo((x + x2) / 2 - Math.sin(ang) * bend, (y + y2) / 2 + Math.cos(ang) * bend, x2, y2); g.stroke();
+  }
+  g.setLineDash([]);
+  for (let i = 0; i < o.swirl; i++) { // cleaning-cloth swirls
+    const cx = R() * W, cy = R() * H, r0 = 60 + R() * 300;
+    for (let k = 0; k < 90; k++) { const r = r0 + (R() - .5) * 120, a0 = R() * Math.PI * 2;
+      g.strokeStyle = `rgba(255,255,255,${.015 + R() * .07})`; g.lineWidth = .4 + R() * .5; g.beginPath(); g.arc(cx, cy, Math.max(4, r), a0, a0 + .2 + R() * .9); g.stroke(); }
+  }
+  for (let i = 0; i < o.scuffs; i++) { // abraded patches
+    const cx = R() * W, cy = R() * H, rad = 20 + R() * 90;
+    for (let k = 0; k < 170; k++) { const x = cx + (R() - .5) * rad * 2, y = cy + (R() - .5) * rad, l = 2 + R() * 14, an = R() * Math.PI;
+      g.strokeStyle = `rgba(255,255,255,${.03 + R() * .12})`; g.lineWidth = .4 + R() * .6; g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(an) * l, y + Math.sin(an) * l); g.stroke(); }
+  }
+  for (let i = 0; i < o.smudge; i++) { // oily haze
+    const cx = R() * W, cy = R() * H, rx = 60 + R() * 220, ry = rx * (.4 + R() * .5);
+    const gr = g.createRadialGradient(cx, cy, 0, cx, cy, rx); gr.addColorStop(0, `rgba(255,255,255,${.04 + R() * .05})`); gr.addColorStop(1, 'rgba(255,255,255,0)');
+    g.save(); g.translate(cx, cy); g.scale(1, ry / rx); g.translate(-cx, -cy); g.fillStyle = gr; g.beginPath(); g.arc(cx, cy, rx, 0, Math.PI * 2); g.fill(); g.restore();
+  }
+  for (let i = 0; i < o.finger; i++) { // fingerprints
+    const cx = W * (.15 + R() * .7), cy = H * (.2 + R() * .6);
+    g.save(); g.translate(cx, cy); g.rotate(R() * Math.PI); g.lineWidth = .8;
+    for (let r = 3; r < 46; r += 2.7) { g.strokeStyle = `rgba(255,255,255,${.04 + R() * .06})`; g.setLineDash([3 + R() * 12, 1 + R() * 3]); g.beginPath(); g.ellipse(0, 0, r * .72, r, 0, 0, Math.PI * 2); g.stroke(); }
+    g.restore(); g.setLineDash([]);
+  }
+  for (let i = 0; i < o.chips; i++) { // small chips along the glass edge
+    const side = Math.floor(R() * 4), t = R(), x = side === 0 ? t * W : side === 1 ? W - 2 : side === 2 ? t * W : 2, y = side === 0 ? 2 : side === 1 ? t * H : side === 2 ? H - 2 : t * H;
+    g.fillStyle = `rgba(255,255,255,${.2 + R() * .3})`; g.beginPath(); g.moveTo(x, y);
+    for (let k = 0; k < 5; k++) g.lineTo(x + (R() - .5) * 9, y + (R() - .5) * 9); g.closePath(); g.fill();
+  }
+  for (let i = 0; i < o.dust; i++) { const r = .4 + Math.pow(R(), 4) * 2.2; g.fillStyle = `rgba(255,255,255,${.12 + R() * .4})`; g.beginPath(); g.arc(R() * W, R() * H, r, 0, Math.PI * 2); g.fill(); }
+  return c;
+}
+function Panel(wrap, kind, lit) {
+  const o = PANELS[kind];
+  if (!o) return { resize() {}, relight() {}, move() {} };
+  const amb = wrap.querySelector('.panel-ambient'), glow = wrap.querySelector('.panel-glow');
+  const actx = amb.getContext('2d'), gctx = glow.getContext('2d'), s1 = document.createElement('canvas'), s2 = document.createElement('canvas');
+  let tex, W = 0, H = 0, ox = 0, oy = 0;
+  return {
+    resize() {
+      W = innerWidth; H = innerHeight; for (const c of [amb, glow]) { c.width = W; c.height = H; }
+      tex = genScratches(W + 40, H + 40, o);
+      s1.width = Math.ceil(W / 4); s1.height = Math.ceil(H / 4); s2.width = Math.ceil(W / 14); s2.height = Math.ceil(H / 14);
+      this.ambient(); this.relight();
+    },
+    ambient() { actx.clearRect(0, 0, W, H); actx.globalAlpha = o.ambient; actx.drawImage(tex, -20 + ox, -20 + oy); actx.globalAlpha = 1; },
+    relight() { // light map = the lit dots, blurred by downscaling; scratches only show where it's bright
+      if (!tex) return;
+      const c1 = s1.getContext('2d'), c2 = s2.getContext('2d');
+      c1.clearRect(0, 0, s1.width, s1.height); c1.drawImage(lit, 0, 0, s1.width, s1.height);
+      c2.clearRect(0, 0, s2.width, s2.height); c2.drawImage(s1, 0, 0, s2.width, s2.height);
+      gctx.globalCompositeOperation = 'source-over'; gctx.clearRect(0, 0, W, H);
+      gctx.globalCompositeOperation = 'lighter'; for (let i = 0; i < 4; i++) gctx.drawImage(s2, 0, 0, W, H);
+      gctx.globalCompositeOperation = 'destination-in'; gctx.drawImage(tex, -20 + ox, -20 + oy);
+      gctx.globalCompositeOperation = 'lighter'; gctx.globalAlpha = o.haze; gctx.drawImage(s2, 0, 0, W, H); gctx.globalAlpha = 1; // the panel scatters a little light
+      gctx.globalCompositeOperation = 'source-over';
+    },
+    move(x, y) { ox = x; oy = y; this.ambient(); this.relight(); },
+  };
+}
+
+function Receiver(root, cfg) {
+  document.body.style.overflow = 'hidden';
+  root.innerHTML = `<div class="vd" data-panel="${PANELS[cfg.panel] ? cfg.panel : 'none'}">
+    <canvas class="ghost"></canvas><canvas class="lit"></canvas><div class="vfd-filaments"></div><div class="fil-glow"></div><div class="vfd-mesh"></div>
+    <div class="panel"><div class="panel-tint"></div><canvas class="panel-ambient"></canvas><canvas class="panel-glow"></canvas><div class="panel-reflect"></div></div>
+    <div class="vfd-glass"></div>${cfg.bezel ? '<div class="bezel"></div>' : ''}</div><div class="sr-only" aria-live="polite"></div>`;
+  const wrap = root.querySelector('.vd'), sr = root.querySelector('.sr-only');
+  const gC = wrap.querySelector('canvas.ghost'), lC = wrap.querySelector('canvas.lit'), lctx = lC.getContext('2d');
+  const panel = Panel(wrap, cfg.panel, lC);
+  const S = { st: null, sub: null, lines: [], scroll: 0, hover: null, focus: null, freq: 87.5, seekLabel: null, noise: false, painter: null, reveal: Infinity };
+  const inset = cfg.bezel ? 26 : 0;
+  let G = null, lastLight = 0, lightDirty = false;
+  const cellXY = (c, r) => [G.ox + c * (G.cw + G.gx), G.oy + r * (G.chh + G.gy)];
+  const L = () => { const w = Math.min(G.cols - 4, 76); return { top: 5, bottom: G.rows - 3, left: Math.floor((G.cols - w) / 2), w, view: G.rows - 7 }; };
+
+  function build() {
+    const W = innerWidth, H = innerHeight, Wi = W - 2 * inset, Hi = H - 2 * inset;
+    const p = Wi >= 1200 ? 3 : Wi >= 760 ? 2.6 : 2.1;
+    const gx = p * .8, gy = p * 1.5, cw = 5 * p, chh = 8 * p;
+    const cols = Math.floor((Wi - 6 * p) / (cw + gx)), rows = Math.floor((Hi - 6 * p) / (chh + gy));
+    const ox = inset + (Wi - (cols * (cw + gx) - gx)) / 2, oy = inset + (Hi - (rows * (chh + gy) - gy)) / 2;
+    const dpr = Math.min(2, devicePixelRatio || 1), n = cols * rows;
+    for (const c of [gC, lC]) { c.width = W * dpr; c.height = H * dpr; }
+    G = { W, H, p, gx, gy, cw, chh, cols, rows, ox, oy, n, tgt: new Uint8Array(n * 40), lvl: new Float32Array(n * 40), bri: new Float32Array(n), active: new Set(), regions: [] };
+    wrap.style.setProperty('--fil', `${(chh + gy) / 2}px`);
+    const g = gC.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
+    g.fillStyle = 'rgba(150,210,235,0.045)'; const s = p * .8;
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) { const [x, y] = cellXY(c, r); for (let dx = 0; dx < 5; dx++) for (let dy = 0; dy < 8; dy++) g.fillRect(x + dx * p, y + dy * p, s, s); }
+    lctx.setTransform(dpr, 0, 0, dpr, 0, 0); lctx.clearRect(0, 0, W, H); lctx.fillStyle = '#e6fbff';
+    panel.resize();
+    layout();
+  }
+
+  // --- text → lines of segments {t, b(rightness), href} ---
+  function inline(str, b = .8) {
+    const segs = []; const re = /\[([^\]]+)\]\(([^)]+)\)|\*\*([^*]+)\*\*|`([^`]+)`|\*([^*]+)\*/g; let last = 0, m;
+    while ((m = re.exec(str))) {
+      if (m.index > last) segs.push({ t: str.slice(last, m.index), b });
+      if (m[1]) segs.push({ t: m[1], b: 1, href: m[2] }); else if (m[3]) segs.push({ t: m[3], b: 1 }); else if (m[4]) segs.push({ t: m[4], b: .55 }); else segs.push({ t: m[5], b: 1 });
+      last = re.lastIndex;
+    }
+    if (last < str.length) segs.push({ t: str.slice(last), b });
+    return segs;
+  }
+  function wrapSegs(segs, w, indent = 0, first = '') {
+    const toks = []; for (const sg of segs) sg.t.split(/(\s+)/).forEach(t => t && toks.push({ ...sg, t }));
+    const lines = []; let cur = [], len = 0, ls = 0;
+    const start = () => { const pre = lines.length === 0 ? first : ' '.repeat(indent); cur = pre ? [{ t: pre, b: segs[0] ? Math.min(segs[0].b, .6) : .6 }] : []; len = ls = pre.length; };
+    const push = () => { while (cur.length && cur[cur.length - 1].t === ' ') cur.pop(); lines.push({ segs: cur }); start(); };
+    start();
+    for (const tk of toks) {
+      if (/^\s+$/.test(tk.t)) { if (len > ls && len < w) { cur.push({ ...tk, t: ' ' }); len++; } continue; }
+      if (len + tk.t.length > w && len > ls) push();
+      let t = tk.t; while (t.length > w - len) { cur.push({ ...tk, t: t.slice(0, w - len) }); t = t.slice(w - len); push(); }
+      cur.push({ ...tk, t }); len += t.length;
+    }
+    if (len > ls) push();
+    return lines;
+  }
+  function stationLines(st, sub, w) {
+    const out = []; const blank = () => out.push({ segs: [] });
+    const para = (s, b = .8, indent = 0, first = '') => out.push(...wrapSegs(typeof s === 'string' ? inline(s, b) : s, w, indent, first));
+    const head = t => { out.push({ segs: [{ t: t.toUpperCase(), b: 1 }] }); out.push({ segs: [{ t: '='.repeat(Math.min(w, t.length)), b: .3 }] }); blank(); };
+    const kicker = () => { out.push({ segs: [{ t: `${fmtF(st.freq)} FM / ${st.id === 'home' ? 'station id' : st.title.toLowerCase()}`, b: .4 }] }); blank(); };
+    switch (st.id) {
+      case 'home': {
+        const s = Math.max(1, Math.min(5, Math.floor(w * 5 / 36)));
+        out.push({ segs: [], big: { text: 'JASPER', s } }); for (let i = 1; i < Math.ceil(7 * s / 8) + 1; i++) blank();
+        para('Jasper Lutz Severino', 1); blank();
+        para('My mind is a handful of frequencies. This site is the receiver. Pick a channel to tune in.', .72); blank();
+        for (const x of STATIONS.filter(x => x.id !== 'home')) out.push(...wrapSegs([{ t: `${fmtF(x.freq).padStart(5)}  `, b: .45 }, { t: x.title, b: .95, href: '#' + x.id }, { t: `  ${x.blurb}`, b: .42 }], w, 7));
+        break;
+      }
+      case 'about': kicker(); head('About'); para('Placeholder. I build tools for maintainers and the machines that run them.', .95); blank();
+        para("Write the longer version here: what you do, what you're curious about, what you're tuning into lately. It can be as long as it needs to be: the screen scrolls."); blank();
+        para('Everything on this channel is placeholder copy.', .4); break;
+      case 'projects': kicker(); head('Projects');
+        for (const [n, d, u] of PROJECTS) { out.push({ segs: [{ t: n, b: 1, href: u }] }); para(d, .7, 2, '  '); para(u.replace('https://', ''), .32, 2, '  '); blank(); }
+        break;
+      case 'blog': {
+        const post = sub && POSTS.find(p => p.slug === sub);
+        if (post) {
+          out.push({ segs: [{ t: '< all posts', b: .9, href: '#blog' }] }); blank();
+          para(post.title.toUpperCase(), 1); out.push({ segs: [{ t: post.date, b: .4 }] }); blank();
+          const blocks = post.md.split(/\n\n+/);
+          for (let i = 0; i < blocks.length; i++) {
+            let b = blocks[i];
+            if (b.startsWith('```')) { while (!b.trimEnd().endsWith('```') || b.trim() === '```') { if (i + 1 >= blocks.length) break; b += '\n\n' + blocks[++i]; }
+              b.replace(/^```\w*\n?/, '').replace(/\n?```\s*$/, '').split('\n').forEach(l => out.push({ segs: [{ t: '  ' + l, b: .55 }] })); }
+            else if (/^#+ /.test(b)) { blank(); out.push({ segs: [{ t: b.replace(/^#+ /, '').toUpperCase(), b: 1 }] }); }
+            else if (/^- /.test(b)) b.split('\n').forEach(l => para(l.replace(/^- /, ''), .8, 2, '- '));
+            else para(b, .8);
+            blank();
+          }
+        } else {
+          kicker(); head('Blog');
+          for (const p of POSTS) { out.push({ segs: [{ t: p.date, b: .38 }] }); para([{ t: p.title, b: 1, href: '#blog/' + p.slug }]); para(p.summary, .55); blank(); }
+        }
+        break;
+      }
+      case 'contact': kicker(); head('Contact');
+        para('The fastest way to reach me is [github.com/lutzseverino](https://github.com/lutzseverino).', .85); blank();
+        para('Placeholder: add email or other channels here.', .4); break;
+    }
+    return out;
+  }
+  function layout() { S.lines = stationLines(S.st || byId('home'), S.sub, L().w); S.scroll = Math.max(0, Math.min(S.scroll, S.lines.length - L().view)); }
+
+  // --- compose the whole frame, diff it into the dot targets ---
+  function compose() {
+    if (!G) return;
+    const { cols, rows, n } = G;
+    const fch = new Array(n).fill(' '), fb = new Float32Array(n), fu = new Uint8Array(n), fz = new Float32Array(n), big = new Map(), regions = [];
+    let all = 0;
+    const put = (c, r, str, b, u = 0, href) => {
+      for (let i = 0; i < str.length; i++) { const cc = c + i; if (cc < 0 || cc >= cols || r < 0 || r >= rows) continue; const k = r * cols + cc; fch[k] = str[i]; fb[k] = b; fu[k] = u; }
+      if (href) regions.push({ c0: c, c1: c + str.length - 1, r, href });
+    };
+    const bigText = (text, s, X0, Y0, b, rmin, rmax, o = {}) => {
+      for (let i = 0; i < text.length; i++) { const g = glyph(text[i]);
+        for (let col = 0; col < 5; col++) for (let row = 0; row < 7; row++) if ((g[col] >> row) & 1)
+          for (let a = 0; a < s; a++) for (let d = 0; d < s; d++) {
+            const X = X0 + (i * 6 + col) * s + a, Y = Y0 + row * s + d, c = Math.floor(X / 5), r = Math.floor(Y / 8);
+            if (c < 0 || c >= cols || r < rmin || r > rmax) continue;
+            if (o.maxX != null && X > o.maxX) continue;
+            if (o.p != null && hash01(X, Y) > o.p) continue;
+            const k = r * cols + c; let m = big.get(k); if (!m) big.set(k, m = new Uint8Array(40)); m[(X % 5) * 8 + (Y % 8)] = 1; fb[k] = Math.max(fb[k], b);
+          } }
+    };
+    const lay = L();
+    function header(f, label) { // label null = locked on the current station
+      const st = S.st || byId('home'), fs = `${fmtF(f).padStart(5)}MHz`, locked = !label;
+      if (cols >= 40) {
+        put(1, 0, `FM1 ${locked ? 'P' + st.preset : '  '}  ${fs}`, 1); put(22, 0, locked ? st.ps : label, 1);
+        put(cols - 10, 0, 'ST', locked ? 1 : .1); put(cols - 7, 0, 'RDS', locked ? 1 : .1); put(cols - 2, 0, SIG(locked ? 5 : 1), 1);
+      } else {
+        put(0, 0, `${locked ? 'P' + st.preset : label.slice(0, 4)} ${fs}`, 1); if (locked) put(cols - 3 - st.ps.length, 0, st.ps, 1); put(cols - 1, 0, SIG(locked ? 5 : 1), 1);
+      }
+    }
+    function channelBar(count = STATIONS.length) {
+      const st = S.st || byId('home'), full = STATIONS.map(x => ` ${x.preset} ${x.ps} `).join(' '), compact = full.length > cols;
+      let c = compact ? 0 : Math.floor((cols - full.length) / 2);
+      STATIONS.forEach((x, i) => {
+        const active = x === st, label = compact && !active ? ` ${x.preset} ` : ` ${x.preset} ${x.ps} `;
+        if (i < count) put(c, 2, label, active ? 1 : S.hover === '#' + x.id ? .85 : .36, active ? 1 : 0, '#' + x.id);
+        c += label.length + (compact ? 0 : 1);
+      });
+      if (count >= STATIONS.length) put(0, 3, '-'.repeat(cols), .13);
+    }
+    const a = {
+      cols, rows, lay, mid: Math.floor(rows / 2), put, bigText, header, channelBar,
+      allOn(b = 1) { all = b; },
+      noise(r0, r1, c0, c1, d, b) { for (let r = Math.max(0, r0); r <= Math.min(rows - 1, r1); r++) for (let c = Math.max(0, c0); c <= Math.min(cols - 1, c1); c++) { const k = r * cols + c; if (fch[k] === ' ') { fz[k] = d; fb[k] = Math.max(fb[k], b); } } },
+    };
+    function paintNormal() {
+      header(S.freq, S.seekLabel); channelBar();
+      const { top, bottom, left, view } = lay;
+      if (S.noise) a.noise(top, bottom, 0, cols - 1, .16, .5);
+      else {
+        for (let i = 0; i < view; i++) {
+          const li = S.scroll + i; if (li >= S.lines.length || li >= S.reveal) break;
+          let c2 = left; const r = top + i;
+          for (const sg of S.lines[li].segs) {
+            const foc = S.focus && sg.href && S.focus.href === sg.href && S.focus.r === r && S.focus.c0 === c2;
+            const b = sg.href ? (S.hover === sg.href || foc ? 1 : Math.max(.8, sg.b)) : sg.b;
+            put(c2, r, sg.t, b, sg.href ? 1 : 0, sg.href); if (foc) put(left - 2, r, '►', 1); c2 += sg.t.length;
+          }
+        }
+        S.lines.forEach((line, li) => { if (!line.big || li >= S.reveal) return; bigText(line.big.text, line.big.s, left * 5, (top + li - S.scroll) * 8, 1, top, bottom); });
+      }
+      const snd = Sound.on ? 'SOUND ON' : 'SOUND OFF';
+      put(1, rows - 1, cols >= 80 ? 'keys 1-5 channel / up-down scroll / tab+enter link' : cols >= 52 ? '1-5 ch  up/dn scroll  tab link' : '1-5 ch', .28);
+      put(cols - snd.length - 1, rows - 1, snd, S.hover === 'sound:' ? .85 : Sound.on ? .7 : .35, 0, 'sound:');
+      if (S.lines.length > view && !S.noise) {
+        const pct = Math.round(S.scroll / (S.lines.length - view) * 100), t = `${pct >= 100 ? 'END ' : 'MORE'} ${String(pct).padStart(3)}%`;
+        put(cols - snd.length - 3 - t.length, rows - 1, t, .45);
+      }
+    }
+    if (S.painter) S.painter(a); else paintNormal();
+    const { tgt, bri, active } = G;
+    for (let k = 0; k < n; k++) {
+      const base = k * 40, g = glyph8(fch[k]), m = big.get(k); let changed = false;
+      for (let col = 0; col < 5; col++) for (let row = 0; row < 8; row++) {
+        let v = all ? 1 : fz[k] > 0 ? (Math.random() < fz[k] ? 1 : 0) : ((g[col] >> row) & 1) | (row === 7 ? fu[k] : 0);
+        if (m && m[col * 8 + row]) v = 1;
+        const i = base + col * 8 + row; if (tgt[i] !== v) { tgt[i] = v; changed = true; }
+      }
+      const blank = fch[k] === ' ' && !m && !fz[k] && !fu[k];
+      const nb = all ? all : blank ? bri[k] : fb[k]; // keep brightness while a cleared cell fades out
+      if (nb !== bri[k]) { bri[k] = nb; changed = true; }
+      if (changed) active.add(k);
+    }
+    G.regions = regions;
+  }
+  function drawCell(k) {
+    const { cols, p } = G, [x, y] = cellXY(k % cols, (k / cols) | 0), s = p * .8, base = k * 40, b = G.bri[k];
+    lctx.clearRect(x - .5, y - .5, G.cw + 1, G.chh + 1);
+    for (let i = 0; i < 40; i++) { const l = G.lvl[base + i]; if (l > 0) { lctx.globalAlpha = l * b; lctx.fillRect(x + ((i / 8) | 0) * p, y + (i % 8) * p, s, s); } }
+    lctx.globalAlpha = 1; lightDirty = true;
+  }
+  DISPLAYS.add({ el: wrap, tick(now) {
+    if (!G) return; const { tgt, lvl, active } = G;
+    for (const k of active) {
+      let moving = false;
+      for (let i = k * 40; i < k * 40 + 40; i++) { const t = tgt[i], l = lvl[i];
+        if (t) { if (l < 1) { const nl = l + (1 - l) * .6; lvl[i] = nl > .995 ? 1 : nl; moving = true; } }
+        else if (l > 0) { const nl = l * .42; lvl[i] = nl < .03 ? 0 : nl; moving = true; } }
+      drawCell(k); if (!moving) active.delete(k);
+    }
+    if (S.painter || S.noise) compose();
+    if (lightDirty && now - lastLight > 90) { lastLight = now; lightDirty = false; panel.relight(); }
+  } });
+
+  // the cover sits a few millimetres in front of the dots: it shifts against them as you move
+  if (cfg.parallax && PANELS[cfg.panel]) {
+    let tx = 0, ty = 0, x = 0, y = 0; const refl = wrap.querySelector('.panel-reflect');
+    addEventListener('pointermove', e => { tx = (e.clientX / innerWidth - .5) * -12; ty = (e.clientY / innerHeight - .5) * -8; });
+    DISPLAYS.add({ el: wrap, tick() { const nx = x + (tx - x) * .08, ny = y + (ty - y) * .08;
+      if (Math.abs(nx - x) + Math.abs(ny - y) > .05) { x = nx; y = ny; panel.move(x, y); refl.style.transform = `translate(${x * 2.5}px, ${y * 2.5}px)`; } } });
+  }
+
+  // --- input ---
+  const regionAt = (x, y) => { const c = Math.floor((x - G.ox) / (G.cw + G.gx)), r = Math.floor((y - G.oy) / (G.chh + G.gy)); return G.regions.find(g => g.r === r && c >= g.c0 && c <= g.c1); };
+  const open = href => {
+    if (href === 'sound:') { Sound.toggle(); renderState(S.st); compose(); return; }
+    href.startsWith('#') ? (location.hash = href.slice(1)) : window.open(href, '_blank', 'noopener');
+  };
+  const scrollBy = d => { const max = Math.max(0, S.lines.length - L().view), ns = Math.max(0, Math.min(max, S.scroll + d)); if (ns !== S.scroll) { S.scroll = ns; S.focus = null; compose(); } };
+  let drag = null;
+  wrap.addEventListener('pointerdown', e => { drag = { y: e.clientY, moved: false }; });
+  wrap.addEventListener('pointerup', e => { if (drag && !drag.moved && !S.painter) { const g = regionAt(e.clientX, e.clientY); if (g) open(g.href); } drag = null; });
+  wrap.addEventListener('pointermove', e => {
+    if (!G) return;
+    if (drag) { const rowH = G.chh + G.gy, d = drag.y - e.clientY; if (Math.abs(d) > rowH) { drag.moved = true; scrollBy(Math.trunc(d / rowH)); drag.y = e.clientY; } return; }
+    const g = regionAt(e.clientX, e.clientY), h = g ? g.href : null; wrap.style.cursor = g ? 'pointer' : 'default';
+    if (h !== S.hover) { S.hover = h; compose(); }
+  });
+  wrap.addEventListener('wheel', e => { e.preventDefault(); scrollBy(Math.sign(e.deltaY) * 3); }, { passive: false });
+  let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { build(); compose(); }, 150); });
+  onKey(e => {
+    if (S.painter) return;
+    if (/^[1-5]$/.test(e.key)) location.hash = STATIONS[+e.key - 1].id;
+    if (e.key === 'm') open('sound:');
+    const v = L().view;
+    if (e.key === 'ArrowDown') scrollBy(1); if (e.key === 'ArrowUp') scrollBy(-1);
+    if (e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); scrollBy(v - 1); } if (e.key === 'PageUp') scrollBy(1 - v);
+    if (e.key === 'Home') scrollBy(-1e6); if (e.key === 'End') scrollBy(1e6);
+    if (e.key === 'Tab') { e.preventDefault(); const links = G.regions.filter(g => g.r >= L().top && g.r < G.rows - 1); if (!links.length) return;
+      let i = S.focus ? links.findIndex(g => g.r === S.focus.r && g.c0 === S.focus.c0) : -1; i = (i + (e.shiftKey ? -1 : 1) + links.length) % links.length; S.focus = links[i]; compose(); }
+    if (e.key === 'Enter' && S.focus) open(S.focus.href);
+    if (e.key === 'Escape' && S.sub) location.hash = S.st.id;
+  });
+
+  async function tune(st, sub) {
+    renderState(st); sr.innerHTML = renderStation(st, sub); sr.querySelectorAll('a').forEach(a => a.tabIndex = -1);
+    S.focus = null;
+    if (S.st === st) { S.sub = sub; S.scroll = 0; layout(); compose(); return; }
+    const from = S.st ? S.st.freq : S.freq; S.seekLabel = st.freq >= from ? 'SEEK ►' : '◄ SEEK'; S.noise = true; Sound.click(); Sound.set(.9);
+    await animateFreq(from, st.freq, 480, f => { S.freq = f; compose(); });
+    S.seekLabel = null; S.noise = false; Sound.set(0); S.st = st; S.sub = sub; S.freq = st.freq; S.scroll = 0; layout(); compose();
+  }
+
+  // ---- intros: a scene state I, drawn every frame by paintIntro, animated by tweens ----
+  const I = {};
+  const tween = (ms, fn = () => {}) => new Promise(res => { const t0 = performance.now(); const step = () => { const t = skipping ? 1 : Math.min(1, (performance.now() - t0) / ms); fn(t); t < 1 ? requestAnimationFrame(step) : res(); }; step(); });
+  const NAME = 'Jasper Lutz Severino';
+  function paintIntro(a) {
+    if (I.all) return a.allOn(I.all);
+    if (I.header != null) a.header(I.header, I.label);
+    if (I.bar) a.channelBar(I.bar);
+    for (const [dy, t, b] of I.center || []) a.put(Math.floor((a.cols - t.length) / 2), a.mid + dy, t, b ?? 1);
+    for (const g of I.ghosts || []) a.put(g.c, g.r, [...g.t].map(ch => Math.random() < g.keep ? ch : ' ').join(''), g.b * (.55 + Math.random() * .45));
+    if (I.big) a.bigText('JASPER', I.big.s, a.lay.left * 5, a.lay.top * 8, 1, 0, a.rows - 2, I.big);
+    if (I.name != null) a.put(a.lay.left, I.nameRow, NAME.slice(0, I.name), 1);
+    if (I.nameP != null) a.put(a.lay.left, I.nameRow, [...NAME].map((ch, i) => hash01(i, 7) < I.nameP ? ch : ' ').join(''), 1);
+    if (I.rt) a.put(I.rt.c, I.rt.r, I.rt.t, I.rt.b);
+    if (I.scan) paintScan(a, I.scan);
+    if (I.noise) a.noise(1, a.rows - 1, 0, a.cols - 1, I.noise, I.noiseB ?? .4);
+  }
+  function paintScan(a, sc) { // a band scan across the whole screen: one peak per channel
+    const m = 3, w = a.cols - 2 * m - 1, R = Math.min(a.rows - 5, a.mid + 4), col = f => m + Math.round((f - 87.5) / 20.5 * w), now = performance.now();
+    for (let c = m; c <= m + w; c++) a.put(c, R, '-', .22);
+    for (let f = 88; f <= 108; f += 2) a.put(col(f), R, '|', .4);
+    for (let f = 88; f <= 108; f += 4) { const t = String(f); a.put(col(f) - Math.floor(t.length / 2), R + 1, t, .35); }
+    if (!sc.lock) { const cc = col(sc.cur); for (let r = R - 9; r < R; r++) if (r > 3) a.put(cc, r, '|', .16); a.put(cc, R - 10, 'v', .7); a.put(cc, R, '█', 1); }
+    sc.found.forEach(({ s, at }, i) => {
+      const k = skipping ? 1 : Math.min(1, (now - at) / 500), h = Math.max(1, Math.round(ease(k) * 6));
+      const b = sc.lock ? (s.id === 'home' ? 1 : .22) : .85;
+      for (let j = 1; j <= h; j++) a.put(col(s.freq), R - j, '█', b * (j === h ? 1 : .75));
+      a.put(col(s.freq) - Math.floor(s.ps.length / 2), R - h - 2 - (a.cols < 50 && i % 2 ? 1 : 0), s.ps, b * k);
+      a.put(col(s.freq) - 2, R + 2, fmtF(s.freq), b * k * .6);
+    });
+    if (sc.msg) a.put(Math.floor((a.cols - sc.msg.length) / 2), R + 4, sc.msg, 1);
+  }
+  async function powerTest(ms = 420) { I.all = 1; await tween(ms); I.all = 0; await tween(240); }
+  async function landHome(k, { clickPresets = true } = {}) {
+    Object.assign(I, { header: 88.1, label: null, big: { s: k.bigS }, nameRow: k.nameRow, name: NAME.length, nameP: null, noise: 0, ghosts: null, center: null, scan: null });
+    if (clickPresets) for (let i = 1; i <= STATIONS.length; i++) { I.bar = i; Sound.click(.18); await tween(150); }
+    S.painter = null; S.freq = 88.1; S.reveal = k.nameIdx + 1; compose();
+    while (S.reveal < S.lines.length && !skipping) { S.reveal++; compose(); await wait(55); }
+    S.reveal = Infinity; compose();
+  }
+  const seekTo = (from, to, ms, label = 'SEEK ►') => tween(ms, t => { I.header = Math.round((from + (to - from) * ease(t)) * 10) / 10; I.label = label; });
+  const INTROS = {
+    // round 1's intro, unchanged
+    async classic(k) {
+      await wait(300); await powerTest(450);
+      I.center = [[0, 'LW       171 kHz']]; await tween(1100);
+      Sound.set(.8); await tween(900, t => { const f = Math.round((87.5 + .6 * ease(t)) * 10) / 10; I.center = [[-1, 'SEEK ►'], [0, `FM1     ${fmtF(f).padStart(5)}MHz`]]; }); Sound.set(0);
+      I.center = null; S.painter = null; S.freq = 88.1; S.reveal = 0; compose();
+      while (S.reveal < S.lines.length && !skipping) { S.reveal++; compose(); await wait(45); }
+      S.reveal = Infinity; compose();
+    },
+    // the tube warms (filaments glow dull orange), self-test, the photo's frame, then the name scans in
+    async ignition(k) {
+      await wait(500); wrap.classList.add('fil-on'); await tween(1400);
+      await powerTest(500); wrap.classList.remove('fil-on');
+      I.center = [[0, 'LW       171 kHz']]; await tween(1000);
+      Sound.set(.7); await tween(1000, t => { const f = Math.round((87.5 + .6 * ease(t)) * 10) / 10; I.header = f; I.label = 'SEEK ►'; I.center = [[0, `${fmtF(f)} MHz`]]; }); Sound.set(0);
+      I.center = null; I.label = null; I.header = 88.1;
+      I.big = { s: k.bigS, maxX: -1 }; await tween(1400, t => { I.big.maxX = k.lay.left * 5 + ease(t) * 36 * k.bigS; });
+      I.big = { s: k.bigS }; I.nameRow = k.nameRow; await tween(900, t => { I.name = Math.round(t * NAME.length); });
+      const rt = 'a mind on a few frequencies';
+      await tween(2200, t => { I.rt = { c: Math.round(G.cols - t * (G.cols - k.lay.left)), r: k.nameRow + 2, t: rt, b: .75 }; });
+      await tween(600); I.rt = null;
+      await landHome(k);
+    },
+    // a band scan: the whole screen becomes a spectrum and each channel rises as a peak
+    async scan(k) {
+      await wait(300); await powerTest(400);
+      I.scan = { cur: 87.5, found: [] };
+      await tween(2800, t => { const f = 87.5 + t * 20.5; I.scan.cur = f; I.header = Math.round(f * 10) / 10; I.label = 'SCAN ►';
+        for (const s of STATIONS) if (s.freq <= f && !I.scan.found.some(x => x.s === s)) { I.scan.found.push({ s, at: performance.now() }); Sound.click(.2); } });
+      I.scan.msg = `${STATIONS.length} STATIONS FOUND`; await tween(1000);
+      I.scan.msg = null; await tween(800, t => { const f = 108 - (108 - 88.1) * ease(t); I.scan.cur = f; I.header = Math.round(f * 10) / 10; I.label = '◄ SEEK'; });
+      I.label = null; I.header = 88.1; I.scan.lock = true; await tween(800);
+      I.scan = null; I.noise = .2; Sound.set(.6); await tween(320); I.noise = 0; Sound.set(0);
+      await landHome(k);
+    },
+    // tuning by hand through static: fragments of the other channels bleed through, then the ID resolves
+    async bleed(k) {
+      await wait(300);
+      I.noise = .09; I.noiseB = .32; Sound.set(.5);
+      const frags = ['REPO CANON', 'Tuning in', 'HOMELAB', 'a mind on a few frequencies', 'SCRIPTORIUM', 'Long wave, 171 kHz', 'POSTERN', "who's broadcasting?", 'HEMICICLO', 'Writing standards down', 'PROJECTS', 'CONTACT'];
+      const R = rng(Date.now() & 0xffff);
+      let f0 = 87.5;
+      for (const st of [93.6, 97.2, 104.1, 100.3, 106.8]) {
+        await seekTo(f0, st, 450); f0 = st;
+        I.ghosts = [0, 1].map(() => { const t = frags[Math.floor(R() * frags.length)]; return { t, c: Math.floor(R() * Math.max(1, G.cols - t.length)), r: 4 + Math.floor(R() * Math.max(1, G.rows - 7)), b: .9, keep: .4 }; });
+        Sound.set(.25); await tween(700, t => I.ghosts.forEach(g => g.keep = .3 + .5 * Math.sin(t * Math.PI))); I.ghosts = null; Sound.set(.5);
+      }
+      I.big = { s: k.bigS, p: 0 }; I.nameRow = k.nameRow; I.nameP = 0;
+      await tween(2400, t => { I.header = Math.round((f0 + (88.1 - f0) * ease(t)) * 10) / 10; I.label = t < .95 ? '◄ SEEK' : null; I.noise = .09 * (1 - t); I.big.p = ease(Math.min(1, t * 1.15)); I.nameP = Math.max(0, t * 1.5 - .5); Sound.set(.5 * (1 - t)); });
+      Sound.set(0); await tween(400);
+      await landHome(k);
+    },
+  };
+
+  return {
+    async start() {
+      build(); const r = route();
+      if (r.st) { S.painter = paintIntro; await powerTest(300); S.painter = null; return tune(r.st, r.sub); } // deep links: short power-on only
+      S.st = byId('home'); S.freq = 87.5; layout();
+      const lay = L(), nameIdx = S.lines.findIndex(l => l.segs.some(x => x.t === 'Jasper'));
+      const k = { lay, bigS: S.lines[0].big.s, nameIdx, nameRow: lay.top + nameIdx };
+      S.painter = paintIntro;
+      await (INTROS[cfg.intro] || INTROS.classic)(k);
+      S.painter = null; S.freq = 88.1; S.reveal = Infinity; wrap.classList.remove('fil-on'); compose();
+      renderState(S.st); sr.innerHTML = renderStation(S.st);
+    },
+    onRoute() { const r = route(); tune(r.st || byId('home'), r.sub); },
+  };
+}
+
+/* =====================================================================
+   Variant switcher + boot
+   ===================================================================== */
+const VARIANTS = {
+  acrylic: ['Smoked acrylic · ignition intro', { panel: 'acrylic', intro: 'ignition' }],
+  glass:   ['Glass in a bezel · band-scan intro', { panel: 'glass', intro: 'scan', bezel: true, parallax: true }],
+  worn:    ['Worn plastic · bleed-through intro', { panel: 'worn', intro: 'bleed', parallax: true }],
+  base:    ['Round 1 D, as picked', { panel: 'none', intro: 'classic' }],
+};
+const keyHandlers = []; const onKey = f => keyHandlers.push(f);
+const params = new URLSearchParams(location.search);
+const vKey = VARIANTS[params.get('variant')] ? params.get('variant') : 'acrylic';
+const cfg = { ...VARIANTS[vKey][1] };
+for (const k of ['panel', 'intro']) if (params.get(k)) cfg[k] = params.get(k);          // mix: ?panel=worn&intro=scan
+for (const k of ['bezel', 'parallax']) if (params.has(k)) cfg[k] = params.get(k) === '1';
+function go(dir) {
+  const ks = Object.keys(VARIANTS); const k = ks[(ks.indexOf(vKey) + dir + ks.length) % ks.length];
+  for (const x of ['panel', 'intro', 'bezel', 'parallax']) params.delete(x);
+  params.set('variant', k); location.href = location.pathname + '?' + params.toString() + location.hash;
+}
+function renderState(st) {
+  const el = document.getElementById('pb-state'); if (!el) return;
+  const r = route();
+  el.textContent = `${cfg.panel} · ${cfg.intro}${cfg.bezel ? ' · bezel' : ''}${cfg.parallax ? ' · parallax' : ''} · ` + (st ? `${fmtF(st.freq)} ${st.ps}${r.sub ? '/' + r.sub : ''}` : 'intro') + (Sound.on ? ' · sound' : '');
+}
+if (params.get('bar') !== '0') { // ?bar=0 hides the switcher for screenshots
+  const bar = document.getElementById('proto-bar'); bar.hidden = false;
+  document.getElementById('pb-label').textContent = `${vKey} (${VARIANTS[vKey][0]})`;
+  document.getElementById('pb-prev').onclick = () => go(-1); document.getElementById('pb-next').onclick = () => go(1);
+}
+document.addEventListener('keydown', e => {
+  if (e.target.closest('input, textarea, [contenteditable]')) return;
+  if (!e.metaKey && !e.ctrlKey && !['ArrowLeft', 'ArrowRight'].includes(e.key)) skipIntro();
+  if (e.key === 'ArrowLeft') return go(-1);
+  if (e.key === 'ArrowRight') return go(1);
+  keyHandlers.forEach(f => f(e));
+});
+document.addEventListener('pointerdown', e => { if (!e.target.closest('#proto-bar')) skipIntro(); }, { capture: true });
+const variant = Receiver(document.getElementById('app'), cfg);
+renderState(null);
+variant.start().then(() => { introActive = false; skipping = false; skipHooks.clear(); window.addEventListener('hashchange', () => variant.onRoute()); if (location.hash) variant.onRoute(); });
+</script>
+</body>
+</html>
