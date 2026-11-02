@@ -21,6 +21,7 @@ const { locale } = Astro.props;
   noindex
   redirect={false}
   path="/404.html"
+  signal={false}
 >
   <h1>{format(locale, "signal.heading")}</h1>
   <p>{format(locale, "signal.body")}</p>

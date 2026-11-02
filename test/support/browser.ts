@@ -101,6 +101,9 @@ export class Browser {
         "--no-first-run",
         "--no-default-browser-check",
         "--hide-scrollbars",
+        // the receiver's display needs WebGL, which headless browsers draw
+        // in software
+        "--enable-unsafe-swiftshader",
         "--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1",
         // CI runners' kernels refuse the sandbox's user namespaces; the
         // browser only loads the site built from this checkout

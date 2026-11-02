@@ -1,0 +1,22 @@
+{
+  "sound": {
+    "message": "Sonido",
+    "source": "46124e02"
+  },
+  "sound.on": {
+    "message": "Sonido sí",
+    "source": "8c477e13"
+  },
+  "sound.off": {
+    "message": "Sonido no",
+    "source": "3f5d7094"
+  },
+  "plain": {
+    "message": "Simple",
+    "source": "8b854ade"
+  },
+  "display": {
+    "message": "Mostrar la pantalla",
+    "source": "0df3eccb"
+  }
+}

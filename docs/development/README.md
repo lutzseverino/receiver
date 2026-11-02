@@ -100,7 +100,14 @@ Protocol over Node's own WebSocket (`test/support/browser.ts`), with no
 browser package. They check every page without JavaScript at 320, 360 and
 390 px and on a desktop, audit every page with axe-core's WCAG 2.2 A and AA
 rules, and exercise the reply page's script and the first-visit language
-redirect. The audit serves the pages with a content security policy that
+redirect. `receiver.test.ts` drives the receiver on the display, which the
+headless browser draws with software WebGL: the intro and its skipping,
+tuning and history, the keyboard and the pointer, NO SIGNAL, reduced motion,
+the plain page without WebGL, the remembered settings in every storage state,
+the loop's sleep, the 80 KB gzipped budget for the site's JavaScript, and the
+audit with the display running. It reads what the display draws through the
+display element's `inspect()`. `glyphs.test.ts` covers the font's punctuation
+mapping and the build's glyph coverage check. The audit serves the pages with a content security policy that
 stops their scripts, since axe needs the tab's timers.
 
 The production build has no posts, as the site launches. `wire.test.ts`
@@ -129,6 +136,11 @@ three languages in the same pull request, then record each translation you
 updated with `pnpm i18n:source <locale> <area.key | prose/name>...`.
 `translations.test.ts` fails on a missing, extra or stale translation. The
 owner reviews the three languages of every interface string before merge.
+
+The display draws every message, prose file, project and post with its own
+dot font (`src/receiver/font.ts`), which maps typographic dashes, quotes and
+ellipses to ASCII. `pnpm build` fails on any other character the font lacks,
+naming where it is and the character (`src/lib/glyph-coverage.ts`).
 
 The development server also serves a pseudo-locale, `en-XA`, under `/en-xa/`:
 every text wrapped in `⟦ ⟧` and padded by about 30%, so text that skipped the

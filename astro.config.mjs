@@ -24,6 +24,19 @@ const noSignalPages = {
   },
 };
 
+/** Fails the build on any character the display's font lacks, in any string
+ * the display can draw (`src/lib/glyph-coverage.ts`). */
+const glyphCoverage = {
+  name: "glyph-coverage",
+  hooks: {
+    "astro:build:start": async () => {
+      const { checkGlyphs, glyphSources } =
+        await import("./src/lib/glyph-coverage.ts");
+      checkGlyphs(await glyphSources());
+    },
+  },
+};
+
 export default defineConfig({
   site: SITE_URL,
   output: "static",
@@ -32,7 +45,7 @@ export default defineConfig({
   // lines keep the space between them
   compressHTML: true,
   prefetch: false,
-  integrations: [react(), noSignalPages],
+  integrations: [react(), glyphCoverage, noSignalPages],
   vite: {
     plugins: [tailwindcss()],
     // the published posts' folder (src/data/posts.ts); only a test's build
