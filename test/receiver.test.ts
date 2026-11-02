@@ -9,9 +9,26 @@ import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { gzipSync } from "node:zlib";
 import { after, before, test } from "node:test";
-import type { Inspection } from "../src/receiver/receiver.ts";
+import sharp from "sharp";
+import { DISPLAY_PALETTE } from "../src/lib/dither.ts";
+import { PORTRAIT_SIZES } from "../src/lib/portrait-files.ts";
 import { audit } from "./support/audit.ts";
-import { Browser, type Tab } from "./support/browser.ts";
+import { Browser } from "./support/browser.ts";
+import {
+  activate,
+  at,
+  idle,
+  inspect,
+  openTab,
+  pause,
+  pointAt,
+  press,
+  running,
+  skipIntro,
+  tunedTo,
+  until,
+  type Options,
+} from "./support/display.ts";
 import {
   builtSite,
   pagePath,
@@ -40,173 +57,8 @@ const BLOCK_SESSION_STORAGE = BLOCK_LOCAL_STORAGE.replace(
 const NO_WEBGL = `{ const own = HTMLCanvasElement.prototype.getContext; HTMLCanvasElement.prototype.getContext = function (type, ...rest) { return /webgl/.test(type) ? null : own.call(this, type, ...rest); }; }`;
 const BROKEN_SHADER = `WebGLRenderingContext.prototype.getShaderParameter = () => false;`;
 
-type Options = {
-  width?: number;
-  height?: number;
-  reducedMotion?: boolean;
-  scripts?: string[];
-  storage?: Record<string, string>;
-};
-
-/** A tab showing `path`, once it has loaded. */
-async function open(
-  pagePath: string,
-  { width = 1280, height, reducedMotion, scripts = [], storage }: Options = {},
-): Promise<Tab> {
-  const tab = await browser.open("about:blank", { width });
-  if (height)
-    await tab.send("Emulation.setDeviceMetricsOverride", {
-      width,
-      height,
-      deviceScaleFactor: 1,
-      mobile: width <= 600,
-    });
-  if (width <= 600)
-    await tab.send("Emulation.setTouchEmulationEnabled", { enabled: true });
-  if (reducedMotion)
-    await tab.send("Emulation.setEmulatedMedia", {
-      features: [{ name: "prefers-reduced-motion", value: "reduce" }],
-    });
-  // every test starts as a first visit, with what `storage` holds
-  const { identifier } = (await tab.send(
-    "Page.addScriptToEvaluateOnNewDocument",
-    {
-      source: `if (location.origin !== "null") { localStorage.clear(); for (const [key, value] of Object.entries(${JSON.stringify(storage ?? {})})) localStorage.setItem(key, value); }`,
-    },
-  )) as { identifier: string };
-  for (const source of scripts)
-    await tab.send("Page.addScriptToEvaluateOnNewDocument", { source });
-  await tab.goto(origin + pagePath);
-  await tab.send("Page.removeScriptToEvaluateOnNewDocument", { identifier });
-  return tab;
-}
-
-const inspect = (tab: Tab) =>
-  tab.evaluate(
-    () =>
-      (
-        document.querySelector(".display") as unknown as {
-          inspect?: () => Inspection;
-        } | null
-      )?.inspect?.() ?? null,
-  );
-
-const pause = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-/** Waits until `check` holds, or fails naming `what`. */
-async function until<T>(
-  check: () => Promise<T | null | undefined | false>,
-  what: string,
-  ms = 15_000,
-): Promise<T> {
-  const end = Date.now() + ms;
-  for (;;) {
-    const value = await check();
-    if (value) return value;
-    if (Date.now() > end) throw new Error(`timed out waiting for ${what}`);
-    await pause(50);
-  }
-}
-
-const running = (tab: Tab) => until(() => inspect(tab), "the display to start");
-const idle = (tab: Tab) =>
-  until(async () => {
-    const state = await inspect(tab);
-    return state?.state === "idle" ? state : null;
-  }, "the display to settle");
-const at = (tab: Tab) =>
-  tab.evaluate(() => ({
-    path: location.pathname,
-    lang: document.documentElement.lang,
-    h1: document.querySelector("h1")?.textContent?.trim(),
-    focus: document.activeElement?.tagName,
-  }));
-
-const KEYS: Record<string, [number, string]> = {
-  Tab: [9, "Tab"],
-  Enter: [13, "Enter"],
-  Escape: [27, "Escape"],
-  ArrowDown: [40, "ArrowDown"],
-  End: [35, "End"],
-};
-
-/** Presses `key`, as a keyboard does. */
-async function press(tab: Tab, key: string, shift = false) {
-  const [code, name] = KEYS[key] ?? [
-    key.toUpperCase().charCodeAt(0),
-    /\d/.test(key) ? `Digit${key}` : `Key${key.toUpperCase()}`,
-  ];
-  const text = key.length === 1 ? key : key === "Enter" ? "\r" : undefined;
-  const modifiers = shift ? 8 : 0;
-  await tab.send("Input.dispatchKeyEvent", {
-    type: "keyDown",
-    key,
-    code: name,
-    windowsVirtualKeyCode: code,
-    modifiers,
-    ...(text ? { text } : {}),
-  });
-  await tab.send("Input.dispatchKeyEvent", {
-    type: "keyUp",
-    key,
-    code: name,
-    windowsVirtualKeyCode: code,
-    modifiers,
-  });
-}
-
-/** Clicks the point (`x`, `y`) with a mouse, or taps it on a phone. */
-async function pointAt(tab: Tab, width: number, x: number, y: number) {
-  if (width <= 600) {
-    await tab.send("Input.dispatchTouchEvent", {
-      type: "touchStart",
-      touchPoints: [{ x, y }],
-    });
-    await tab.send("Input.dispatchTouchEvent", {
-      type: "touchEnd",
-      touchPoints: [],
-    });
-    return;
-  }
-  await tab.send("Input.dispatchMouseEvent", { type: "mouseMoved", x, y });
-  for (const type of ["mousePressed", "mouseReleased"])
-    await tab.send("Input.dispatchMouseEvent", {
-      type,
-      x,
-      y,
-      button: "left",
-      clickCount: 1,
-    });
-}
-
-/** Clicks or taps what the display draws that matches `match`. */
-async function activate(
-  tab: Tab,
-  width: number,
-  match: (region: Inspection["regions"][number]) => boolean,
-) {
-  const state = await idle(tab);
-  const region = state.regions.find(match);
-  assert.ok(region, `the display draws it: ${JSON.stringify(state.regions)}`);
-  await pointAt(tab, width, region.x, region.y);
-}
-
-/** Skips the intro with a key and waits until the display settles. */
-async function skipIntro(tab: Tab) {
-  await running(tab);
-  await press(tab, "q");
-  return idle(tab);
-}
-
-/** Waits for the tab to show `path` with the display settled on it. */
-const tunedTo = (tab: Tab, pathname: string) =>
-  until(async () => {
-    const where = await at(tab);
-    const state = await inspect(tab);
-    return where.path === pathname && state?.state === "idle"
-      ? { where, state }
-      : null;
-  }, `a tune to ${pathname}`);
+const open = (pagePath: string, options?: Options) =>
+  openTab(browser, origin, pagePath, options);
 
 for (const width of WIDTHS) {
   test(`at ${width} px, a full load runs the intro, and a key or a tap skips it`, async () => {
@@ -442,7 +294,10 @@ test("a drawn body link, the language label, SOUND and PLAIN each activate their
 });
 
 test("the wheel and a touch drag scroll the page", async () => {
-  const wheel = await open("/contact/", { width: 1280, height: 420 });
+  const wheel = await open("/projects/repo-standards/", {
+    width: 1280,
+    height: 420,
+  });
   const before = await skipIntro(wheel);
   assert.equal(before.scroll, 0);
   await wheel.send("Input.dispatchMouseEvent", {
@@ -455,7 +310,10 @@ test("the wheel and a touch drag scroll the page", async () => {
   await until(async () => (await inspect(wheel))!.scroll > 0, "a wheel scroll");
   await wheel.close();
 
-  const touch = await open("/contact/", { width: 320, height: 500 });
+  const touch = await open("/projects/repo-standards/", {
+    width: 320,
+    height: 500,
+  });
   await skipIntro(touch);
   await touch.send("Input.dispatchTouchEvent", {
     type: "touchStart",
@@ -583,6 +441,46 @@ test("without WebGL, or when the receiver fails to start, the plain page shows a
   }
 });
 
+test("with no posts, the wire reads NO TRAFFIC", async () => {
+  const tab = await open("/blog/", { width: 1280 });
+  const state = await skipIntro(tab);
+  assert.ok(state.rows.some((row) => row.includes("NO TRAFFIC")));
+  await tab.close();
+});
+
+test("the portrait is dithered at build at every size the display draws, and no portrait dithering ships to the browser", async () => {
+  for (const size of PORTRAIT_SIZES) {
+    const file = path.join(site.dir, "portrait", `${size}.png`);
+    const { data, info } = await sharp(file)
+      .ensureAlpha()
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+    assert.deepEqual([info.width, info.height], [size, size]);
+    const colours = new Set<string>();
+    for (let i = 0; i < data.length; i += 4)
+      colours.add(
+        data[i + 3] === 0 ? "clear" : [...data.subarray(i, i + 3)].join(","),
+      );
+    assert.deepEqual(
+      [...colours].sort(),
+      [
+        "clear",
+        DISPLAY_PALETTE.dark.join(","),
+        DISPLAY_PALETTE.lit.join(","),
+      ].sort(),
+      `${size}.png holds the glass, the phosphor and the clear outside`,
+    );
+  }
+  for (const file of readdirSync(path.join(site.dir, "_astro")).filter((name) =>
+    name.endsWith(".js"),
+  ))
+    assert.doesNotMatch(
+      readFileSync(path.join(site.dir, "_astro", file), "utf8"),
+      /atkinson|ditheredPortrait|sharp/,
+      file,
+    );
+});
+
 test("sound is off on a first visit", async () => {
   const tab = await open("/", { width: 1280 });
   const state = await skipIntro(tab);
@@ -672,7 +570,8 @@ test("with storage unavailable, the language follows the head script's choice", 
 });
 
 test("an idle display stops requesting animation frames", async () => {
-  const tab = await open("/", { width: 1280 });
+  // a project's page holds still; home's reception never does
+  const tab = await open("/projects/repo-standards/", { width: 1280 });
   await skipIntro(tab);
   await tab.evaluate(() => {
     const counted = window as unknown as { frames: number };

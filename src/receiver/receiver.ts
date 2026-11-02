@@ -13,10 +13,13 @@
 import { defaultPath, DEFAULT_LOCALE } from "../i18n/locales.ts";
 import { CHANNELS, channelOf, type Channel } from "../lib/channels.ts";
 import { displayLabel, displayText, glyph, glyph8, signal } from "./font.ts";
+import { channelLayouts } from "./channels.ts";
+import { bigText as drawBig } from "./draw.ts";
 import {
   textLines,
   type ChannelLayout,
   type Grid,
+  type LayoutContext,
   type Line,
   type Page,
 } from "./layout.ts";
@@ -34,8 +37,9 @@ import { settings } from "./settings.ts";
 import { Sound } from "./sound.ts";
 
 export type Options = {
-  /** The channel layouts that draw their own pages. */
-  layouts?: readonly ChannelLayout[];
+  /** The channel layouts that draw their own pages, made for the receiver
+   * that runs them. */
+  layouts?: (context: LayoutContext) => readonly ChannelLayout[];
   /** Called after the visitor chooses PLAIN and the display stops. */
   onPlain: () => void;
   /** Whether the intro runs: on a full page load, not when the visitor
@@ -59,6 +63,8 @@ export type Inspection = {
     focused: boolean;
     href: string | null;
     control: string | null;
+    /** The element's tag, such as `TEXTAREA`. */
+    tag: string;
     x: number;
     y: number;
   }[];
@@ -67,6 +73,9 @@ export type Inspection = {
   sound: boolean;
   /** The first line of the page's body the display shows. */
   scroll: number;
+  /** How often, in milliseconds, the channel layout draws the page anew, or
+   * `null` while it holds still. */
+  pace: number | null;
 };
 
 export type Receiver = { stop(): void };
@@ -139,7 +148,7 @@ type Intro = {
 /** Starts the receiver on the current page, or returns `null`, leaving the
  * plain page as it is, where the display can't run. */
 export function startReceiver({
-  layouts = [],
+  layouts: makeLayouts = channelLayouts,
   onPlain,
   intro: powerOn = true,
 }: Options): Receiver | null {
@@ -171,6 +180,14 @@ export function startReceiver({
   const still = () => motion.matches;
   const sound = new Sound();
   sound.enable(settings.sound(), false);
+  const layouts = makeLayouts({
+    refresh: () => compose(),
+    sound: {
+      click: (volume) => sound.click(volume),
+      tune: (distance) => sound.tune(distance),
+      quiet: () => sound.quiet(),
+    },
+  });
 
   const ghost = document.createElement("canvas");
   const lit = document.createElement("canvas");
@@ -196,6 +213,11 @@ export function startReceiver({
   let rowsText: string[] = [];
   let marker: Inspection["marker"] = null;
   let stopped = false;
+  /** When the visitor last gave any input. */
+  let lastInput = performance.now();
+  /** How often the channel layout asks to be drawn, and its timer. */
+  let pace: number | null = null;
+  let pacer = 0;
   /** The address of the page the display shows, less its fragment. */
   let shown = location.pathname + location.search;
   const introRunning = () => intro !== null || reveal !== Infinity;
@@ -395,7 +417,11 @@ export function startReceiver({
   };
 
   function relayout() {
-    lines = layoutOf() ? [] : textLines(page.main, body().width);
+    const layout = layoutOf();
+    const width = body().width;
+    lines = layout
+      ? (layout.lines?.(page, width) ?? [])
+      : textLines(page.main, width);
     scroll = Math.max(0, Math.min(scroll, lines.length - bodyRows()));
   }
 
@@ -412,6 +438,8 @@ export function startReceiver({
     regions = [];
     let all = false;
     const now = performance.now();
+    /** The cells a channel layout's transition shows, while it hides some. */
+    let shown: ((c: number, r: number) => boolean) | null = null;
 
     const put = (
       c: number,
@@ -427,6 +455,7 @@ export function startReceiver({
       for (let i = 0; i < text.length; i++) {
         const cc = c + i;
         if (cc < 0 || cc >= cols || r < 0 || r >= rows) continue;
+        if (shown && !shown(cc, r)) continue;
         const k = r * cols + cc;
         chars[k] = text[i]!;
         bright[k] = b;
@@ -447,6 +476,7 @@ export function startReceiver({
       const c = Math.floor(X / 5);
       const r = Math.floor(Y / 8);
       if (X < 0 || c >= cols || Y < 0 || r >= rows) return;
+      if (shown && !shown(c, r)) return;
       const k = r * cols + c;
       let dots = big.get(k);
       if (!dots) big.set(k, (dots = new Uint8Array(40)));
@@ -540,8 +570,25 @@ export function startReceiver({
       cols,
       rows,
       body: body(),
-      put: (c, r, text, b, target) => put(c, r, displayText(text), b, target),
+      scroll,
+      hover,
+      quiet: now - lastInput,
+      still: still(),
+      put: (c, r, text, b, target, mark) =>
+        put(
+          c,
+          r,
+          displayText(text),
+          b,
+          target,
+          mark === undefined ? undefined : { mark },
+        ),
+      region: (c0, c1, r, target) =>
+        regions.push({ c0, c1, r, target, marker: c0 - 1 }),
       plot,
+      big: (text, scale, x, y, b, dissolve) =>
+        drawBig({ plot }, text, scale, x, y, b, dissolve),
+      saw: (effect) => seen.add(effect),
     };
 
     const paintIntro = (state: Intro) => {
@@ -613,35 +660,40 @@ export function startReceiver({
       if (noise) {
         seen.add("static");
         staticNoise(top, bottom);
-      } else if (layout) layout.draw(grid, page, now);
-      else {
-        if (reveal < lines.length) seen.add("typing");
-        const focused = document.activeElement;
-        for (let i = 0; i <= bottom - top; i++) {
-          const li = scroll + i;
-          if (li >= lines.length || li >= reveal) break;
-          let c = left;
-          const r = top + i;
-          for (const segment of lines[li]!.segments) {
-            const b = segment.target
-              ? hover === segment.target || focused === segment.target
-                ? 1
-                : Math.max(0.8, segment.brightness)
-              : segment.brightness;
-            put(c, r, segment.text, b, segment.target, { mark: left - 2 });
-            c += segment.text.length;
+      } else {
+        shown = layout?.mask?.(grid, now) ?? null;
+        if (layout && !layout.lines) layout.draw(grid, page, now);
+        else {
+          if (reveal < lines.length) seen.add("typing");
+          const focused = document.activeElement;
+          for (let i = 0; i <= bottom - top; i++) {
+            const li = scroll + i;
+            if (li >= lines.length || li >= reveal) break;
+            let c = left;
+            const r = top + i;
+            for (const segment of lines[li]!.segments) {
+              const b = segment.target
+                ? hover === segment.target || focused === segment.target
+                  ? 1
+                  : Math.max(0.8, segment.brightness)
+                : segment.brightness;
+              put(c, r, segment.text, b, segment.target, { mark: left - 2 });
+              c += segment.text.length;
+            }
           }
+          lines.forEach((line, li) => {
+            if (line.image && li < reveal)
+              paintImage(
+                line.image,
+                left * 5,
+                (top + li - scroll) * 8,
+                top,
+                bottom,
+              );
+          });
+          layout?.draw(grid, page, now);
         }
-        lines.forEach((line, li) => {
-          if (line.image && li < reveal)
-            paintImage(
-              line.image,
-              left * 5,
-              (top + li - scroll) * 8,
-              top,
-              bottom,
-            );
-        });
+        shown = null;
       }
       paintBar();
     };
@@ -753,6 +805,11 @@ export function startReceiver({
       if (changed) active.add(k);
     }
     schedule();
+    // a channel layout that changes on its own is drawn again when it asks
+    clearTimeout(pacer);
+    pace = intro || noise ? null : (layoutOf()?.next?.(now) ?? null);
+    if (pace !== null && !document.hidden)
+      pacer = window.setTimeout(compose, pace);
   }
 
   // ---- pictures: dithered at build, one pixel a dot; a narrower column
@@ -848,8 +905,8 @@ export function startReceiver({
       drawCell(k);
       if (!moving) active.delete(k);
     }
-    // static changes every frame, and a channel layout may animate
-    if (noise || layoutOf()?.animating?.(now)) compose();
+    // static changes every frame
+    if (noise) compose();
     // the cover sits in front of the dots: it shifts a little with the viewer
     if (!instant) {
       const nx = view.px + (view.pointer[0] - view.px) * 0.06;
@@ -1074,9 +1131,14 @@ export function startReceiver({
     tuning = true;
     display.dataset.state = "tuning";
     const from = frequency;
-    const to = frequencyOf(channelOf(defaultPath(url.pathname)));
+    const path = defaultPath(url.pathname);
+    const to = frequencyOf(channelOf(path));
+    // a move within the channel shown keeps its frequency: the channel's
+    // layout makes the change instead of a seek
+    const within =
+      page.signal && channelOf(path) === page.channel && path !== page.path;
     const loading = fetchPage(url);
-    if (!still()) {
+    if (!still() && !within) {
       seekLabel = to >= from ? "SEEK ►" : "◄ SEEK";
       noise = true;
       sound.click();
@@ -1094,6 +1156,7 @@ export function startReceiver({
       location.assign(url.href);
       return;
     }
+    const previous = page;
     swap(next, url, push);
     noise = false;
     seekLabel = null;
@@ -1105,6 +1168,7 @@ export function startReceiver({
     relayout();
     tuning = false;
     delete display.dataset.state;
+    layoutOf()?.enter?.(page, previous, performance.now());
     // focus moves to the new page's heading, and its title is announced
     const heading = page.main.querySelector("h1");
     if (heading) {
@@ -1177,7 +1241,8 @@ export function startReceiver({
   }
 
   function scrollBy(rows: number) {
-    if (layoutOf()) return;
+    const layout = layoutOf();
+    if (layout && !layout.lines) return;
     const most = Math.max(0, lines.length - bodyRows());
     const next = Math.max(0, Math.min(most, scroll + rows));
     if (next !== scroll) {
@@ -1238,6 +1303,11 @@ export function startReceiver({
       const rowsShown = bodyRows();
       const key = event.key;
       if (/^[1-9]$/.test(key)) channelLinks()[Number(key) - 1]?.click();
+      else if (
+        key === "Enter" &&
+        !(event.target instanceof Element && event.target.closest("a, button"))
+      )
+        layoutOf()?.press?.(performance.now());
       else if (key === "m") control("sound")?.click();
       else if (key === "l") {
         const links = languageLinks();
@@ -1393,6 +1463,13 @@ export function startReceiver({
     { ...listen, capture: true },
   );
 
+  // a press on the display never moves focus by itself: after a tap, the
+  // mouse events a phone sends would take it from the field the tap focused
+  display.addEventListener(
+    "mousedown",
+    (event) => event.preventDefault(),
+    listen,
+  );
   let drag: { y: number; moved: boolean } | null = null;
   display.addEventListener(
     "pointerdown",
@@ -1405,6 +1482,7 @@ export function startReceiver({
       if (drag && !drag.moved && !intro) {
         const region = regionAt(event.clientX, event.clientY);
         if (region) activate(region.target);
+        else if (!introRunning()) layoutOf()?.press?.(performance.now());
       }
       drag = null;
     },
@@ -1465,7 +1543,29 @@ export function startReceiver({
     },
     listen,
   );
-  document.addEventListener("visibilitychange", schedule, listen);
+  document.addEventListener(
+    "visibilitychange",
+    () => (document.hidden ? clearTimeout(pacer) : compose()),
+    listen,
+  );
+  // any input wakes a channel layout that has slowed down while left alone
+  for (const type of [
+    "keydown",
+    "pointerdown",
+    "pointermove",
+    "wheel",
+    "input",
+  ])
+    addEventListener(
+      type,
+      () => {
+        const now = performance.now();
+        const asleep = now - lastInput > 1000;
+        lastInput = now;
+        if (asleep && !stopped) compose();
+      },
+      { ...listen, capture: true, passive: true },
+    );
   motion.addEventListener("change", () => compose(), listen);
 
   function stop() {
@@ -1473,6 +1573,7 @@ export function startReceiver({
     stopped = true;
     controller.abort();
     cancelAnimationFrame(frame);
+    clearTimeout(pacer);
     display.remove();
     status.remove();
     root.classList.remove("receiving");
@@ -1491,6 +1592,7 @@ export function startReceiver({
     seen: [...seen],
     sound: sound.on,
     scroll,
+    pace,
     regions: regions.map((region) => {
       const [x, y] = cellXY((region.c0 + region.c1 + 1) / 2, region.r + 0.5);
       const [sx, sy] = fromDisplay(
@@ -1505,6 +1607,7 @@ export function startReceiver({
         focused: region.target === document.activeElement,
         href: region.target.getAttribute("href"),
         control: region.target.dataset.control ?? null,
+        tag: region.target.tagName,
         x: Math.round(sx),
         y: Math.round(sy),
       };
@@ -1523,6 +1626,10 @@ export function startReceiver({
   introDone = (powerOn ? runIntro() : Promise.resolve(compose())).finally(
     () => {
       skipping = false;
+      if (stopped) return;
+      // the page's layout starts once the intro has landed on it
+      layoutOf()?.enter?.(page, null, performance.now());
+      compose();
     },
   );
   return { stop };

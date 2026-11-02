@@ -2,6 +2,8 @@
 // A project's own page: its name, tagline, facts, site and source links, and
 // README lead. The README's text stays in English on every locale's page;
 // the labels around it are translated.
+import ProjectFacts from "@/components/projects/ProjectFacts.astro";
+import ProjectLinks from "@/components/projects/ProjectLinks.astro";
 import { loadProjects, type Project } from "@/data/projects";
 import { format } from "@/i18n/format";
 import { localeRoutes, type Locale } from "@/i18n/locales";
@@ -40,47 +42,8 @@ const lead = await Promise.all(project.lead.map(renderMarkdown));
   <p class="tagline" lang="en">
     {project.tagline}
   </p>
-  <dl class="facts">
-    {project.stack.length > 0 && (
-      <div>
-        <dt>{format(locale, "projects.stack")}</dt>
-        <dd lang="en">{project.stack.join(" · ")}</dd>
-      </div>
-    )}
-    <div>
-      <dt>{format(locale, "projects.since")}</dt>
-      <dd>{project.since}</dd>
-    </div>
-    <div>
-      <dt>{format(locale, "projects.release")}</dt>
-      <dd>
-        {project.release ? (
-          <>
-            {project.release.tag} ·{" "}
-            <time datetime={project.release.date}>{project.release.date}</time>
-          </>
-        ) : (
-          format(locale, "projects.release.none")
-        )}
-      </dd>
-    </div>
-    <div>
-      <dt>{format(locale, "projects.updated")}</dt>
-      <dd>
-        <time datetime={project.updated}>{project.updated}</time>
-      </dd>
-    </div>
-  </dl>
-  <ul class="project-links">
-    {project.site && (
-      <li>
-        <a href={project.site}>{format(locale, "projects.site")}</a>
-      </li>
-    )}
-    <li>
-      <a href={project.repo}>{format(locale, "projects.source")}</a>
-    </li>
-  </ul>
+  <ProjectFacts locale={locale} project={project} />
+  <ProjectLinks locale={locale} project={project} />
   {lead.length > 0 && (
     <div class="lead" lang="en">
       {lead.map((paragraph) => (

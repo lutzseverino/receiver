@@ -6,6 +6,7 @@
   "release": "Latest release",
   "release.none": "No release yet",
   "updated": "Updated",
-  "site": "Visit the site",
+  "open": "Open",
+  "site": "Visit site",
   "source": "Source"
 }

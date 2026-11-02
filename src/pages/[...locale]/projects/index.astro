@@ -1,6 +1,13 @@
 ---
-// Projects: every project in the allowlist's order, or the empty band.
+// Projects: every project in the allowlist's order, with its tagline,
+// facts and links, or the empty band. Each entry carries its README lead's
+// first paragraph as text in `data-lead`, and the list the display's OPEN
+// label in `data-open`, for the display's preview card
+// (`src/receiver/channels/projects.ts`).
+import ProjectFacts from "@/components/projects/ProjectFacts.astro";
+import ProjectLinks from "@/components/projects/ProjectLinks.astro";
 import { loadProjects } from "@/data/projects";
+import { markdownText } from "@/data/readme";
 import { format } from "@/i18n/format";
 import { localePath, localeRoutes, type Locale } from "@/i18n/locales";
 import Base from "@/layouts/Base.astro";
@@ -25,9 +32,15 @@ const projects = await loadProjects();
   {projects.length === 0 ? (
     <p class="empty">{format(locale, "projects.empty")}</p>
   ) : (
-    <ul class="entries">
+    <ul class="entries" data-open={format(locale, "projects.open")}>
       {projects.map((project) => (
-        <li>
+        <li
+          data-lead={
+            project.lead[0] === undefined
+              ? undefined
+              : markdownText(project.lead[0])
+          }
+        >
           <a
             href={localePath(
               locale,
@@ -39,7 +52,11 @@ const projects = await loadProjects();
           {project.featured && (
             <span class="on-air">{format(locale, "projects.on-air")}</span>
           )}
-          <p lang="en">{project.tagline}</p>
+          <p class="tagline" lang="en">
+            {project.tagline}
+          </p>
+          <ProjectFacts locale={locale} project={project} />
+          <ProjectLinks locale={locale} project={project} />
         </li>
       ))}
     </ul>

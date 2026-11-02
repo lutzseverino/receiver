@@ -27,9 +27,13 @@
     "message": "Actualitzat",
     "source": "3a5ecca1"
   },
+  "open": {
+    "message": "Obre",
+    "source": "ed077f3d"
+  },
   "site": {
-    "message": "Visitar el lloc web",
-    "source": "49193e74"
+    "message": "Visita el lloc",
+    "source": "5e2fa934"
   },
   "source": {
     "message": "Codi font",

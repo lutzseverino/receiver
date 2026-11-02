@@ -27,9 +27,13 @@
     "message": "Actualizado",
     "source": "3a5ecca1"
   },
+  "open": {
+    "message": "Abrir",
+    "source": "ed077f3d"
+  },
   "site": {
-    "message": "Visitar el sitio web",
-    "source": "49193e74"
+    "message": "Visitar sitio",
+    "source": "5e2fa934"
   },
   "source": {
     "message": "Código fuente",

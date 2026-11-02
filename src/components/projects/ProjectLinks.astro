@@ -1,0 +1,27 @@
+---
+// A project's site, when it has one, and its source. Each names what it is
+// in `data-link`, which the display's projects layout reads
+// (`src/receiver/channels/projects.ts`).
+import type { Project } from "@/data/projects";
+import { format } from "@/i18n/format";
+import type { Locale } from "@/i18n/locales";
+
+type Props = { locale: Locale; project: Project };
+
+const { locale, project } = Astro.props;
+---
+
+<ul class="project-links">
+  {project.site && (
+    <li>
+      <a href={project.site} data-link="site">
+        {format(locale, "projects.site")}
+      </a>
+    </li>
+  )}
+  <li>
+    <a href={project.repo} data-link="source">
+      {format(locale, "projects.source")}
+    </a>
+  </li>
+</ul>
