@@ -110,6 +110,13 @@ parsing each feed as XML in the browser, and that the production build holds
 none of them. `posts.test.ts` checks each construct a post may and may not use,
 the front matter, translations, reading time and the dithering itself.
 
+The receiver rasterises its dots, light map and unchanged WebGL shader in an
+OffscreenCanvas worker where available. Layout, input and stepped effect
+scheduling stay on the page. Only the newest pending frame is presented, so
+a slow renderer cannot queue obsolete intro frames. Browsers without
+OffscreenCanvas use the same raster and shader on the page; a worker that
+cannot start leaves the HTML layer readable.
+
 `receiver.test.ts` drives the receiver on the display, which the headless
 browser draws with software WebGL: the intro and its skipping, tuning and
 history, the keyboard and the pointer, NO SIGNAL, reduced motion, the plain

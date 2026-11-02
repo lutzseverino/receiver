@@ -5,6 +5,8 @@
 // returns `null` where WebGL is unavailable, and throws where its shader
 // fails, so the receiver leaves the plain page in place.
 
+import { createPhosphor, type CellPaint } from "./phosphor.ts";
+
 /** The cover's curve: above 0 it bulges. */
 export const CURVE = 0.03;
 
@@ -64,10 +66,15 @@ void main() {
 
 /** The textures the shader reads, by unit. */
 export const Texture = { Lit: 0, Ghost: 1, Scratch: 2, Light: 3 } as const;
-type Unit = (typeof Texture)[keyof typeof Texture];
+export type Unit = (typeof Texture)[keyof typeof Texture];
 
 export type Tube = {
   upload(unit: Unit, source: TexImageSource): void;
+  dispose(): void;
+  resetLit(width: number, height: number, dpr: number): void;
+  paintCell(cell: CellPaint): void;
+  relight(): void;
+  resize(width: number, height: number): void;
   draw(frame: {
     width: number;
     height: number;
@@ -77,7 +84,9 @@ export type Tube = {
   }): void;
 };
 
-export function createTube(canvas: HTMLCanvasElement): Tube | null {
+export function createTube(
+  canvas: HTMLCanvasElement | OffscreenCanvas,
+): Tube | null {
   const gl = canvas.getContext("webgl", {
     antialias: false,
     alpha: false,
@@ -125,8 +134,39 @@ export function createTube(canvas: HTMLCanvasElement): Tube | null {
     gl.uniform1i(uniform(name), i);
     return texture;
   });
-  return {
+  const phosphor = createPhosphor();
+  let litDirty = false;
+  const tube: Tube = {
+    resetLit(width, height, dpr) {
+      phosphor.reset(width, height, dpr);
+      litDirty = true;
+    },
+    paintCell(cell) {
+      phosphor.paint(cell);
+      litDirty = true;
+    },
+    relight() {
+      phosphor.relight();
+      tube.upload(Texture.Light, phosphor.light);
+    },
+    resize(width, height) {
+      canvas.width = width;
+      canvas.height = height;
+    },
+    dispose() {
+      gl.getExtension("WEBGL_lose_context")?.loseContext();
+    },
     upload(unit, source) {
+      if (
+        typeof OffscreenCanvas !== "undefined" &&
+        source instanceof OffscreenCanvas
+      ) {
+        // Read pixels explicitly: worker 2D surfaces are not reliably
+        // imported as WebGL textures by software renderers.
+        source = source
+          .getContext("2d")!
+          .getImageData(0, 0, source.width, source.height);
+      }
       gl.activeTexture(gl.TEXTURE0 + unit);
       gl.bindTexture(gl.TEXTURE_2D, textures[unit]!);
       gl.texImage2D(
@@ -139,6 +179,10 @@ export function createTube(canvas: HTMLCanvasElement): Tube | null {
       );
     },
     draw(frame) {
+      if (litDirty) {
+        tube.upload(Texture.Lit, phosphor.lit);
+        litDirty = false;
+      }
       gl.viewport(0, 0, canvas.width, canvas.height);
       gl.uniform2f(uniform("uTexSize"), frame.width, frame.height);
       gl.uniform2f(uniform("uOff"), frame.offset[0], frame.offset[1]);
@@ -152,6 +196,7 @@ export function createTube(canvas: HTMLCanvasElement): Tube | null {
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     },
   };
+  return tube;
 }
 
 /** Window pixel to display pixel: the projection and curve the shader
@@ -200,7 +245,7 @@ export function scratches(width: number, height: number): HTMLCanvasElement {
   const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
-  const g = canvas.getContext("2d")!;
+  const g = canvas.getContext("2d", { willReadFrequently: true })!;
   const R = rng(o.seed);
   g.lineCap = "round";
   for (let i = 0; i < o.hair; i++) {

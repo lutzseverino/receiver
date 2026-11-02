@@ -109,12 +109,14 @@ for (const width of WIDTHS) {
     assert.equal(where.focus, "H1", "focus is on the new page's h1");
     assert.equal(state.frequency, 105);
     assert.ok(state.seen.includes("static"), "the seek's static");
-    assert.equal(
-      await tab.evaluate(() => document.title),
-      await tab.evaluate(
-        () => document.querySelector(".receiver-status")!.textContent,
-      ),
-      "the title is announced",
+    await until(
+      async () =>
+        tab.evaluate(
+          () =>
+            document.title ===
+            document.querySelector(".receiver-status")!.textContent,
+        ),
+      "the title to be announced",
     );
     await tab.evaluate(() => history.back());
     assert.equal((await tunedTo(tab, "/")).state.frequency, 100);
@@ -421,7 +423,8 @@ test("with reduced motion, no frame shows the flash, sweep, static or typing", a
 
 test("without WebGL, or when the receiver fails to start, the plain page shows and works", async () => {
   for (const script of [NO_WEBGL, BROKEN_SHADER]) {
-    const tab = await open("/", { width: 1280, scripts: [script] });
+    const fallback = `HTMLCanvasElement.prototype.transferControlToOffscreen = undefined;`;
+    const tab = await open("/", { width: 1280, scripts: [fallback, script] });
     await pause(1000);
     const page = await tab.evaluate(() => ({
       display: document.querySelector(".display") !== null,
@@ -439,6 +442,66 @@ test("without WebGL, or when the receiver fails to start, the plain page shows a
     assert.equal((await at(tab)).path, "/projects/");
     await tab.close();
   }
+});
+
+test("the worker presents the same lit pixels as the fallback", async () => {
+  const pictures: Buffer[] = [];
+  for (const scripts of [
+    [],
+    ["HTMLCanvasElement.prototype.transferControlToOffscreen = undefined;"],
+  ]) {
+    const tab = await open("/projects/", {
+      width: 390,
+      reducedMotion: true,
+      scripts,
+    });
+    await idle(tab);
+    await pause(1000);
+    const shot = await tab.send("Page.captureScreenshot", { format: "png" });
+    const png = Buffer.from(shot.data as string, "base64");
+    const stats = await sharp(png).stats();
+    assert.ok(stats.channels[0]!.stdev > 10, "the display has lit dots");
+    pictures.push(await sharp(png).raw().toBuffer());
+    await tab.close();
+  }
+  assert.deepEqual(pictures[0], pictures[1]);
+});
+
+test("without OffscreenCanvas the receiver still draws the final channel", async () => {
+  const tab = await open("/projects/", {
+    width: 390,
+    reducedMotion: true,
+    scripts: [
+      "HTMLCanvasElement.prototype.transferControlToOffscreen = undefined;",
+    ],
+  });
+  const state = await idle(tab);
+  assert.ok(state.rows.some((row) => row.includes("PROJECTS")));
+  await tab.close();
+});
+
+test("when the rendering worker is blocked, the HTML layer stays readable", async () => {
+  const tab = await open("/", {
+    width: 390,
+    scripts: [
+      `document.addEventListener("DOMContentLoaded", () => {
+      const policy = document.createElement("meta");
+      policy.httpEquiv = "Content-Security-Policy";
+      policy.content = "worker-src 'none'";
+      document.head.append(policy);
+    });`,
+    ],
+  });
+  await pause(1000);
+  assert.equal(
+    await tab.evaluate(
+      () =>
+        !document.querySelector(".display") &&
+        document.querySelector("h1")!.getBoundingClientRect().width > 50,
+    ),
+    true,
+  );
+  await tab.close();
 });
 
 test("with no posts, the wire reads NO TRAFFIC", async () => {

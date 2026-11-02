@@ -24,7 +24,6 @@ import {
   type Page,
 } from "./layout.ts";
 import {
-  createTube,
   hash01,
   scratches,
   Texture,
@@ -33,6 +32,7 @@ import {
   CURVE,
   type Tube,
 } from "./tube.ts";
+import { createDisplayTube } from "./display-tube.ts";
 import { settings } from "./settings.ts";
 import { Sound } from "./sound.ts";
 
@@ -150,15 +150,18 @@ type Intro = {
 
 /** Starts the receiver on the current page, or returns `null`, leaving the
  * plain page as it is, where the display can't run. */
-export function startReceiver({
+export async function startReceiver({
   layouts: makeLayouts = channelLayouts,
   onPlain,
   intro: powerOn = true,
-}: Options): Receiver | null {
+}: Options): Promise<Receiver | null> {
   const canvas = document.createElement("canvas");
   let tube: Tube | null;
   try {
-    tube = createTube(canvas);
+    tube = await createDisplayTube(canvas, () => {
+      stop();
+      onPlain();
+    });
   } catch {
     tube = null;
   }
@@ -186,10 +189,6 @@ export function startReceiver({
   const layouts = makeLayouts({ refresh: () => compose(), sound });
 
   const ghost = document.createElement("canvas");
-  const lit = document.createElement("canvas");
-  const lightSmall = document.createElement("canvas");
-  const lightSmaller = document.createElement("canvas");
-  const litContext = lit.getContext("2d")!;
 
   let cells!: Cells;
   let page = readPage();
@@ -275,10 +274,9 @@ export function startReceiver({
     const oy = inset + (Hi - (rows * (chh + gy) - gy)) / 2;
     const dpr = Math.min(2, devicePixelRatio || 1);
     const n = cols * rows;
-    for (const c of [ghost, lit, canvas]) {
-      c.width = W * dpr;
-      c.height = H * dpr;
-    }
+    gl.resize(W * dpr, H * dpr);
+    ghost.width = W * dpr;
+    ghost.height = H * dpr;
     cells = {
       W,
       H,
@@ -298,7 +296,7 @@ export function startReceiver({
       active: new Set(),
     };
     view.filament = (chh + gy) / 2;
-    const g = ghost.getContext("2d")!;
+    const g = ghost.getContext("2d", { willReadFrequently: true })!;
     g.setTransform(dpr, 0, 0, dpr, 0, 0);
     g.clearRect(0, 0, W, H);
     g.fillStyle = "rgba(150,210,235,0.045)";
@@ -310,17 +308,10 @@ export function startReceiver({
           for (let dy = 0; dy < 8; dy++)
             g.fillRect(x + dx * p, y + dy * p, s, s);
       }
-    litContext.setTransform(dpr, 0, 0, dpr, 0, 0);
-    litContext.clearRect(0, 0, W, H);
-    litContext.fillStyle = "#e6fbff";
-    lightSmall.width = Math.ceil(W / 4);
-    lightSmall.height = Math.ceil(H / 4);
-    lightSmaller.width = Math.ceil(W / 14);
-    lightSmaller.height = Math.ceil(H / 14);
+    gl.resetLit(W, H, dpr);
     gl.upload(Texture.Ghost, ghost);
     gl.upload(Texture.Scratch, scratches(W, H));
-    gl.upload(Texture.Lit, lit);
-    relight();
+    gl.relight();
     view.dirty = true;
     relayout();
   }
@@ -330,24 +321,6 @@ export function startReceiver({
       cells.ox + c * (cells.cw + cells.gx),
       cells.oy + r * (cells.chh + cells.gy),
     ];
-  }
-
-  /** The light map: lit dots blurred by downscaling, which drives the glow
-   * and which scratches shine. */
-  function relight() {
-    const small = lightSmall.getContext("2d")!;
-    const smaller = lightSmaller.getContext("2d")!;
-    small.clearRect(0, 0, lightSmall.width, lightSmall.height);
-    small.drawImage(lit, 0, 0, lightSmall.width, lightSmall.height);
-    smaller.clearRect(0, 0, lightSmaller.width, lightSmaller.height);
-    smaller.drawImage(
-      lightSmall,
-      0,
-      0,
-      lightSmaller.width,
-      lightSmaller.height,
-    );
-    gl.upload(Texture.Light, lightSmaller);
   }
 
   // ---- the bottom bar: the language label, PLAIN and SOUND ----
@@ -859,18 +832,15 @@ export function startReceiver({
   function drawCell(k: number) {
     const { cols, p } = cells;
     const [x, y] = cellXY(k % cols, (k / cols) | 0);
-    const s = p * 0.8;
-    const base = k * 40;
-    const b = cells.brightness[k]!;
-    litContext.clearRect(x - 0.5, y - 0.5, cells.cw + 1, cells.chh + 1);
-    for (let i = 0; i < 40; i++) {
-      const l = cells.level[base + i]!;
-      if (l > 0) {
-        litContext.globalAlpha = l * b;
-        litContext.fillRect(x + ((i / 8) | 0) * p, y + (i % 8) * p, s, s);
-      }
-    }
-    litContext.globalAlpha = 1;
+    gl.paintCell({
+      x,
+      y,
+      pitch: p,
+      width: cells.cw,
+      height: cells.chh,
+      brightness: cells.brightness[k]!,
+      levels: cells.level.slice(k * 40, k * 40 + 40),
+    });
     view.litDirty = true;
   }
 
@@ -914,7 +884,6 @@ export function startReceiver({
       }
     }
     if (view.litDirty) {
-      gl.upload(Texture.Lit, lit);
       view.litDirty = false;
       view.lightPending = true;
       view.dirty = true;
@@ -922,7 +891,7 @@ export function startReceiver({
     if (view.lightPending && now - view.lightAt > 80) {
       view.lightAt = now;
       view.lightPending = false;
-      relight();
+      gl.relight();
       view.dirty = true;
     }
     if (view.dirty) {
@@ -1570,6 +1539,7 @@ export function startReceiver({
     controller.abort();
     cancelAnimationFrame(frame);
     clearTimeout(pacer);
+    gl.dispose();
     display.remove();
     status.remove();
     root.classList.remove("receiving");
