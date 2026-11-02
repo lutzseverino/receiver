@@ -1,0 +1,5 @@
+# Credits
+
+This skill is Repo Canon's own, taken from the `to-spec` skill in [Matt Pocock's skills](https://github.com/mattpocock/skills). Its upstream base is tag `v1.3.1`, commit `24fe0ef7737efae15c87225755e9f6f5965e4888`, at [`skills/engineering/to-spec`](https://github.com/mattpocock/skills/tree/24fe0ef7737efae15c87225755e9f6f5965e4888/skills/engineering/to-spec). That material is used under its MIT License, whose notice adoption installs beside the skills as `.agents/skills/LICENSE.mattpocock-skills`.
+
+The skill differs from its upstream base as follows. `SKILL.md` states that a prompt or brief naming the skill is its invocation. It also drops the route to `setup-matt-pocock-skills` when the tracker configuration is missing, and publishes the spec awaiting an independent readiness review, after any revision notice and with the labels the repository's rules require, instead of applying `ready-for-agent` itself; a spec broken into tickets gets its readiness after they are published.
