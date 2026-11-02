@@ -91,6 +91,9 @@ export interface ChannelLayout {
     now: number,
   ): ((col: number, row: number) => boolean) | null;
   draw(grid: Grid, page: Page, now: number): void;
+  /** The name the header shows for `page` at `now`, as RDS names what is
+   * on air, when it is not the channel's own. */
+  name?(page: Page, now: number): string | null;
   /** The display starts showing `page`, after `from`: the page before it,
    * or `null` when the receiver starts, once its intro has ended. */
   enter?(page: Page, from: Page | null, now: number): void;

@@ -519,7 +519,11 @@ export function startReceiver({
     ) => {
       const preset = presetOf(page.channel);
       const fs = `${fixed(f)}MHz`;
-      const name = label ?? (page.signal ? channelName(page.channel) : "");
+      const name =
+        label ??
+        (page.signal
+          ? (layoutOf()?.name?.(page, now) ?? channelName(page.channel))
+          : "");
       if (cols >= 40) {
         put(1, 0, `FM1 ${locked ? `P${preset}` : "  "}  ${fs}`, 1);
         put(22, 0, name.slice(0, Math.max(0, cols - 33)), 1);

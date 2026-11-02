@@ -191,6 +191,11 @@ test("projects: opening a project and going back rewrite the display row by row,
     assert.ok(!opened.state.seen.includes("static"), "no seek");
     await drawn(tab, /◄ PROJECTS/);
     await drawn(tab, /Shared documentation/);
+    // the header names the project, in RDS's eight characters
+    await until(
+      async () => (await inspect(tab))?.rows[0]!.includes("REPO CAN"),
+      "the project's name in the header",
+    );
     // the wipe reaches the links last
     await until(
       async () =>

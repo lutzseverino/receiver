@@ -27,6 +27,11 @@ import {
 } from "../layout.ts";
 import { backLine, textOf } from "./common.ts";
 
+/** RDS's programme service name: 8 characters, which a project's page
+ * shows in the header, and the junk they decode from. */
+const PS_LENGTH = 8;
+const JUNK = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#*";
+
 /** How long the row wipe takes, and the selection's arrival in blocks. */
 export const WIPE_MS = 560;
 const SELECT_MS = 240;
@@ -484,6 +489,22 @@ export function projectsLayout(context: LayoutContext): ChannelLayout {
         row > body.bottom ||
         row < h ||
         (heading && row === h);
+    },
+    // a project's page names the project, decoding while the wipe runs
+    name(page, now) {
+      if (isList(page)) return null;
+      const name = displayLabel(page.main.querySelector("h1")?.textContent)
+        .slice(0, PS_LENGTH)
+        .trimEnd();
+      if (!wiping(now)) return name;
+      const t = (now - wipeAt!) / WIPE_MS;
+      return [...name]
+        .map((ch, i) =>
+          ch === " " || t > (i + 1) / (name.length + 2)
+            ? ch
+            : JUNK[Math.floor(Math.random() * JUNK.length)],
+        )
+        .join("");
     },
     draw(grid, page, now) {
       body = grid.body;
