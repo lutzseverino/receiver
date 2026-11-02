@@ -15,8 +15,8 @@
         "id": "canonical-labels"
       },
       "operationIndex": 0,
-      "before": "sha256:9cfc1808e6c53149257b54a59b45ddf21267e854bc170f0d140a8d8b616b6097",
-      "after": "sha256:9cfc1808e6c53149257b54a59b45ddf21267e854bc170f0d140a8d8b616b6097",
+      "before": "sha256:c4fbe2996af29035af499ca0df5fe2418562d71507d49baaeeceed1f44be033e",
+      "after": "sha256:c4fbe2996af29035af499ca0df5fe2418562d71507d49baaeeceed1f44be033e",
       "changes": {},
       "boundaryChanges": {},
       "violations": []
@@ -35,113 +35,8 @@
         "id": "pull-request-integration"
       },
       "operationIndex": 1,
-      "before": "sha256:9cfc1808e6c53149257b54a59b45ddf21267e854bc170f0d140a8d8b616b6097",
-      "after": "sha256:9cfc1808e6c53149257b54a59b45ddf21267e854bc170f0d140a8d8b616b6097",
-      "changes": {},
-      "boundaryChanges": {},
-      "violations": []
-    },
-    {
-      "phase": "checks",
-      "scope": {
-        "documentation": {
-          "paths": [
-            "docs/README.md",
-            "docs/development/README.md"
-          ],
-          "directories": []
-        }
-      },
-      "operation": {
-        "phase": "checks",
-        "declaration": "documentation",
-        "id": "documentation-navigation"
-      },
-      "operationIndex": 2,
-      "before": "sha256:9cfc1808e6c53149257b54a59b45ddf21267e854bc170f0d140a8d8b616b6097",
-      "after": "sha256:9cfc1808e6c53149257b54a59b45ddf21267e854bc170f0d140a8d8b616b6097",
-      "changes": {},
-      "boundaryChanges": {},
-      "violations": []
-    },
-    {
-      "phase": "checks",
-      "scope": {
-        "github-repository-configuration": {
-          "paths": [],
-          "directories": []
-        }
-      },
-      "operation": {
-        "phase": "checks",
-        "declaration": "github-repository-configuration",
-        "id": "pull-request-reviewer"
-      },
-      "operationIndex": 3,
-      "before": "sha256:9cfc1808e6c53149257b54a59b45ddf21267e854bc170f0d140a8d8b616b6097",
-      "after": "sha256:9cfc1808e6c53149257b54a59b45ddf21267e854bc170f0d140a8d8b616b6097",
-      "changes": {},
-      "boundaryChanges": {},
-      "violations": []
-    },
-    {
-      "phase": "checks",
-      "scope": {
-        "github-repository-configuration": {
-          "paths": [],
-          "directories": []
-        }
-      },
-      "operation": {
-        "phase": "checks",
-        "declaration": "github-repository-configuration",
-        "id": "factory-review-policy"
-      },
-      "operationIndex": 4,
-      "before": "sha256:9cfc1808e6c53149257b54a59b45ddf21267e854bc170f0d140a8d8b616b6097",
-      "after": "sha256:9cfc1808e6c53149257b54a59b45ddf21267e854bc170f0d140a8d8b616b6097",
-      "changes": {},
-      "boundaryChanges": {},
-      "violations": []
-    },
-    {
-      "phase": "checks",
-      "scope": {
-        "project-readmes": {
-          "paths": [],
-          "directories": []
-        }
-      },
-      "operation": {
-        "phase": "checks",
-        "declaration": "project-readmes",
-        "id": "project-readme-structure"
-      },
-      "operationIndex": 5,
-      "before": "sha256:9cfc1808e6c53149257b54a59b45ddf21267e854bc170f0d140a8d8b616b6097",
-      "after": "sha256:9cfc1808e6c53149257b54a59b45ddf21267e854bc170f0d140a8d8b616b6097",
-      "changes": {},
-      "boundaryChanges": {},
-      "violations": []
-    },
-    {
-      "phase": "checks",
-      "scope": {
-        "repository-readme": {
-          "paths": [
-            "README.md"
-          ],
-          "directories": []
-        }
-      },
-      "operation": {
-        "phase": "checks",
-        "declaration": "repository-readme",
-        "id": "repository-readme-structure"
-      },
-      "operationIndex": 6,
-      "before": "sha256:9cfc1808e6c53149257b54a59b45ddf21267e854bc170f0d140a8d8b616b6097",
-      "after": "sha256:9cfc1808e6c53149257b54a59b45ddf21267e854bc170f0d140a8d8b616b6097",
+      "before": "sha256:c4fbe2996af29035af499ca0df5fe2418562d71507d49baaeeceed1f44be033e",
+      "after": "sha256:c4fbe2996af29035af499ca0df5fe2418562d71507d49baaeeceed1f44be033e",
       "changes": {},
       "boundaryChanges": {},
       "violations": []
@@ -151,7 +46,10 @@
       "scope": {
         "documentation": {
           "paths": [
+            "GLOSSARY.md",
             "docs/README.md",
+            "docs/adr/0001-draw-real-pages-on-the-display.md",
+            "docs/adr/README.md",
             "docs/development/README.md"
           ],
           "directories": []
@@ -189,7 +87,9 @@
           "directories": []
         },
         "typescript-astro-stack": {
-          "paths": [],
+          "paths": [
+            "package.json"
+          ],
           "directories": []
         },
         "typescript-node-stack": {
@@ -201,8 +101,270 @@
           "directories": []
         }
       },
-      "before": "sha256:9cfc1808e6c53149257b54a59b45ddf21267e854bc170f0d140a8d8b616b6097",
-      "after": "sha256:9cfc1808e6c53149257b54a59b45ddf21267e854bc170f0d140a8d8b616b6097",
+      "before": "sha256:c4fbe2996af29035af499ca0df5fe2418562d71507d49baaeeceed1f44be033e",
+      "after": "sha256:c4fbe2996af29035af499ca0df5fe2418562d71507d49baaeeceed1f44be033e",
+      "changes": {},
+      "boundaryChanges": {},
+      "violations": []
+    },
+    {
+      "phase": "agent",
+      "scope": {
+        "documentation": {
+          "paths": [
+            "GLOSSARY.md",
+            "docs/README.md",
+            "docs/adr/0001-draw-real-pages-on-the-display.md",
+            "docs/adr/README.md",
+            "docs/development/README.md"
+          ],
+          "directories": []
+        },
+        "git-attributes": {
+          "paths": [
+            ".gitattributes"
+          ],
+          "directories": []
+        },
+        "github-repository-configuration": {
+          "paths": [],
+          "directories": []
+        },
+        "project-agent-guidance": {
+          "paths": [
+            "docs/agents/project.md"
+          ],
+          "directories": []
+        },
+        "project-readmes": {
+          "paths": [],
+          "directories": []
+        },
+        "repository-license": {
+          "paths": [
+            "LICENSE"
+          ],
+          "directories": []
+        },
+        "repository-readme": {
+          "paths": [
+            "README.md"
+          ],
+          "directories": []
+        },
+        "typescript-astro-stack": {
+          "paths": [
+            "package.json"
+          ],
+          "directories": []
+        },
+        "typescript-node-stack": {
+          "paths": [],
+          "directories": []
+        },
+        "typescript-vite-stack": {
+          "paths": [],
+          "directories": []
+        }
+      },
+      "before": "sha256:c4fbe2996af29035af499ca0df5fe2418562d71507d49baaeeceed1f44be033e",
+      "after": "sha256:c4fbe2996af29035af499ca0df5fe2418562d71507d49baaeeceed1f44be033e",
+      "changes": {},
+      "boundaryChanges": {},
+      "violations": []
+    },
+    {
+      "phase": "checks",
+      "scope": {
+        "documentation": {
+          "paths": [
+            "GLOSSARY.md",
+            "docs/README.md",
+            "docs/adr/0001-draw-real-pages-on-the-display.md",
+            "docs/adr/README.md",
+            "docs/development/README.md"
+          ],
+          "directories": []
+        }
+      },
+      "operation": {
+        "phase": "checks",
+        "declaration": "documentation",
+        "id": "documentation-navigation"
+      },
+      "operationIndex": 2,
+      "before": "sha256:c4fbe2996af29035af499ca0df5fe2418562d71507d49baaeeceed1f44be033e",
+      "after": "sha256:c4fbe2996af29035af499ca0df5fe2418562d71507d49baaeeceed1f44be033e",
+      "changes": {},
+      "boundaryChanges": {},
+      "violations": []
+    },
+    {
+      "phase": "checks",
+      "scope": {
+        "github-repository-configuration": {
+          "paths": [],
+          "directories": []
+        }
+      },
+      "operation": {
+        "phase": "checks",
+        "declaration": "github-repository-configuration",
+        "id": "pull-request-reviewer"
+      },
+      "operationIndex": 3,
+      "before": "sha256:c4fbe2996af29035af499ca0df5fe2418562d71507d49baaeeceed1f44be033e",
+      "after": "sha256:c4fbe2996af29035af499ca0df5fe2418562d71507d49baaeeceed1f44be033e",
+      "changes": {},
+      "boundaryChanges": {},
+      "violations": []
+    },
+    {
+      "phase": "checks",
+      "scope": {
+        "github-repository-configuration": {
+          "paths": [],
+          "directories": []
+        }
+      },
+      "operation": {
+        "phase": "checks",
+        "declaration": "github-repository-configuration",
+        "id": "factory-review-policy"
+      },
+      "operationIndex": 4,
+      "before": "sha256:c4fbe2996af29035af499ca0df5fe2418562d71507d49baaeeceed1f44be033e",
+      "after": "sha256:c4fbe2996af29035af499ca0df5fe2418562d71507d49baaeeceed1f44be033e",
+      "changes": {},
+      "boundaryChanges": {},
+      "violations": []
+    },
+    {
+      "phase": "checks",
+      "scope": {
+        "project-readmes": {
+          "paths": [],
+          "directories": []
+        }
+      },
+      "operation": {
+        "phase": "checks",
+        "declaration": "project-readmes",
+        "id": "project-readme-structure"
+      },
+      "operationIndex": 5,
+      "before": "sha256:c4fbe2996af29035af499ca0df5fe2418562d71507d49baaeeceed1f44be033e",
+      "after": "sha256:c4fbe2996af29035af499ca0df5fe2418562d71507d49baaeeceed1f44be033e",
+      "changes": {},
+      "boundaryChanges": {},
+      "violations": []
+    },
+    {
+      "phase": "checks",
+      "scope": {
+        "repository-readme": {
+          "paths": [
+            "README.md"
+          ],
+          "directories": []
+        }
+      },
+      "operation": {
+        "phase": "checks",
+        "declaration": "repository-readme",
+        "id": "repository-readme-structure"
+      },
+      "operationIndex": 6,
+      "before": "sha256:c4fbe2996af29035af499ca0df5fe2418562d71507d49baaeeceed1f44be033e",
+      "after": "sha256:c4fbe2996af29035af499ca0df5fe2418562d71507d49baaeeceed1f44be033e",
+      "changes": {},
+      "boundaryChanges": {},
+      "violations": []
+    },
+    {
+      "phase": "checks",
+      "scope": {
+        "typescript-astro-stack": {
+          "paths": [
+            "package.json"
+          ],
+          "directories": []
+        }
+      },
+      "operation": {
+        "phase": "checks",
+        "declaration": "typescript-astro-stack",
+        "id": "typescript-astro-stack-manifests"
+      },
+      "operationIndex": 7,
+      "before": "sha256:c4fbe2996af29035af499ca0df5fe2418562d71507d49baaeeceed1f44be033e",
+      "after": "sha256:c4fbe2996af29035af499ca0df5fe2418562d71507d49baaeeceed1f44be033e",
+      "changes": {},
+      "boundaryChanges": {},
+      "violations": []
+    },
+    {
+      "phase": "agent",
+      "scope": {
+        "documentation": {
+          "paths": [
+            "GLOSSARY.md",
+            "docs/README.md",
+            "docs/adr/0001-draw-real-pages-on-the-display.md",
+            "docs/adr/README.md",
+            "docs/development/README.md"
+          ],
+          "directories": []
+        },
+        "git-attributes": {
+          "paths": [
+            ".gitattributes"
+          ],
+          "directories": []
+        },
+        "github-repository-configuration": {
+          "paths": [],
+          "directories": []
+        },
+        "project-agent-guidance": {
+          "paths": [
+            "docs/agents/project.md"
+          ],
+          "directories": []
+        },
+        "project-readmes": {
+          "paths": [],
+          "directories": []
+        },
+        "repository-license": {
+          "paths": [
+            "LICENSE"
+          ],
+          "directories": []
+        },
+        "repository-readme": {
+          "paths": [
+            "README.md"
+          ],
+          "directories": []
+        },
+        "typescript-astro-stack": {
+          "paths": [
+            "package.json"
+          ],
+          "directories": []
+        },
+        "typescript-node-stack": {
+          "paths": [],
+          "directories": []
+        },
+        "typescript-vite-stack": {
+          "paths": [],
+          "directories": []
+        }
+      },
+      "before": "sha256:c4fbe2996af29035af499ca0df5fe2418562d71507d49baaeeceed1f44be033e",
+      "after": "sha256:c4fbe2996af29035af499ca0df5fe2418562d71507d49baaeeceed1f44be033e",
       "changes": {},
       "boundaryChanges": {},
       "violations": []
@@ -224,7 +386,7 @@
       "result": {
         "format": "repo-standards/result/v2",
         "status": "unchanged",
-        "message": "GitHub labels already match the canonical configuration for lutzseverino/site."
+        "message": "GitHub labels already match the canonical configuration for lutzseverino/receiver."
       },
       "error": null,
       "stdout": ".repo-standards/local/operations/0.stdout",
@@ -244,8 +406,8 @@
       },
       "result": {
         "format": "repo-standards/result/v2",
-        "status": "changed",
-        "message": "GitHub PR integration setup changed lutzseverino/site: created required-check ruleset. Final readback confirmed PR metadata with strict freshness, squash-only integration, PR-title subjects, and PR-body messages; unrelated settings and rules were preserved."
+        "status": "unchanged",
+        "message": "GitHub PR integration already matches the canonical configuration for lutzseverino/receiver."
       },
       "error": null,
       "stdout": ".repo-standards/local/operations/1.stdout",
@@ -355,15 +517,36 @@
       "error": null,
       "stdout": ".repo-standards/local/operations/6.stdout",
       "stderr": ".repo-standards/local/operations/6.stderr"
+    },
+    {
+      "operation": {
+        "declaration": "typescript-astro-stack",
+        "phase": "checks",
+        "id": "typescript-astro-stack-manifests"
+      },
+      "process": {
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "timedOut": false
+      },
+      "result": {
+        "format": "repo-standards/result/v2",
+        "status": "passed",
+        "message": "The typescript-astro stack manifest facts are valid for 1 Project; framework, React, Tailwind, TypeScript and test-runner majors, actual astro check/ui:check execution by validate, CI coverage, Setup and validation, integrity, wrappers and theme behavior still require contextual assessment."
+      },
+      "error": null,
+      "stdout": ".repo-standards/local/operations/7.stdout",
+      "stderr": ".repo-standards/local/operations/7.stderr"
     }
   ],
   "retryHistory": [],
   "changeSet": [],
   "lastComplete": {
-    "run": "71cd7227-e1c8-4c84-847b-fbb0fab342d6",
-    "inspection": "sha256:27988e8170ee4c9bea5dcbb25f0590403250e35904bb2e99c30bc30c06db29b8",
-    "completedAt": "2026-11-02T02:12:12.296Z",
-    "head": "a656c7243e08d10f3fd55e7c87bd6ff67cdd6380"
+    "run": "8e69b056-fe15-4338-b8ca-61c36a4863b2",
+    "inspection": "sha256:5b7f823e2037a927cac1773ea41c756c72173a231bd331614e5993a834d654e2",
+    "completedAt": "2026-11-02T11:23:01.321Z",
+    "head": "fd304e045bb80d6c27983be008950d354810187f"
   },
   "baselines": {
     "docs/agents/README.md": {
@@ -1075,44 +1258,68 @@
       "error": null,
       "stdout": ".repo-standards/local/operations/6.stdout",
       "stderr": ".repo-standards/local/operations/6.stderr"
+    },
+    {
+      "operation": {
+        "declaration": "typescript-astro-stack",
+        "phase": "checks",
+        "id": "typescript-astro-stack-manifests"
+      },
+      "process": {
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "timedOut": false
+      },
+      "result": {
+        "format": "repo-standards/result/v2",
+        "status": "passed",
+        "message": "The typescript-astro stack manifest facts are valid for 1 Project; framework, React, Tailwind, TypeScript and test-runner majors, actual astro check/ui:check execution by validate, CI coverage, Setup and validation, integrity, wrappers and theme behavior still require contextual assessment."
+      },
+      "error": null,
+      "stdout": ".repo-standards/local/operations/7.stdout",
+      "stderr": ".repo-standards/local/operations/7.stderr"
     }
   ],
   "assessments": [
     {
       "format": "repo-standards/assessment/v3",
       "scope": {
-        "inspection": "sha256:27988e8170ee4c9bea5dcbb25f0590403250e35904bb2e99c30bc30c06db29b8",
-        "afterFixes": "sha256:b8c40c474213d5d2287a0c55aaffefc033e378d9d9468e9049b2d5e7daf1be2f"
+        "inspection": "sha256:5b7f823e2037a927cac1773ea41c756c72173a231bd331614e5993a834d654e2",
+        "afterFixes": "sha256:ea1889efa54aa1bdc91014d08fe4d2c849b91e3c1bea99bf8709f72ca456525c"
       },
-      "run": "71cd7227-e1c8-4c84-847b-fbb0fab342d6",
+      "run": "8e69b056-fe15-4338-b8ca-61c36a4863b2",
       "selection": "sha256:54630bd0ee7495edbf36476ee7b41b85d728dae96d109b5e3947fb613066d578",
-      "snapshot": "sha256:b8c40c474213d5d2287a0c55aaffefc033e378d9d9468e9049b2d5e7daf1be2f",
+      "snapshot": "sha256:ea1889efa54aa1bdc91014d08fe4d2c849b91e3c1bea99bf8709f72ca456525c",
       "declarations": [
         {
           "id": "documentation",
           "status": "satisfied",
-          "explanation": "docs/README.md is the root documentation index: a one-sentence purpose, then one `[Title](path): description` item per category README present (development, agents), each description stating what belongs in the category. docs/development/README.md gives its purpose, then a Setup and validation section stating the real prerequisites (Git, Node.js 24 or 26, npm), setup (npm ci of the pinned runtime) and required validation (repo-standards check), and no index entries because no development documents exist yet. No usage or adr category is created because neither has content yet; no point-in-time records exist.",
+          "explanation": "The confirmed documentation already conforms; no file needs to move. docs indexes maintained documentation and ADRs, and the root glossary stays outside docs.",
           "changedPaths": [],
           "evidence": [
-            "docs/ holds only the installed docs/agents/ files plus the two new indexes; the installed docs/agents/README.md is unchanged and is listed once, from docs/README.md.",
-            "The Node.js 24 or 26 prerequisite matches the CLI engines field `>=24 <25 || >=26 <27` and the operations' prerequisite probes; `npm ci --ignore-scripts --prefix .repo-standards/runtime` matches the repository-standards skill's documented runtime restore, and .repo-standards/.gitignore ignores runtime/node_modules, so a fresh clone needs it.",
-            "CONTRIBUTING.md links docs/development/README.md for prerequisites, local setup and development commands, which now exists.",
-            "No package manifest or site code exists, so the guide states that no build or test command exists rather than inventing one."
+            "docs/README.md lists development, adr and agents once, with category descriptions; docs/adr/README.md indexes ADR0001.",
+            "docs/development/README.md documents actual Node24/26 and pnpm11 setup, Astro commands, tests and required validate plus standards check. No point-in-time run record is in docs.",
+            "src/i18n/format.ts loads prose as product messages; src/components/ui/AGENTS.md governs generated code; test/wire.test.ts builds fixture posts. These are not documentation; fixture READMEs are data."
           ],
           "scopeValidity": {
             "afterFixes": {
               "status": "valid",
-              "explanation": "After fixes, the documentation root `docs` holds only exact-owned docs/agents files and the two confirmed new indexes are the only documentation files this declaration needs.",
+              "explanation": "The confirmed documentation already conforms; no file needs to move. docs indexes maintained documentation and ADRs, and the root glossary stays outside docs.",
               "evidence": [
-                "docs/agents/README.md, domain.md, issue-tracker.md and triage-labels.md are exact files owned by other declarations; no other Markdown exists under docs and no GLOSSARY.md or GLOSSARY-MAP.md exists."
+                "docs/README.md lists development, adr and agents once, with category descriptions; docs/adr/README.md indexes ADR0001.",
+                "docs/development/README.md documents actual Node24/26 and pnpm11 setup, Astro commands, tests and required validate plus standards check. No point-in-time run record is in docs.",
+                "src/i18n/format.ts loads prose as product messages; src/components/ui/AGENTS.md governs generated code; test/wire.test.ts builds fixture posts. These are not documentation; fixture READMEs are data."
               ],
               "additionalPaths": []
             },
             "current": {
               "status": "valid",
-              "explanation": "After contextual work, the only new documentation files are the confirmed docs/README.md and docs/development/README.md; no move or link repair outside scope was needed.",
+              "explanation": "The confirmed documentation already conforms; no file needs to move. docs indexes maintained documentation and ADRs, and the root glossary stays outside docs.",
               "evidence": [
-                "`git status` shows no new Markdown under docs/ other than the two confirmed paths and the installed docs/agents files."
+                "docs/README.md lists development, adr and agents once, with category descriptions; docs/adr/README.md indexes ADR0001.",
+                "docs/development/README.md documents actual Node24/26 and pnpm11 setup, Astro commands, tests and required validate plus standards check. No point-in-time run record is in docs.",
+                "src/i18n/format.ts loads prose as product messages; src/components/ui/AGENTS.md governs generated code; test/wire.test.ts builds fixture posts. These are not documentation; fixture READMEs are data."
               ],
               "additionalPaths": []
             }
@@ -1132,28 +1339,31 @@
         {
           "id": "github-repository-configuration",
           "status": "satisfied",
-          "explanation": "The canonical-labels and pull-request-integration fixes ran on lutzseverino/site, authorized by the owner's approval of this adoption on lutzseverino/site#1, and both reported unchanged: all 12 canonical labels already exist with their colors, and squash merging is the only merge method, with PR-title subjects and PR-body messages. Requiring the `PR metadata` check and strict freshness is unavailable, not skipped: the repository is private on a plan that offers neither branch protection nor rulesets, so the next adoption or update requires it once GitHub offers either; unattended merging stays stopped until GitHub enforcement is confirmed. REPO_CANON_RUNS_ON is unset (hosted default). The v0.21.0 rules add internal-review definitions, a default reviewer request bound of 4, PR-body own-head link checks and the policy-file commit rule; none needs project content here, because no reviewer or factory review policy file exists and none was created.",
+          "explanation": "The empty scope is intentional: remote fixes own GitHub configuration for lutzseverino/receiver and optional reviewer files remain absent and untouched.",
           "changedPaths": [],
           "evidence": [
-            "Fix canonical-labels result: unchanged, GitHub labels already match the canonical configuration for lutzseverino/site. `gh label list` shows needs-triage fbca04, needs-info d4c5f9, ready-for-agent 0e8a16, ready-for-human 1d76db, wontfix ffffff, bug d73a4a, enhancement a2eeef and the five wayfinder labels, plus preserved defaults such as documentation and accessibility.",
-            "Fix pull-request-integration result: unchanged; `gh api repos/lutzseverino/site` reads allow_squash_merge true, allow_merge_commit false, allow_rebase_merge false, squash_merge_commit_title PR_TITLE, squash_merge_commit_message PR_BODY.",
-            "`gh repo view --json visibility` reports PRIVATE; `gh variable list` returns no variables, so REPO_CANON_RUNS_ON is absent (unset, hosted default); `gh api users/lutzseverino` reports type User, so no organization-level variable can apply.",
-            ".github/pull-request-reviewer.json and .github/factory-review-policy.json are absent, which their checks accept."
+            "origin is solely https://github.com/lutzseverino/receiver; gh resolves lutzseverino/receiver PUBLIC with ADMIN permission; owner is a User.",
+            "gh variable list returned []; REPO_CANON_RUNS_ON is unset, hosted default, with no organization inheritance.",
+            "Both remote fixes completed unchanged for lutzseverino/receiver, under the approved plan on PR1 comment6567277613 and approved issue15 brief."
           ],
           "scopeValidity": {
             "afterFixes": {
               "status": "valid",
-              "explanation": "The declaration changes remote GitHub settings only and owns no project-content path, so its empty scope remains correct after fixes.",
+              "explanation": "The empty scope is intentional: remote fixes own GitHub configuration for lutzseverino/receiver and optional reviewer files remain absent and untouched.",
               "evidence": [
-                "Both fixes reported no project file changes (run observations show empty changes for both operations)."
+                "origin is solely https://github.com/lutzseverino/receiver; gh resolves lutzseverino/receiver PUBLIC with ADMIN permission; owner is a User.",
+                "gh variable list returned []; REPO_CANON_RUNS_ON is unset, hosted default, with no organization inheritance.",
+                "Both remote fixes completed unchanged for lutzseverino/receiver, under the approved plan on PR1 comment6567277613 and approved issue15 brief."
               ],
               "additionalPaths": []
             },
             "current": {
               "status": "valid",
-              "explanation": "After contextual work the empty scope is still correct: no reviewer or review-policy file was added, and no other project file belongs to this declaration.",
+              "explanation": "The empty scope is intentional: remote fixes own GitHub configuration for lutzseverino/receiver and optional reviewer files remain absent and untouched.",
               "evidence": [
-                "No file under .github/ was edited by contextual work; .github/pull-request-reviewer.json and .github/factory-review-policy.json remain absent."
+                "origin is solely https://github.com/lutzseverino/receiver; gh resolves lutzseverino/receiver PUBLIC with ADMIN permission; owner is a User.",
+                "gh variable list returned []; REPO_CANON_RUNS_ON is unset, hosted default, with no organization inheritance.",
+                "Both remote fixes completed unchanged for lutzseverino/receiver, under the approved plan on PR1 comment6567277613 and approved issue15 brief."
               ],
               "additionalPaths": []
             }
@@ -1172,26 +1382,28 @@
         {
           "id": "project-readmes",
           "status": "satisfied",
-          "explanation": "The repository contains no Project: no app, service, library or tool with its own responsibility and development commands exists yet, so no Project README is required and the confirmed empty scope is correct.",
+          "explanation": "Empty scope remains correct: the standalone root package is the only Project and its README belongs to repository-readme; no non-root Project README is needed.",
           "changedPaths": [],
           "evidence": [
-            "No package manifest, build configuration or maintained source exists; the only code is installed Repository Standards tooling (scripts/, operations/lib/, .github/scripts/, vendor/, skills), which is not a repository-owned Project.",
-            "The root README.md belongs to repository-readme."
+            "pnpm-workspace.yaml contains settings only; package.json owns the site commands.",
+            "test/fixtures/github READMEs are test data read by src/data/fixture.ts; fixtures are not Projects."
           ],
           "scopeValidity": {
             "afterFixes": {
               "status": "valid",
-              "explanation": "After fixes no Project exists, so no Project README path belongs in this scope.",
+              "explanation": "Empty scope remains correct: the standalone root package is the only Project and its README belongs to repository-readme; no non-root Project README is needed.",
               "evidence": [
-                "Fixes changed only GitHub settings; no manifest or source tree appeared."
+                "pnpm-workspace.yaml contains settings only; package.json owns the site commands.",
+                "test/fixtures/github READMEs are test data read by src/data/fixture.ts; fixtures are not Projects."
               ],
               "additionalPaths": []
             },
             "current": {
               "status": "valid",
-              "explanation": "After contextual work no Project exists; the work added only documentation, the root README, .gitattributes and LICENSE.",
+              "explanation": "Empty scope remains correct: the standalone root package is the only Project and its README belongs to repository-readme; no non-root Project README is needed.",
               "evidence": [
-                "Changed paths are docs/README.md, docs/development/README.md, README.md, .gitattributes and LICENSE."
+                "pnpm-workspace.yaml contains settings only; package.json owns the site commands.",
+                "test/fixtures/github READMEs are test data read by src/data/fixture.ts; fixtures are not Projects."
               ],
               "additionalPaths": []
             }
@@ -1212,38 +1424,44 @@
         {
           "id": "repository-readme",
           "status": "satisfied",
-          "explanation": "README.md starts with one centered header block (title, a one-sentence description of what the project is and who it is for, then a Node.js 24 or 26 badge), then a Concept section defining the planned radio receiver and its channels, a Status section stating that no website code exists yet, and Documentation, Contributing and License pointer sections holding only their links. The License link, labelled `MIT and CC BY 4.0`, names the actual repository licenses and targets LICENSE. It mentions no stack, install path or usage example because none exists yet.",
+          "explanation": "README.md now titles the repository Receiver in its centered header and retains the concise personal-website description, supported tool badges and ordered pointer sections. No adoption edit is needed.",
           "changedPaths": [],
           "evidence": [
-            "The Concept section reflects the owner's stated plan: an intro, then channels such as about, projects, a Markdown blog and contact, on a custom dot-matrix display; the term channel is defined before use.",
-            "The only runtime a contributor needs today is Node.js 24 or 26 for the pinned Repository Standards CLI and validator scripts (CLI engines `>=24 <25 || >=26 <27`); there is no TypeScript or other site language yet, so no language badge is added.",
-            "docs/README.md and CONTRIBUTING.md exist, so the Documentation and Contributing sections link them as plain paragraphs.",
-            "The License section is the single paragraph `[MIT and CC BY 4.0](LICENSE)`, matching the two licenses LICENSE states."
+            "README.md has h1 Receiver, description and badges in centered div; pnpm install and validate passed after the rename.",
+            "Documentation, Contributing and License remain single pointer paragraphs with valid local targets."
           ]
         },
         {
           "id": "typescript-astro-stack",
           "status": "satisfied",
-          "explanation": "No project file belongs in the typescript-astro-stack scope: the repository holds no package.json or other JavaScript or TypeScript Project. The owner also decided the site will use a custom dot-matrix display UI, not shadcn, and no stack has been chosen yet, so the declaration correctly stays at no scope.",
+          "explanation": "The root Project is an Astro Site with real static HTML channel pages beneath its progressive receiver display. It conforms to the Astro stack; scope is exactly package.json and no migration is needed.",
           "changedPaths": [],
           "evidence": [
-            "`git ls-files` at the adoption base e80d28a lists no files, and the working tree after installation holds no package.json outside .repo-standards/runtime (the pinned CLI runtime, owned by Repository Standards).",
-            "No workspace configuration (pnpm-workspace.yaml), framework configuration (astro.config.*, vite.config.*) or source tree exists."
+            "package.json pins Astro7, React19, Tailwind4, TypeScript6 with astro check, oxlint1, Prettier3 and prettier-plugin-astro, node --test, Node24/26 and pnpm11; lockfile is present. astro.config.mjs output is static.",
+            "pnpm validate passed at rename head: ui:check, astro check (79 files; zero diagnostics), lint, format, full test suite and static fixture build. Validate workflow runs the whole command on both Node24 and26.",
+            "components.json uses base-lyra and lucide; shadcn4 exact pin and ui:add/update/check invoke registry script; ui:check verifies unmodified generated output. src/components/app re-exports UI components, reply uses them, and global.css owns data-slot styles and :root/.dark tokens.",
+            "docs/development/README.md documents the actual tools, setup and validation. pnpm-workspace.yaml has settings only, no other maintained packages."
           ],
           "scopeValidity": {
             "afterFixes": {
               "status": "valid",
-              "explanation": "After fixes, no Project manifest exists, so no project file belongs in this scope.",
+              "explanation": "The root Project is an Astro Site with real static HTML channel pages beneath its progressive receiver display. It conforms to the Astro stack; scope is exactly package.json and no migration is needed.",
               "evidence": [
-                "Fixes changed only GitHub settings; no package.json was added outside .repo-standards/runtime."
+                "package.json pins Astro7, React19, Tailwind4, TypeScript6 with astro check, oxlint1, Prettier3 and prettier-plugin-astro, node --test, Node24/26 and pnpm11; lockfile is present. astro.config.mjs output is static.",
+                "pnpm validate passed at rename head: ui:check, astro check (79 files; zero diagnostics), lint, format, full test suite and static fixture build. Validate workflow runs the whole command on both Node24 and26.",
+                "components.json uses base-lyra and lucide; shadcn4 exact pin and ui:add/update/check invoke registry script; ui:check verifies unmodified generated output. src/components/app re-exports UI components, reply uses them, and global.css owns data-slot styles and :root/.dark tokens.",
+                "docs/development/README.md documents the actual tools, setup and validation. pnpm-workspace.yaml has settings only, no other maintained packages."
               ],
               "additionalPaths": []
             },
             "current": {
               "status": "valid",
-              "explanation": "After contextual work, still no Project manifest exists; contextual work added only Markdown docs, README.md, .gitattributes and LICENSE.",
+              "explanation": "The root Project is an Astro Site with real static HTML channel pages beneath its progressive receiver display. It conforms to the Astro stack; scope is exactly package.json and no migration is needed.",
               "evidence": [
-                "Changed paths are docs/README.md, docs/development/README.md, README.md, .gitattributes and LICENSE; none is a package manifest."
+                "package.json pins Astro7, React19, Tailwind4, TypeScript6 with astro check, oxlint1, Prettier3 and prettier-plugin-astro, node --test, Node24/26 and pnpm11; lockfile is present. astro.config.mjs output is static.",
+                "pnpm validate passed at rename head: ui:check, astro check (79 files; zero diagnostics), lint, format, full test suite and static fixture build. Validate workflow runs the whole command on both Node24 and26.",
+                "components.json uses base-lyra and lucide; shadcn4 exact pin and ui:add/update/check invoke registry script; ui:check verifies unmodified generated output. src/components/app re-exports UI components, reply uses them, and global.css owns data-slot styles and :root/.dark tokens.",
+                "docs/development/README.md documents the actual tools, setup and validation. pnpm-workspace.yaml has settings only, no other maintained packages."
               ],
               "additionalPaths": []
             }
@@ -1252,26 +1470,28 @@
         {
           "id": "typescript-node-stack",
           "status": "satisfied",
-          "explanation": "No project file belongs in the typescript-node-stack scope: the repository holds no package.json or other JavaScript or TypeScript Project. The owner also decided the site will use a custom dot-matrix display UI, not shadcn, and no stack has been chosen yet, so the declaration correctly stays at no scope.",
+          "explanation": "No scope: the standalone root Project is an Astro Site, so no Project belongs to this stack.",
           "changedPaths": [],
           "evidence": [
-            "`git ls-files` at the adoption base e80d28a lists no files, and the working tree after installation holds no package.json outside .repo-standards/runtime (the pinned CLI runtime, owned by Repository Standards).",
-            "No workspace configuration (pnpm-workspace.yaml), framework configuration (astro.config.*, vite.config.*) or source tree exists."
+            "astro.config.mjs sets output static and integrates React and Tailwind; src/pages contains real HTML pages beneath the display.",
+            "package.json is included only in typescript-astro-stack; fixtures and vendored runtime are not maintained Projects."
           ],
           "scopeValidity": {
             "afterFixes": {
               "status": "valid",
-              "explanation": "After fixes, no Project manifest exists, so no project file belongs in this scope.",
+              "explanation": "No scope: the standalone root Project is an Astro Site, so no Project belongs to this stack.",
               "evidence": [
-                "Fixes changed only GitHub settings; no package.json was added outside .repo-standards/runtime."
+                "astro.config.mjs sets output static and integrates React and Tailwind; src/pages contains real HTML pages beneath the display.",
+                "package.json is included only in typescript-astro-stack; fixtures and vendored runtime are not maintained Projects."
               ],
               "additionalPaths": []
             },
             "current": {
               "status": "valid",
-              "explanation": "After contextual work, still no Project manifest exists; contextual work added only Markdown docs, README.md, .gitattributes and LICENSE.",
+              "explanation": "No scope: the standalone root Project is an Astro Site, so no Project belongs to this stack.",
               "evidence": [
-                "Changed paths are docs/README.md, docs/development/README.md, README.md, .gitattributes and LICENSE; none is a package manifest."
+                "astro.config.mjs sets output static and integrates React and Tailwind; src/pages contains real HTML pages beneath the display.",
+                "package.json is included only in typescript-astro-stack; fixtures and vendored runtime are not maintained Projects."
               ],
               "additionalPaths": []
             }
@@ -1280,26 +1500,28 @@
         {
           "id": "typescript-vite-stack",
           "status": "satisfied",
-          "explanation": "No project file belongs in the typescript-vite-stack scope: the repository holds no package.json or other JavaScript or TypeScript Project. The owner also decided the site will use a custom dot-matrix display UI, not shadcn, and no stack has been chosen yet, so the declaration correctly stays at no scope.",
+          "explanation": "No scope: the standalone root Project is an Astro Site, so no Project belongs to this stack.",
           "changedPaths": [],
           "evidence": [
-            "`git ls-files` at the adoption base e80d28a lists no files, and the working tree after installation holds no package.json outside .repo-standards/runtime (the pinned CLI runtime, owned by Repository Standards).",
-            "No workspace configuration (pnpm-workspace.yaml), framework configuration (astro.config.*, vite.config.*) or source tree exists."
+            "astro.config.mjs sets output static and integrates React and Tailwind; src/pages contains real HTML pages beneath the display.",
+            "package.json is included only in typescript-astro-stack; fixtures and vendored runtime are not maintained Projects."
           ],
           "scopeValidity": {
             "afterFixes": {
               "status": "valid",
-              "explanation": "After fixes, no Project manifest exists, so no project file belongs in this scope.",
+              "explanation": "No scope: the standalone root Project is an Astro Site, so no Project belongs to this stack.",
               "evidence": [
-                "Fixes changed only GitHub settings; no package.json was added outside .repo-standards/runtime."
+                "astro.config.mjs sets output static and integrates React and Tailwind; src/pages contains real HTML pages beneath the display.",
+                "package.json is included only in typescript-astro-stack; fixtures and vendored runtime are not maintained Projects."
               ],
               "additionalPaths": []
             },
             "current": {
               "status": "valid",
-              "explanation": "After contextual work, still no Project manifest exists; contextual work added only Markdown docs, README.md, .gitattributes and LICENSE.",
+              "explanation": "No scope: the standalone root Project is an Astro Site, so no Project belongs to this stack.",
               "evidence": [
-                "Changed paths are docs/README.md, docs/development/README.md, README.md, .gitattributes and LICENSE; none is a package manifest."
+                "astro.config.mjs sets output static and integrates React and Tailwind; src/pages contains real HTML pages beneath the display.",
+                "package.json is included only in typescript-astro-stack; fixtures and vendored runtime are not maintained Projects."
               ],
               "additionalPaths": []
             }
@@ -1311,60 +1533,6 @@
   "deferred": [],
   "reused": [
     {
-      "id": "scope:project-readmes",
-      "kind": "scope",
-      "evidence": {
-        "discovery": "a2cf9e7206712b7b169ebcf901d40ded7fa655100b3afbcf825296e46291b47a",
-        "rules": "6cc1cbca7a629ab74c4e93b83f400cade77159aeb1bd2502463eafedb63a24fc",
-        "draft": "none",
-        "paths": []
-      }
-    },
-    {
-      "id": "scope:typescript-astro-stack",
-      "kind": "scope",
-      "evidence": {
-        "discovery": "2c41b18bc7757bc2f6b4f26cdebec67f8c9c70b25ac636562a27843d8ba4c615",
-        "rules": "ef7f2b9a05d59cb8dda6ca41e58a4b09c841f117f592c678473c83894fc0910f",
-        "draft": "decided-from",
-        "paths": []
-      }
-    },
-    {
-      "id": "scope:typescript-node-stack",
-      "kind": "scope",
-      "evidence": {
-        "discovery": "d23ae9513f022862a8be9be8d8ca30ced7ed8febef21a27ab3b3e34cbfeba937",
-        "rules": "445cd0d96ebcd04d428d19498bf95c5a23447dbb5aade4cfbd61ac07fe2b6799",
-        "draft": "decided-from",
-        "paths": []
-      }
-    },
-    {
-      "id": "scope:typescript-vite-stack",
-      "kind": "scope",
-      "evidence": {
-        "discovery": "d26c9725c371c74235feef40d4cfae4d6e5c5ad4d6da13e69603155cfe06d03b",
-        "rules": "ef7f2b9a05d59cb8dda6ca41e58a4b09c841f117f592c678473c83894fc0910f",
-        "draft": "decided-from",
-        "paths": []
-      }
-    },
-    {
-      "id": "assessment:documentation",
-      "kind": "assessment",
-      "evidence": {
-        "judgedAgainst": {
-          "kind": "rules",
-          "sha256": "33f5c3535f18ccf34e0222597fdee045ead0432c100e92ecaeef89c84b425a3b"
-        },
-        "scope": {
-          "basis": "declaration",
-          "snapshot": "sha256:9da302937d82eeee255b43bc8d324065e8fc75440ac6152362a83905be12a6a9"
-        }
-      }
-    },
-    {
       "id": "assessment:git-attributes",
       "kind": "assessment",
       "evidence": {
@@ -1375,20 +1543,6 @@
         "scope": {
           "basis": "declaration",
           "snapshot": "sha256:30ab006c4abbde4f201f0fa2a039a9a187d7d592a6b17f495d4a85c9296b9268"
-        }
-      }
-    },
-    {
-      "id": "assessment:github-repository-configuration",
-      "kind": "assessment",
-      "evidence": {
-        "judgedAgainst": {
-          "kind": "rules",
-          "sha256": "173b4cf971116c6b21c29df57245b340a3b82583a26e40575c906c73742187a8"
-        },
-        "scope": {
-          "basis": "declaration",
-          "snapshot": "sha256:f61bb6b747466f440a7bfe1ad8ac8d9c6cc81dd9a69aeeaef10fd61e5e7cfe89"
         }
       }
     },
@@ -1407,20 +1561,6 @@
       }
     },
     {
-      "id": "assessment:project-readmes",
-      "kind": "assessment",
-      "evidence": {
-        "judgedAgainst": {
-          "kind": "rules",
-          "sha256": "6cc1cbca7a629ab74c4e93b83f400cade77159aeb1bd2502463eafedb63a24fc"
-        },
-        "scope": {
-          "basis": "declaration",
-          "snapshot": "sha256:f61bb6b747466f440a7bfe1ad8ac8d9c6cc81dd9a69aeeaef10fd61e5e7cfe89"
-        }
-      }
-    },
-    {
       "id": "assessment:repository-license",
       "kind": "assessment",
       "evidence": {
@@ -1433,78 +1573,22 @@
           "snapshot": "sha256:856d8baf35b307075fb16af16939629dd0c7377b9ff6d9586e729be78eb14142"
         }
       }
-    },
-    {
-      "id": "assessment:repository-readme",
-      "kind": "assessment",
-      "evidence": {
-        "judgedAgainst": {
-          "kind": "rules",
-          "sha256": "2965277f0a8436f69dbeb1573dc2c905e519229ab38a26cda2599a0f11233952"
-        },
-        "scope": {
-          "basis": "declaration",
-          "snapshot": "sha256:9c661c3232fba5bd9c440f101bd171ccf56d251fc505b351ed3730eb8408eafe"
-        }
-      }
-    },
-    {
-      "id": "assessment:typescript-astro-stack",
-      "kind": "assessment",
-      "evidence": {
-        "judgedAgainst": {
-          "kind": "guidance",
-          "sha256": "ca192cf5081f79e58dfb24f965c4d65603091a1fa57e0c4a9da35d2f3a4e379e"
-        },
-        "scope": {
-          "basis": "declaration",
-          "snapshot": "sha256:f61bb6b747466f440a7bfe1ad8ac8d9c6cc81dd9a69aeeaef10fd61e5e7cfe89"
-        }
-      }
-    },
-    {
-      "id": "assessment:typescript-node-stack",
-      "kind": "assessment",
-      "evidence": {
-        "judgedAgainst": {
-          "kind": "guidance",
-          "sha256": "dc4a56fc443bd9e76fc753de632e4318cee6294c71422cdfb79d208a2ecda25c"
-        },
-        "scope": {
-          "basis": "declaration",
-          "snapshot": "sha256:f61bb6b747466f440a7bfe1ad8ac8d9c6cc81dd9a69aeeaef10fd61e5e7cfe89"
-        }
-      }
-    },
-    {
-      "id": "assessment:typescript-vite-stack",
-      "kind": "assessment",
-      "evidence": {
-        "judgedAgainst": {
-          "kind": "guidance",
-          "sha256": "84e12c0c69ef14ddf76fed73ff5693a1e66616673cce31d8e2992827684f9d70"
-        },
-        "scope": {
-          "basis": "declaration",
-          "snapshot": "sha256:f61bb6b747466f440a7bfe1ad8ac8d9c6cc81dd9a69aeeaef10fd61e5e7cfe89"
-        }
-      }
     }
   ],
   "assessedScopes": {
-    "documentation": "sha256:9da302937d82eeee255b43bc8d324065e8fc75440ac6152362a83905be12a6a9",
+    "documentation": "sha256:b656eeab6db4bbf0bd200d27855de07dbee47066cfc57022e4ead80e2fcd935d",
     "git-attributes": "sha256:30ab006c4abbde4f201f0fa2a039a9a187d7d592a6b17f495d4a85c9296b9268",
     "github-repository-configuration": "sha256:f61bb6b747466f440a7bfe1ad8ac8d9c6cc81dd9a69aeeaef10fd61e5e7cfe89",
     "project-agent-guidance": "sha256:67b9c06fe3913237451f2af02f10eb806dfdb18131c8e2639a769e21c37c3c9b",
     "project-readmes": "sha256:f61bb6b747466f440a7bfe1ad8ac8d9c6cc81dd9a69aeeaef10fd61e5e7cfe89",
     "repository-license": "sha256:856d8baf35b307075fb16af16939629dd0c7377b9ff6d9586e729be78eb14142",
-    "repository-readme": "sha256:9c661c3232fba5bd9c440f101bd171ccf56d251fc505b351ed3730eb8408eafe",
-    "typescript-astro-stack": "sha256:f61bb6b747466f440a7bfe1ad8ac8d9c6cc81dd9a69aeeaef10fd61e5e7cfe89",
+    "repository-readme": "sha256:5f7759f03adbf8490f640446d01c69677ef56bb2d30e9745ffe7778611d82c47",
+    "typescript-astro-stack": "sha256:73097f11819a8990506705ac83e3fef9f31edbc23122fe7dd36de3d35385074a",
     "typescript-node-stack": "sha256:f61bb6b747466f440a7bfe1ad8ac8d9c6cc81dd9a69aeeaef10fd61e5e7cfe89",
     "typescript-vite-stack": "sha256:f61bb6b747466f440a7bfe1ad8ac8d9c6cc81dd9a69aeeaef10fd61e5e7cfe89"
   },
   "impact": {
-    "derived": "Exact update: nothing is needed beyond reviewing and committing the update.",
+    "derived": "Contextual update: the run asks for contextual work on documentation, github-repository-configuration, project-readmes, repository-readme, typescript-astro-stack, typescript-node-stack, typescript-vite-stack, which needs review before it is committed.",
     "releases": [
       {
         "version": "v0.21.0",
@@ -1512,7 +1596,8 @@
       }
     ],
     "steps": [
-      "Committing the update is the only step."
+      "Review the contextual work on documentation, github-repository-configuration, project-readmes, repository-readme, typescript-astro-stack, typescript-node-stack, typescript-vite-stack.",
+      "Review and commit the update."
     ]
   }
 }

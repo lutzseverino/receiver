@@ -5,7 +5,10 @@ Repository Standards installs and verifies them; adopt again to change them.
 Run `repo-standards rules <path>` to print the rules that cover a path.
 
 - [`documentation`](documentation.md) covers:
+  - `GLOSSARY.md`
   - `docs/README.md`
+  - `docs/adr/0001-draw-real-pages-on-the-display.md`
+  - `docs/adr/README.md`
   - `docs/development/README.md`
 - [`git-attributes`](git-attributes.md) covers:
   - `.gitattributes`
@@ -17,3 +20,5 @@ Run `repo-standards rules <path>` to print the rules that cover a path.
   - `LICENSE`
 - [`repository-readme`](repository-readme.md) covers:
   - `README.md`
+- [`typescript-astro-stack`](typescript-astro-stack.md) covers:
+  - `package.json`

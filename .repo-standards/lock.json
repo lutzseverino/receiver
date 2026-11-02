@@ -13,7 +13,7 @@
     "profile": "standard",
     "platform": "github"
   },
-  "inspection": "sha256:27988e8170ee4c9bea5dcbb25f0590403250e35904bb2e99c30bc30c06db29b8",
+  "inspection": "sha256:5b7f823e2037a927cac1773ea41c756c72173a231bd331614e5993a834d654e2",
   "files": {
     "docs/agents/README.md": {
       "sha256": "ec642abe47a6e67e2d7a6d030a7daf762f97e1b39a655b415f5905514d37f8f9",
@@ -1148,11 +1148,11 @@
       "executable": false
     },
     ".repo-standards/inputs/resolved.json": {
-      "sha256": "dba489467d3aa0df30ad92618e31f5d8e845ee2965919070d853f12e3b9d562b",
+      "sha256": "62feb6c2444bca9d9af6b89a596acf56660bafa88da08c43545a971ea8b5f21e",
       "executable": false
     },
     ".repo-standards/inputs/scope-history.json": {
-      "sha256": "da7ced7158956212bf9e7aba2006ec0efff539ee6ec3f47f8953445c003963b8",
+      "sha256": "51475e4c9255fcb0997f86b21138de59ce38e6e9e2109f28809ace10a51ed094",
       "executable": false
     },
     ".repo-standards/rules/documentation.md": {
@@ -1183,8 +1183,12 @@
       "sha256": "2965277f0a8436f69dbeb1573dc2c905e519229ab38a26cda2599a0f11233952",
       "executable": false
     },
+    ".repo-standards/rules/typescript-astro-stack.md": {
+      "sha256": "ef7f2b9a05d59cb8dda6ca41e58a4b09c841f117f592c678473c83894fc0910f",
+      "executable": false
+    },
     ".repo-standards/rules/README.md": {
-      "sha256": "4a527da44e0ff71b721765e2385affbd6b2e33a764925081deb63db318fd0d77",
+      "sha256": "3724194786b4fbe3e9bfe8d6ee696cc9e0a4c786a067fbf11f7b52aea15b76c7",
       "executable": false
     },
     ".repo-standards/selection.yaml": {
@@ -1209,7 +1213,7 @@
     }
   },
   "state": {
-    "sha256": "948a3316829e512d7ace7f1f5b45bfe61962af9955d011ea0839873a973f7d35",
+    "sha256": "47b73446de0256ddfbdde2c9c1f6d2f2c77991f8810eee7e30df13389c8010be",
     "executable": false
   }
 }
