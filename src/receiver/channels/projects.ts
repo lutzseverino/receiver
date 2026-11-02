@@ -1,8 +1,10 @@
 // Projects on the display, as round 13 settles it (prototype/VERDICTS.md):
 // the split, the list on the left and, beside it, a preview card that hugs
-// the selected project, its tagline capped at 4 lines, then its facts, its README lead when there is room, and OPEN, VISIT SITE
-// and SOURCE. The pointer selects a project only when it moves onto one;
-// keyboard focus selects the project it is in. On a phone the list stands
+// the selected project, its tagline capped at 4 lines, then its facts, its
+// README lead when there is room, and OPEN, VISIT SITE and SOURCE. On a
+// short display the card drops its inner blank rows and the lead goes, as
+// the owner chose (lutzseverino/receiver#10). The pointer selects a project
+// only when it moves onto one; keyboard focus selects the project it is in. On a phone the list stands
 // alone, each project with its tagline. A project's page shows its hero,
 // its facts, its links and its lead. Moving between the list and a project
 // rewrites the display row by row, the same both ways.
@@ -327,18 +329,23 @@ export function projectsLayout(context: LayoutContext): ChannelLayout {
     const nameLines = wrapText(project.name.toUpperCase(), iw);
     const metaLines = wrapItems(metaItems(project), iw);
     const factLines = wrapItems(factItems(project), w - 1);
-    // the tagline gets at most 4 lines, fewer if the rest would not fit
-    const fixed =
-      4 +
-      nameLines.length +
+    const allTags = wrapText(project.tagline, iw);
+    // the rows everything but the tagline takes, with `pad` blank rows
+    // around each part of the card
+    const fixed = (pad: number) =>
       2 +
+      4 * pad +
+      nameLines.length +
       metaLines.length +
       1 +
       factLines.length +
       1 +
       links.length;
-    const allTags = wrapText(project.tagline, iw);
-    const tagMost = Math.max(1, Math.min(4, view - fixed));
+    // where round 13's card would leave the tagline fewer than 2 lines, the
+    // card drops its inner blank rows, so its facts and links keep theirs
+    const pad = view - fixed(1) < Math.min(2, allTags.length) ? 0 : 1;
+    // the tagline gets at most 4 lines, fewer if the rest would not fit
+    const tagMost = Math.max(1, Math.min(4, view - fixed(pad)));
     const tagLines =
       allTags.length > tagMost
         ? [
@@ -346,9 +353,9 @@ export function projectsLayout(context: LayoutContext): ChannelLayout {
             ellipsis(allTags[tagMost - 1]!, iw),
           ]
         : allTags;
-    const inner = nameLines.length + 1 + tagLines.length + 1 + metaLines.length;
     const r0 = top;
-    const r1 = r0 + inner + 3;
+    const r1 =
+      r0 + 1 + 4 * pad + nameLines.length + tagLines.length + metaLines.length;
     frame(
       card,
       c0,
@@ -366,19 +373,20 @@ export function projectsLayout(context: LayoutContext): ChannelLayout {
           ]
         : [],
     );
-    let y = r0 + 2;
+    let y = r0 + 1 + pad;
     for (const line of nameLines) B.put(c0 + 3, y++, line, 1);
-    y++;
+    y += pad;
     for (const line of tagLines) B.put(c0 + 3, y++, line, 0.8);
-    y++;
+    y += pad;
     for (const line of metaLines) B.put(c0 + 3, y++, line, 0.42);
     if (project.open)
       for (let r = r0; r <= r1; r++) card.region(c0, c1, r, project.open);
     let r = r1 + 2;
     for (const line of factLines) B.put(c0 + 1, r++, line, 0.45);
-    // the lead fills what room there is above the links, two lines or more
+    // the lead fills what room there is above the links, two lines or more;
+    // a compact card leaves none
     const room = linksAt - 1 - (r + 1);
-    if (project.lead && room >= 2) {
+    if (project.lead && pad && room >= 2) {
       const lead = wrapText(project.lead, w - 1);
       lead
         .slice(0, room)

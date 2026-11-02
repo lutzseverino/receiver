@@ -371,7 +371,9 @@ test("with the display running, the wire and a post pass the WCAG 2.2 A and AA a
 });
 
 test("short and narrow displays keep every action of projects and reply in view", async () => {
-  // a short desktop: the preview's links stay on the body's last rows
+  // a short desktop: the card drops its inner blank rows, so the facts keep
+  // theirs and the links stay on the body's last rows (the owner's choice,
+  // lutzseverino/receiver#10)
   await on("/projects/", { width: 1280, height: 600 }, async (tab) => {
     const state = await skipIntro(tab);
     for (const label of ["OPEN ►", "VISIT SITE ►", "SOURCE ►"]) {
@@ -379,6 +381,13 @@ test("short and narrow displays keep every action of projects and reply in view"
       assert.ok(region, `${label} at 1280 × 600`);
       assert.ok(region.row < state.rows.length - 1, `${label} above the bar`);
     }
+    const name = state.rows.findIndex((row) =>
+      /^ {20,}REPO STANDARDS *$/.test(row),
+    );
+    assert.ok(name >= 0, "the card names the project");
+    assert.match(state.rows[name + 1]!, /A CLI and agent skills/);
+    assert.match(text(state), /LATEST RELEASE/);
+    assert.match(text(state), /UPDATED/);
   });
   // a phone: a focused project link shows whole
   await on("/es/projects/", { width: 320 }, async (tab) => {
@@ -392,10 +401,29 @@ test("short and narrow displays keep every action of projects and reply in view"
     assert.match(region.text, /CÓDIGO FUENTE ►/);
     assert.ok(state.marker, "► marks it");
   });
-  // a short landscape phone: the box, SEND and COPY stay reachable
+  // a short landscape phone: the name and the ways beside the box, which
+  // fills the body from top to bottom and shows four typed rows
   await on("/contact/", { width: 720, height: 320 }, async (tab) => {
-    const state = await skipIntro(tab);
-    assert.ok(state.regions.some((region) => region.tag === "TEXTAREA"));
+    await skipIntro(tab);
+    await tab.evaluate(() => {
+      const message = document.querySelector("textarea")!;
+      message.focus();
+      message.value = ["one", "two", "three", "four"]
+        .map((word) => `line ${word}`)
+        .join("\n");
+      message.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    const state = await idle(tab);
+    const name = state.rows.findIndex((row) =>
+      row.includes("JASPER LUTZ SEVERINO"),
+    );
+    assert.ok(name >= 0, "the name stays");
+    const box = state.regions
+      .filter((region) => region.tag === "TEXTAREA")
+      .map((region) => region.row);
+    assert.ok(box.includes(name), "the box stands beside the name");
+    for (const word of ["one", "two", "three", "four"])
+      assert.match(text(state), new RegExp(`line ${word}`));
     assert.ok(state.regions.some((region) => region.text === "SEND ►"));
     assert.ok(state.regions.some((region) => region.text === "COPY"));
   });

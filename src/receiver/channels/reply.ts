@@ -1,9 +1,11 @@
 // Reply on the display, as round 13 settles it (prototype/VERDICTS.md): the
 // portrait on the left; on the right the name, the two lines, the addresses,
 // EMAIL with COPY and GITHUB, then the transmit box filling the rest. The
-// page fills the display and never scrolls; on a phone it stacks. What the
-// visitor types goes into the page's real form, which the box shows; SEND,
-// or Ctrl or Cmd with Enter, opens their mail app. The portrait, dithered at
+// page fills the display and never scrolls; on a phone it stacks, and on a
+// display too short to stack, such as a landscape phone, the name and the
+// addresses stand beside the box. What the visitor types goes into the
+// page's real form, which the box shows; SEND, or Ctrl or Cmd with Enter,
+// opens their mail app. The portrait, dithered at
 // build, arrives by contour, its outline first and then the inside a cell
 // at a time, and the signal dips now and then, one row of it breaking into
 // static for a moment.
@@ -252,6 +254,10 @@ export function replyLayout(context: LayoutContext): ChannelLayout {
       /** The fewest rows the box takes: its frame, a typed row and its
        * status. */
       const BOX_ROWS = 4;
+      /** The rows under which the box moves beside the text: its frame, its
+       * status and three typed rows; and the fewest cells it then types in. */
+      const SPLIT_ROWS = 6;
+      const SPLIT_WIDTH = 16;
 
       // everything is sized to the body, so the page never scrolls; rows
       // count from the body's top
@@ -300,10 +306,46 @@ export function replyLayout(context: LayoutContext): ChannelLayout {
         text = { c: ic, r: 0, w: tw };
         box = { ic, r0: textRows(tw, parts) + 1, r1: V - 1 };
       }
+      // a display too short for a box of a few typed rows under the text,
+      // such as a landscape phone, sets the text beside the box instead, as
+      // the owner chose (lutzseverino/receiver#10): the name and the ways on
+      // the left, the box filling the right from top to bottom, and no
+      // portrait. Where even that leaves the box too narrow, the drops
+      // above stand.
+      const sideWidth = Math.max(
+        reply.name.length,
+        ...reply.ways.map((way) =>
+          Math.max(
+            way.address.length,
+            labelWidth +
+              (way.copy
+                ? Math.max(
+                    displayLabel(way.copy.textContent).length,
+                    displayLabel(way.copy.dataset.copied).length,
+                  )
+                : 0),
+          ),
+        ),
+      );
+      const sideBox = left + sideWidth + 4;
+      const beside =
+        box.r1 - box.r0 + 1 < SPLIT_ROWS && c1 - 1 - sideBox >= SPLIT_WIDTH;
+      if (beside) {
+        D = 0;
+        parts =
+          PARTS.find((candidate) => textRows(sideWidth, candidate) <= V) ??
+          PARTS.at(-1)!;
+        text = {
+          c: left,
+          r: Math.max(0, Math.floor((V - textRows(sideWidth, parts)) / 2)),
+          w: sideWidth,
+        };
+        box = { ic: sideBox, r0: 0, r1: V - 1 };
+      }
       // however short the display, the box keeps its rows: what does not fit
-      // above it is cut
+      // above it, or beside it, is cut
       box.r0 = Math.max(0, Math.min(box.r0, V - BOX_ROWS));
-      const above = clip(grid, top, top + box.r0 - 1);
+      const above = clip(grid, top, top + (beside ? V : box.r0) - 1);
       size = D;
       if (D) paintPortrait(grid, port.X0, (top + port.r) * 8, D, now);
 
