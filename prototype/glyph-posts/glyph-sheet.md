@@ -1,7 +1,7 @@
 ---
-title: Glyph sheet, round 1
+title: Glyph sheet, approved
 date: 2026-11-02
-summary: Every proposed glyph, magnified and at size, beside its plain letter.
+summary: Every approved glyph at size, beside its plain letter.
 tags: [glyphs]
 ---
 Each row starts with the plain letter, then its accented forms; lowercase, then capitals. To see the dots up close, add ?pitch=8 to the address; glyph-chart.html draws every bitmap large.

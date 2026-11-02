@@ -1,12 +1,14 @@
 <!doctype html>
-<!-- PROTOTYPE — throwaway. Glyph round 1 for lutzseverino/site#8: every proposed bitmap drawn large, variant A beside B,
+<!-- PROTOTYPE — throwaway. Default (round 2): the approved table (glyph-table.js) drawn large, beside round 13's
+     plain letters. ?set=round1 shows round 1's comparison.
+     Round 1 for lutzseverino/site#8: every proposed bitmap drawn large, variant A beside B,
      with round 13's plain letters for comparison. Each cell is 5×8: rows 0–6 are the 5×7 body, the line marks the
      baseline, row 7 below it is the descender row. Bytes are the font's shape: five columns, bit 0 at the top. -->
 <html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>PROTOTYPE · glyph chart · round 1</title>
+<title>PROTOTYPE · glyph chart</title>
 <style>
   body { margin: 0; padding: 24px; background: #050607; color: #c9d3d8; font: 13px/1.4 ui-monospace, Menlo, Consolas, monospace; }
   h1 { font-size: 15px; margin: 0 0 4px; color: #e6fbff; } p { margin: 0 0 16px; color: #7c868d; max-width: 80em; }
@@ -15,15 +17,19 @@
   tr + tr td { border-top: 1px solid #12191c; }
   .g { display: inline-block; margin: 0 6px; } .g .l { color: #9fb2ba; } .g .b { color: #4f5b61; font-size: 10px; }
   .g.diff .l::after { content: ' ≠'; color: #ff9d5c; } .base .l { color: #5f6b71; }
+  .grid { display: flex; flex-wrap: wrap; gap: 14px; } .grp { border: 1px solid #12191c; border-radius: 6px; padding: 10px 4px; text-align: center; }
+  .g.new .l::after { content: ' (new)'; color: #ff9d5c; }
   svg { display: block; margin: 0 auto 4px; }
 </style>
 </head>
 <body>
-<h1>Glyph round 1: the proposed bitmaps, large</h1>
-<p>Each cell is 5×8 dots: the 5×7 body, the baseline (line), then the descender row. Grey: round 13's plain letter. A: dot accents. B: stroke accents. ≠ marks a glyph that differs between A and B. Bytes: five columns, bit 0 at the top.</p>
+<h1 id="h">Glyph round 1: the proposed bitmaps, large</h1>
+<p id="lede">Each cell is 5×8 dots: the 5×7 body, the baseline (line), then the descender row. Grey: round 13's plain letter. A: dot accents. B: stroke accents. ≠ marks a glyph that differs between A and B. Bytes: five columns, bit 0 at the top.</p>
 <table id="t"><tr><th>letter</th><th>plain (round 13)</th><th>A · dot accents</th><th>B · stroke accents</th></tr></table>
 <script src="glyphs.js"></script>
+<script src="glyph-table.js"></script>
 <script>
+const ROUND1 = new URLSearchParams(location.search).get('set') === 'round1';
 // round 13's plain letters (G, and G8 for descenders), copied from index.html
 const BASE = {"1":[0,66,127,64,0],"2":[66,97,81,73,70],"a":[32,84,84,84,120],"e":[56,84,84,84,24],"i":[0,68,125,64,0],"o":[56,68,68,68,56],"u":[60,64,64,32,124],"n":[124,8,4,4,120],"c":[56,68,68,68,32],"l":[0,65,127,64,0],"A":[124,18,17,18,124],"E":[127,73,73,73,65],"I":[0,65,127,65,0],"O":[62,65,65,65,62],"U":[63,64,64,64,63],"N":[127,4,8,16,127],"C":[62,65,65,65,34],"L":[127,64,64,64,64],"?":[2,1,81,9,6],"!":[0,0,95,0,0],"·":[0,0,8,0,0]};
 const ROWS = [
@@ -31,7 +37,7 @@ const ROWS = [
   ['o', 'o', 'óò'], ['O', 'O', 'ÓÒ'], ['u', 'u', 'úü'], ['U', 'U', 'ÚÜ'], ['n', 'n', 'ñ'], ['N', 'N', 'Ñ'],
   ['c', 'c', 'ç'], ['C', 'C', 'Ç'], ['?', '?', '¿'], ['!', '!', '¡'], ['« »', '', '«»'], ['º ª', '', 'ºª'], ['l·l', '·', '·'],
 ];
-const D = 14, cellSvg = (bytes, g8, dim) => {   // bytes: 7-row form; g8: descender form when there is one
+const D = ROUND1 ? 14 : 18, cellSvg = (bytes, g8, dim) => {   // bytes: 7-row form; g8: descender form when there is one
   const b = g8 || bytes, rows = 8; let s = `<svg width="${5 * D}" height="${rows * D + 4}" viewBox="0 0 ${5 * D} ${rows * D + 4}">`;
   for (let c = 0; c < 5; c++) for (let r = 0; r < rows; r++) {
     const on = (b[c] >> r) & 1, y = r * D + (r === 7 ? 4 : 0);
@@ -49,7 +55,25 @@ const cell = (ch, v, cls = '') => {
     `<span class="g ${cls}">${cellSvg(g)}<span class="l">${ch} 7-row</span><br><span class="b">${hex(g)}<br>big text</span></span>`;
 };
 const t = document.getElementById('t');
-for (const [label, base, chars] of ROWS) {
+if (!ROUND1) {   // round 2: the approved table
+  const T = window.GLYPH_TABLE, src = { 'Ñ': 'new in round 2', 'ç': 'B', 'Ç': 'B', '«': 'A', '»': 'A' };
+  const same = 'ïüÏÜñ¿¡ºª';
+  document.getElementById('h').textContent = 'The approved glyph table (owner, 2026-11-02), large';
+  document.getElementById('lede').textContent = "Each cell is 5×8 dots: the 5×7 body, the baseline (line), then the descender row. Grey: round 13's plain letter. Then each approved glyph, with the round-1 variant it comes from and its bytes (five columns, bit 0 at the top). ç has two forms: G8 for text in 5×8 cells, and the 7-row G form for big text. The middle dot is round 13's, unchanged.";
+  const grid = document.createElement('div'); grid.className = 'grid'; t.replaceWith(grid);
+  const one = (ch, bytes, g8, note, cls = '') => `<span class="g ${cls}">${cellSvg(bytes, g8)}<span class="l">${ch} U+${ch.codePointAt(0).toString(16).toUpperCase().padStart(4, '0')}</span><br><span class="b">${note}<br>${hex(g8 || bytes)}</span></span>`;
+  for (const [label, base, chars] of ROWS) {
+    const box = document.createElement('div'); box.className = 'grp';
+    const cells = [...chars].map(ch => {
+      if (ch === '·') return one(ch, BASE['·'], null, 'round 13, unchanged');
+      const from = src[ch] || (same.includes(ch) ? 'A = B' : 'A');
+      if (T.G8[ch]) return one(ch, T.G[ch], T.G8[ch], `${from} · G8, text`) + one(ch, T.G[ch], null, `${from} · G, big text`);
+      return one(ch, T.G[ch], null, from, ch === 'Ñ' ? 'new' : '');
+    }).join('');
+    box.innerHTML = `${base ? `<span class="g base">${cellSvg(BASE[base], null, true)}<span class="l">${base}</span><br><span class="b">round 13</span></span>` : ''}${cells}`;
+    grid.appendChild(box);
+  }
+} else for (const [label, base, chars] of ROWS) {
   const tr = document.createElement('tr');
   tr.innerHTML = `<td class="k">${label}</td><td>${base ? `<span class="g base">${cellSvg(BASE[base], null, true)}<span class="l">${base}</span></span>` : ''}</td>` +
     ['A', 'B'].map(v => `<td>${[...chars].map(ch => cell(ch, GLYPHS[v])).join('')}</td>`).join('');

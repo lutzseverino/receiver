@@ -1,10 +1,11 @@
 <!doctype html>
 <!--
-  PROTOTYPE — throwaway. Glyph round 1 for lutzseverino/site#8: accented letters for the 5×7 dot font.
+  PROTOTYPE — throwaway. Glyph rounds 1–2 for lutzseverino/site#8: accented letters for the 5×7 dot font.
   This file is round 13 (index.html) unchanged except for: the proposed glyphs (glyphs.js) merged into the font,
   the glyph sheet and three sample pages added to the wire (glyph-samples.js, from glyph-posts/*.md),
   two post-reader extras for the sheet ("%% " magnified glyph rows, "#! " big-text lines),
-  and the bar's variants: A = dot accents, B = stroke accents (?variant=A|B, ←/→).
+  and the bar's variants: final = the approved table (glyph-table.js, round 2, the default),
+  A = round 1's dot accents, B = round 1's stroke accents (?variant=final|A|B, ←/→).
   Opens on #blog/glyph-sheet. Samples: #blog/sample-en, #blog/sample-es, #blog/sample-ca.
   ---- round 13's notes:
   PROTOTYPE — throwaway, round 13. Earlier rounds: round-1..round-12.html. Settled: full-screen receiver, acrylic cover,
@@ -18,7 +19,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>PROTOTYPE · glyphs · round 1</title>
+<title>PROTOTYPE · glyphs · round 2 (approved)</title>
 <style>
   :root {
     --phosphor: #e6fbff;
@@ -147,6 +148,7 @@
 <script src="posts.js"></script>
 <script src="glyph-samples.js"></script>
 <script src="glyphs.js"></script>
+<script src="glyph-table.js"></script>
 <script>
 /* =====================================================================
    Content (placeholder unless noted)
@@ -311,8 +313,9 @@ const glyph = ch => G[ch] || G[ch.toUpperCase()] || G['?'];
 const G8 = { g: [0x18,0xA4,0xA4,0xA4,0x7C], p: [0xFC,0x24,0x24,0x24,0x18], q: [0x18,0x24,0x24,0x24,0xFC], y: [0x1C,0xA0,0xA0,0xA0,0x7C], j: [0x40,0x80,0x84,0x7D,0] };
 const glyph8 = ch => G8[ch] || glyph(ch);
 // glyph round 1: the variant's proposed glyphs join the font (7-row forms in G, descender forms in G8)
-const GV = new URLSearchParams(location.search).get('variant') === 'B' ? 'B' : 'A';
-Object.assign(G, window.GLYPHS[GV].g7); Object.assign(G8, window.GLYPHS[GV].g8);
+const GV = ['A', 'B'].includes(new URLSearchParams(location.search).get('variant')) ? new URLSearchParams(location.search).get('variant') : 'final';
+if (GV === 'final') { Object.assign(G, window.GLYPH_TABLE.G); Object.assign(G8, window.GLYPH_TABLE.G8); }   // round 2: the approved table
+else { Object.assign(G, window.GLYPHS[GV].g7); Object.assign(G8, window.GLYPHS[GV].g8); }
 
 const DISPLAYS = new Set();
 class Vfd {
@@ -1946,7 +1949,8 @@ function Receiver(root, cfg) {
 /* =====================================================================
    Variant switcher + boot
    ===================================================================== */
-const VARIANTS = {   // glyph round 1: the bar switches the accent style; the receiver itself is round 13's, settled
+const VARIANTS = {   // glyph rounds: the bar switches the glyph set; the receiver itself is round 13's, settled
+  final: ['Approved: the table the owner approved on 2026-11-02 (glyph-table.js)', { rl: 'column' }],
   A: ['Dot accents: one-row accents; lowercase keeps an empty row between accent and letter', { rl: 'column' }],
   B: ['Stroke accents: lowercase acute and grave as two-row strokes; wider capital accents; « » and · moved', { rl: 'column' }],
 };
