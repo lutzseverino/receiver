@@ -1,15 +1,11 @@
 ---
-source: c3eb946a
+source: 35b37c1b
 ---
 
-Registro provisional:
+si oyes esto, la señal ha aguantado.
 
-si esto le llega a alguien, quédate un momento.
+hago software, sobre todo del que ayuda a otros a hacer el suyo.
 
-ya no puedo hablar como antes. esto funciona, casi siempre.
+una parte está más adelante en el dial.
 
-pasé mi tiempo haciéndoles las cosas más fáciles a quienes hacen cosas.
-
-casi todo sigue ahí fuera, funcionando sin mí.
-
-el resto está más adelante en el dial.
+el resto llega si no dejas de sintonizar.

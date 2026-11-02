@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { format, messageSource, siteMessages } from "../src/i18n/format.ts";
 import type { MessageId } from "../src/i18n/ids.ts";
-import type { Locale } from "../src/i18n/locales.ts";
+import { LOCALES, type Locale } from "../src/i18n/locales.ts";
 
 test("format() reads each locale's catalogs", () => {
   assert.equal(format("en", "wire.empty"), "NO TRAFFIC");
@@ -14,6 +14,20 @@ test("format() reads each locale's catalogs", () => {
     format("en", "reply.subject", { frequency: "108.0" }),
     "Heard you on 108.0",
   );
+});
+
+test("the project and post copy messages take their data's values in every locale", () => {
+  const project = { name: "NAME", tagline: "TAGLINE" };
+  const post = { title: "TITLE", summary: "SUMMARY" };
+  for (const locale of LOCALES) {
+    assert.match(format(locale, "copy.project.title", project), /NAME/);
+    assert.match(
+      format(locale, "copy.project.description", project),
+      /NAME.*TAGLINE/,
+    );
+    assert.match(format(locale, "copy.post.title", post), /TITLE/);
+    assert.match(format(locale, "copy.post.description", post), /SUMMARY/);
+  }
 });
 
 test("format() throws for a locale the site does not serve", () => {
@@ -59,7 +73,10 @@ test("format() throws for a malformed translated entry", () => {
 });
 
 test("format() reads a locale's prose without its front matter, and throws for a missing file or values", () => {
-  assert.match(format("ca", "prose.log").trimStart(), /^Registre provisional:/);
+  assert.match(
+    format("ca", "prose.log").trimStart(),
+    /^si sents això, el senyal ha aguantat\./,
+  );
   assert.throws(
     () => format("en", "prose.missing" as MessageId),
     /There is no prose missing in en\./,
@@ -76,7 +93,10 @@ test("the pseudo-locale wraps and pads each message and keeps its placeholders",
     messageSource("en-XA", "reply.subject"),
     /^⟦Heard you on \{\$frequency\}/,
   );
-  assert.match(format("en-XA", "prose.log"), /^⟦Placeholder log:/);
+  assert.match(
+    format("en-XA", "prose.log"),
+    /^⟦if you can hear this, the signal held\./,
+  );
 });
 
 test("no catalog may take the prose files' IDs", () => {

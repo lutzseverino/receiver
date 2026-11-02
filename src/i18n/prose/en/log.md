@@ -1,11 +1,7 @@
-Placeholder log:
+if you can hear this, the signal held.
 
-if this is reaching anyone, stay a moment.
+i make software, mostly the kind that helps other people make theirs.
 
-i can't speak the way i used to. this works, mostly.
+some of it is further along the dial.
 
-i spent my time making things easier for the people who make things.
-
-most of it is still out there, running without me.
-
-the rest is further along the dial.
+the rest comes in if you keep tuning.

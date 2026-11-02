@@ -99,6 +99,39 @@ test("each page's h1 names its channel, or the owner on home", () => {
   }
 });
 
+test("each fixed page takes its own title and description from the launch copy", () => {
+  const pages = {
+    "index.html": "home",
+    "projects/index.html": "projects",
+    "blog/index.html": "wire",
+    "contact/index.html": "reply",
+    "404.html": "signal",
+  } as const;
+  for (const locale of LOCALES) {
+    const titles = new Set<string>();
+    const descriptions = new Set<string | undefined>();
+    for (const [file, page] of Object.entries(pages)) {
+      const html = parseHtml(site.read(PREFIXES[locale] + file));
+      const title = text(findAll(html, byTag("title"))[0]);
+      const meta = findAll(html, byTag("meta")).find(
+        (element) => attr(element, "name") === "description",
+      );
+      const description = meta && attr(meta, "content");
+      assert.equal(title, format(locale, `copy.${page}.title`), file);
+      assert.equal(
+        description,
+        format(locale, `copy.${page}.description`),
+        file,
+      );
+      titles.add(title);
+      descriptions.add(description);
+    }
+    const count = Object.keys(pages).length;
+    assert.equal(titles.size, count, `${locale}: a title per page`);
+    assert.equal(descriptions.size, count, `${locale}: a description per page`);
+  }
+});
+
 test("without projects or posts, projects and the wire show their empty states", () => {
   for (const locale of LOCALES) {
     const main = (file: string) =>

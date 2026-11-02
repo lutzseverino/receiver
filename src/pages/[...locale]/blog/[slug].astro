@@ -25,8 +25,10 @@ const { locale, post } = Astro.props;
 
 <Base
   locale={locale}
-  title={format(locale, "copy.post.title", { post: post.title })}
-  description={post.summary}
+  title={format(locale, "copy.post.title", { title: post.title })}
+  description={format(locale, "copy.post.description", {
+    summary: post.summary,
+  })}
   locales={post.locales}
 >
   <article>

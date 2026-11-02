@@ -16,9 +16,9 @@ blog, and contact, shown on a custom dot-matrix display.
 ## Status
 
 The site is an Astro project that builds every channel as a plain HTML page
-in English, Spanish and Catalan, with placeholder copy. The receiver's
-display, the project data, the posts and the launch copy are still to come,
-and the site is not yet deployed. The
+in English, Spanish and Catalan, with its launch copy. The receiver's
+display, the project data and the posts are still to come, and the site is
+not yet deployed. The
 [development guide](docs/development/README.md) lists the commands.
 
 ## Documentation

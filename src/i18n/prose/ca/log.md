@@ -1,15 +1,11 @@
 ---
-source: c3eb946a
+source: 35b37c1b
 ---
 
-Registre provisional:
+si sents això, el senyal ha aguantat.
 
-si això arriba a algú, queda't un moment.
+faig programari, sobretot del que ajuda els altres a fer el seu.
 
-ja no puc parlar com abans. això funciona, gairebé sempre.
+una part és més endavant al dial.
 
-vaig passar el temps fent les coses més fàcils a qui fa coses.
-
-gairebé tot encara és allà fora, funcionant sense mi.
-
-la resta és més endavant al dial.
+la resta arriba si continues sintonitzant.
