@@ -101,12 +101,19 @@ test("an untranslated post is on the es and ca wires in English, marked EN, link
     assert.deepEqual(marks(translated!), [], locale);
     if (locale === "en") {
       assert.deepEqual(marks(english!), [], locale);
-      assert.equal(attr(english!, "lang"), undefined);
+      assert.equal(attr(link(english!), "lang"), undefined);
       continue;
     }
     assert.deepEqual(marks(english!), [format(locale, "wire.english")]);
     assert.deepEqual(marks(english!), ["EN"]);
-    assert.equal(attr(english!, "lang"), "en", locale);
+    // the title and mark are English; the date is the page's language
+    assert.equal(attr(link(english!), "lang"), "en", locale);
+    assert.equal(
+      attr(findAll(english!, byClass("language"))[0]!, "lang"),
+      "en",
+      locale,
+    );
+    assert.equal(attr(english!, "lang"), undefined, locale);
     assert.equal(attr(link(english!), "hreflang"), "en", locale);
   }
   // the English page it links to is in English

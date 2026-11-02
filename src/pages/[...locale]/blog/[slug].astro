@@ -38,7 +38,7 @@ const { locale, post } = Astro.props;
       <time datetime={post.date}>
         {wireDate(locale, post.date, { withYear: true })}
       </time>
-      · <span class="reading-time">{readingTime(locale, post.minutes)}</span>
+      <span class="reading-time">{readingTime(locale, post.minutes)}</span>
     </p>
     <Fragment set:html={post.body} />
   </article>

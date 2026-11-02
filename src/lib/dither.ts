@@ -94,10 +94,11 @@ export async function ditheredPng(
     .toBuffer();
 }
 
-/** An image file's size in pixels. */
+/** An image file's size in pixels, as it shows upright; either may be
+ * missing for a file sharp can't size. */
 export async function imageSize(
   source: string,
-): Promise<{ width: number; height: number }> {
+): Promise<{ width?: number; height?: number }> {
   const { width, height, autoOrient } = await sharp(source).metadata();
   return autoOrient ?? { width, height };
 }

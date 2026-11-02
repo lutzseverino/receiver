@@ -2,17 +2,12 @@
 // posts that language's wire lists, an untranslated English post with its
 // language and its English page.
 import type { APIRoute } from "astro";
-import { loadPosts, wirePosts, type Post } from "@/data/posts";
+import { loadPosts, wirePosts } from "@/data/posts";
 import { format } from "@/i18n/format";
-import {
-  DEFAULT_LOCALE,
-  PSEUDO_LOCALE,
-  localePath,
-  localeRoutes,
-  type Locale,
-} from "@/i18n/locales";
+import { localePath, localeRoutes, type Locale } from "@/i18n/locales";
 import { channel } from "@/lib/channels";
 import { absoluteUrls, feedPath, rssFeed } from "@/lib/feed";
+import { postPath, wireLocale } from "@/lib/wire";
 
 export function getStaticPaths() {
   return localeRoutes();
@@ -20,12 +15,9 @@ export function getStaticPaths() {
 
 export const GET: APIRoute<{ locale: Locale }> = async ({ props, site }) => {
   const { locale } = props;
-  // the pseudo-locale lists what English lists
-  const siteLocale = locale === PSEUDO_LOCALE ? DEFAULT_LOCALE : locale;
+  const siteLocale = wireLocale(locale);
   const origin = site!;
   const url = (path: string) => new URL(path, origin).href;
-  const postUrl = (post: Post) =>
-    url(localePath(post.locale, `${channel("wire").path}${post.slug}/`));
   const feed = rssFeed({
     title: format(locale, "copy.wire.title"),
     description: format(locale, "copy.wire.description"),
@@ -34,7 +26,7 @@ export const GET: APIRoute<{ locale: Locale }> = async ({ props, site }) => {
     self: url(feedPath(locale)),
     items: wirePosts(await loadPosts(), siteLocale).map((post) => ({
       title: post.title,
-      link: postUrl(post),
+      link: url(postPath(post)),
       date: post.date,
       summary: post.summary,
       content: absoluteUrls(post.body, origin),

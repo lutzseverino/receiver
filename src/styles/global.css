@@ -217,6 +217,9 @@ footer {
   text-decoration: none;
 }
 .meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1.5em;
   color: var(--dim);
   font-family: var(--font-mono);
 }

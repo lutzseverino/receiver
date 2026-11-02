@@ -7,7 +7,6 @@ import path from "node:path";
 import { after, test } from "node:test";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
-import { build } from "astro";
 import { loadPosts } from "../src/data/posts.ts";
 import {
   DISPLAY_PALETTE,
@@ -16,6 +15,7 @@ import {
   orderedDither,
 } from "../src/lib/dither.ts";
 import { readPostMarkdown, readingMinutes } from "../src/lib/post-markdown.ts";
+import { builtSite } from "./support/site.ts";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const scratch = mkdtempSync(path.join(root, "node_modules/.posts-test-"));
@@ -42,7 +42,9 @@ const REFUSED: [construct: string, markdown: string][] = [
   ["raw HTML", "<div>raw</div>\n"],
   ["raw HTML", "Some <b>inline</b> HTML.\n"],
   ["a nested list", "- one\n  - inner\n- two\n"],
+  ["a nested list", "- one\n  > - inner, in a quote\n"],
   ["an indented code block", "Text.\n\n    indented code\n"],
+  ["an indented code block", "Text.\n\n    ```\n    fence inside\n    ```\n"],
   // outside both the supported and the named lists
   ["strikethrough", "Some ~~struck~~ text.\n"],
   ["a thematic break", "Above.\n\n---\n\nBelow.\n"],
@@ -203,6 +205,11 @@ const INVALID: [
     /beside the posts/,
   ],
   [
+    "an image address that doesn't decode",
+    { "post.md": `${FRONT_MATTER}![A](./100%.png)` },
+    /isn't a valid address/,
+  ],
+  [
     "a missing image",
     { "post.md": `${FRONT_MATTER}![A](./images/none.png)` },
     /doesn't exist/,
@@ -351,20 +358,12 @@ test("a dithered image is a PNG at the display's size in its two colours", async
 
 test("a post the wire can't carry fails the site's build, naming the file", async () => {
   const dir = postsFolder({ "tabled.md": `${FRONT_MATTER}${REFUSED[0]![1]}` });
-  await assert.rejects(
-    build({
-      root,
-      outDir: path.join(scratch, "failed-build"),
-      logLevel: "silent",
-      vite: { define: { __POSTS_DIRECTORY__: JSON.stringify(dir) } },
-    }),
-    (error: Error) => {
-      assert.ok(
-        error.message.includes(path.join(dir, "tabled.md")),
-        error.message,
-      );
-      assert.ok(error.message.includes("a table"), error.message);
-      return true;
-    },
-  );
+  await assert.rejects(builtSite({ posts: dir }), (error: Error) => {
+    assert.ok(
+      error.message.includes(path.join(dir, "tabled.md")),
+      error.message,
+    );
+    assert.ok(error.message.includes("a table"), error.message);
+    return true;
+  });
 });

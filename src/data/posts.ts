@@ -57,13 +57,17 @@ function postsDirectory(): string {
     : fileURLToPath(new URL("../../posts/", import.meta.url));
 }
 
+// a build reads each folder once; the development server reads it on every
+// request, so an edited post shows without a restart
 const loaded = new Map<string, Promise<readonly Post[]>>();
+const DEVELOPMENT = import.meta.env ? import.meta.env.DEV : false;
 
 /** Every version of every post in `directory`: one per slug and locale it
  * exists in. A file that isn't a valid post fails, naming it. */
 export function loadPosts(
   directory: string = postsDirectory(),
 ): Promise<readonly Post[]> {
+  if (DEVELOPMENT) return readPosts(directory);
   let posts = loaded.get(directory);
   if (!posts) {
     posts = readPosts(directory);
@@ -72,6 +76,9 @@ export function loadPosts(
   return posts;
 }
 
+const TRANSLATION_NAMES = LOCALES.filter((locale) => locale !== DEFAULT_LOCALE)
+  .map((locale) => `<slug>.${locale}.md`)
+  .join(" or ");
 const FILE = /^([a-z0-9]+(?:-[a-z0-9]+)*)(?:\.([a-z]+))?\.md$/;
 const FIELDS = ["title", "date", "summary", "tags"];
 
@@ -135,7 +142,7 @@ async function readVersion(directory: string, name: string): Promise<Version> {
     !(LOCALES as readonly string[]).includes(locale)
   )
     throw new Error(
-      `${file} isn't named as a post: <slug>.md in English, or <slug>.es.md or <slug>.ca.md for a translation, with a slug of lowercase letters, digits and hyphens.`,
+      `${file} isn't named as a post: <slug>.md in English, or ${TRANSLATION_NAMES} for a translation, with a slug of lowercase letters, digits and hyphens.`,
     );
 
   const text = (await readFile(file, "utf8")).replace(/\r\n?/g, "\n");
@@ -224,7 +231,13 @@ function imageSource(directory: string, file: string, url: string): string {
     throw new Error(
       `${file}: the image ${url} must be a file beside the posts, such as ./images/photo.png, to be dithered at build.`,
     );
-  const source = path.resolve(path.dirname(file), decodeURI(url));
+  let decoded: string;
+  try {
+    decoded = decodeURI(url);
+  } catch {
+    throw new Error(`${file}: the image ${url} isn't a valid address.`);
+  }
+  const source = path.resolve(path.dirname(file), decoded);
   if (path.relative(directory, source).startsWith(".."))
     throw new Error(`${file}: the image ${url} is outside the posts' folder.`);
   return source;
@@ -238,7 +251,7 @@ async function postImage(
   const source = imageSource(directory, file, url);
   if (!(await stat(source).catch(() => undefined))?.isFile())
     throw new Error(`${file}: the image ${url} doesn't exist.`);
-  let size: { width?: number; height?: number };
+  let size: Awaited<ReturnType<typeof imageSize>>;
   try {
     size = await imageSize(source);
   } catch (error) {

@@ -4,13 +4,13 @@
 // visitor's language before anything is drawn, and carries the page's title,
 // description, canonical URL and its `hreflang` alternates, with `x-default`
 // at the English page, as repo-standards.com's base layout does, and the
-// language's wire feed. The body
-// holds the channels' navigation, the page's `main` and its language links.
+// language's wire feed. The body holds the channels' navigation, the page's
+// `main` and its language links.
 import ChannelNav from "@/components/ChannelNav.astro";
 import LanguageLinks from "@/components/LanguageLinks.astro";
 import LocaleScript from "@/components/LocaleScript.astro";
-import { format } from "@/i18n/format";
 import { ANALYTICS_TOKEN } from "@/config";
+import { format } from "@/i18n/format";
 import {
   DEFAULT_LOCALE,
   LOCALES,

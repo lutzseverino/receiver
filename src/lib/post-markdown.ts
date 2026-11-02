@@ -45,10 +45,11 @@ const CARRIED = new Set<Nodes["type"]>([
 ]);
 
 /** What a refused node is, in words, or `undefined` when the wire carries
- * it. `source` is the node's own Markdown. */
+ * it. `inList` says whether a list holds it, at any depth; `source` is the
+ * node's own Markdown. */
 function construct(
   node: Nodes,
-  parent: Nodes | undefined,
+  inList: boolean,
   source: string,
 ): string | undefined {
   switch (node.type) {
@@ -68,11 +69,13 @@ function construct(
     case "break":
       return "a hard line break";
     case "list":
-      return parent?.type === "listItem" ? "a nested list" : undefined;
+      return inList ? "a nested list" : undefined;
     case "listItem":
       return typeof node.checked === "boolean" ? "a task list item" : undefined;
     case "code":
-      return /^\s*(`{3,}|~{3,})/.test(source)
+      // a fenced block's Markdown starts at its fence, an indented one's at
+      // its indentation
+      return /^(`{3,}|~{3,})/.test(source)
         ? undefined
         : "an indented code block";
     default:
@@ -89,21 +92,20 @@ export function readPostMarkdown(file: string, markdown: string): PostMarkdown {
   });
 
   const refused: string[] = [];
-  const reported = new Set<Nodes>();
-  visit(tree, (node, _index, parent) => {
-    // a table's rows and cells are the table's, already reported
-    if (parent && reported.has(parent)) {
-      reported.add(node);
-      return;
-    }
+  const check = (node: Nodes, inList: boolean) => {
     const { start, end } = node.position ?? {};
-    const source = markdown.slice(start?.offset ?? 0, end?.offset ?? 0);
-    const name = construct(node, parent, source);
-    if (name) {
-      reported.add(node);
-      refused.push(`line ${start?.line ?? "?"}: ${name}`);
-    }
-  });
+    const name = construct(
+      node,
+      inList,
+      markdown.slice(start?.offset ?? 0, end?.offset ?? 0),
+    );
+    // a refused node's own parts, such as a table's cells, are its own
+    if (name) refused.push(`line ${start?.line ?? "?"}: ${name}`);
+    else if ("children" in node)
+      for (const child of node.children)
+        check(child as Nodes, inList || node.type === "list");
+  };
+  check(tree, false);
   if (refused.length > 0)
     throw new Error(
       `${file} uses what the wire doesn't carry (${refused.join("; ")}). Posts take paragraphs, headings, lists, block quotes, fenced code blocks, links and images, with emphasis, strong and inline code.`,

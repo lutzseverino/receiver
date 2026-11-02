@@ -1,8 +1,16 @@
-// What the wire shows of its posts: their dates in the visitor's language,
-// "28 OCT" on the list and "28 OCT 2026" on a post, and the list's years.
+// What the wire shows of its posts: their pages, their dates in the
+// visitor's language, "28 OCT" on the list and "28 OCT 2026" on a post, and
+// the list's years.
 import type { Post } from "../data/posts.ts";
 import { format } from "../i18n/format.ts";
-import type { Locale } from "../i18n/locales.ts";
+import {
+  DEFAULT_LOCALE,
+  PSEUDO_LOCALE,
+  localePath,
+  type Locale,
+  type SiteLocale,
+} from "../i18n/locales.ts";
+import { channel } from "./channels.ts";
 
 const MONTHS = [
   "jan",
@@ -18,6 +26,17 @@ const MONTHS = [
   "nov",
   "dec",
 ] as const;
+
+/** The locale whose posts `locale`'s wire lists: the pseudo-locale lists
+ * what English lists. */
+export function wireLocale(locale: Locale): SiteLocale {
+  return locale === PSEUDO_LOCALE ? DEFAULT_LOCALE : locale;
+}
+
+/** A post's page: `/blog/<slug>/` in the post's own language. */
+export function postPath(post: Post): string {
+  return localePath(post.locale, `${channel("wire").path}${post.slug}/`);
+}
 
 /** An ISO date as the wire writes it: its day and month, and with
  * `withYear` its year too. */
