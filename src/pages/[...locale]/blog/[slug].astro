@@ -1,10 +1,11 @@
 ---
-// A post in one of the languages it exists in. lutzseverino/site#7 adds its date and
-// reading time.
+// A post in one of the languages it exists in: its title, date, reading time
+// and body.
 import { loadPosts, type Post } from "@/data/posts";
 import { format } from "@/i18n/format";
 import { localeRoutes, type Locale } from "@/i18n/locales";
 import Base from "@/layouts/Base.astro";
+import { readingTime, wireDate } from "@/lib/wire";
 
 export async function getStaticPaths() {
   const posts = await loadPosts();
@@ -33,6 +34,12 @@ const { locale, post } = Astro.props;
 >
   <article>
     <h1>{post.title}</h1>
+    <p class="meta">
+      <time datetime={post.date}>
+        {wireDate(locale, post.date, { withYear: true })}
+      </time>
+      <span class="reading-time">{readingTime(locale, post.minutes)}</span>
+    </p>
     <Fragment set:html={post.body} />
   </article>
 </Base>

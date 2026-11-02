@@ -1,3 +1,19 @@
 {
-  "empty": "NO TRAFFIC"
+  "empty": "NO TRAFFIC",
+  "english": "EN",
+  "date": "{$day} {$month}",
+  "date.full": "{$day} {$month} {$year}",
+  "reading-time": "{$minutes} MIN",
+  "month.jan": "JAN",
+  "month.feb": "FEB",
+  "month.mar": "MAR",
+  "month.apr": "APR",
+  "month.may": "MAY",
+  "month.jun": "JUN",
+  "month.jul": "JUL",
+  "month.aug": "AUG",
+  "month.sep": "SEP",
+  "month.oct": "OCT",
+  "month.nov": "NOV",
+  "month.dec": "DEC"
 }
