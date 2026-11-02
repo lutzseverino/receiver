@@ -1,0 +1,218 @@
+[
+  {
+    "name": "home-en",
+    "path": "/",
+    "width": 390,
+    "height": 844,
+    "meanChannelDifference": 0,
+    "maxChannelDifference": 0
+  },
+  {
+    "name": "projects-en",
+    "path": "/projects/",
+    "width": 390,
+    "height": 844,
+    "meanChannelDifference": 0,
+    "maxChannelDifference": 0
+  },
+  {
+    "name": "project-en",
+    "path": "/projects/repo-standards/",
+    "width": 390,
+    "height": 844,
+    "meanChannelDifference": 0,
+    "maxChannelDifference": 0
+  },
+  {
+    "name": "wire-en",
+    "path": "/blog/",
+    "width": 390,
+    "height": 844,
+    "meanChannelDifference": 0,
+    "maxChannelDifference": 0
+  },
+  {
+    "name": "post-en",
+    "path": "/blog/short-note/",
+    "width": 390,
+    "height": 844,
+    "meanChannelDifference": 0,
+    "maxChannelDifference": 0
+  },
+  {
+    "name": "reply-en",
+    "path": "/contact/",
+    "width": 390,
+    "height": 844,
+    "meanChannelDifference": 0,
+    "maxChannelDifference": 0
+  },
+  {
+    "name": "no-signal-en",
+    "path": "/404.html",
+    "width": 390,
+    "height": 844,
+    "meanChannelDifference": 0,
+    "maxChannelDifference": 0
+  },
+  {
+    "name": "home-es",
+    "path": "/es/",
+    "width": 390,
+    "height": 844,
+    "meanChannelDifference": 0,
+    "maxChannelDifference": 0
+  },
+  {
+    "name": "projects-es",
+    "path": "/es/projects/",
+    "width": 390,
+    "height": 844,
+    "meanChannelDifference": 0,
+    "maxChannelDifference": 0
+  },
+  {
+    "name": "project-es",
+    "path": "/es/projects/repo-standards/",
+    "width": 390,
+    "height": 844,
+    "meanChannelDifference": 0,
+    "maxChannelDifference": 0
+  },
+  {
+    "name": "wire-es",
+    "path": "/es/blog/",
+    "width": 390,
+    "height": 844,
+    "meanChannelDifference": 0,
+    "maxChannelDifference": 0
+  },
+  {
+    "name": "post-es",
+    "path": "/es/blog/short-note/",
+    "width": 390,
+    "height": 844,
+    "meanChannelDifference": 0,
+    "maxChannelDifference": 0
+  },
+  {
+    "name": "reply-es",
+    "path": "/es/contact/",
+    "width": 390,
+    "height": 844,
+    "meanChannelDifference": 0,
+    "maxChannelDifference": 0
+  },
+  {
+    "name": "no-signal-es",
+    "path": "/es/404.html",
+    "width": 390,
+    "height": 844,
+    "meanChannelDifference": 0,
+    "maxChannelDifference": 0
+  },
+  {
+    "name": "home-ca",
+    "path": "/ca/",
+    "width": 390,
+    "height": 844,
+    "meanChannelDifference": 0,
+    "maxChannelDifference": 0
+  },
+  {
+    "name": "projects-ca",
+    "path": "/ca/projects/",
+    "width": 390,
+    "height": 844,
+    "meanChannelDifference": 0,
+    "maxChannelDifference": 0
+  },
+  {
+    "name": "project-ca",
+    "path": "/ca/projects/repo-standards/",
+    "width": 390,
+    "height": 844,
+    "meanChannelDifference": 0,
+    "maxChannelDifference": 0
+  },
+  {
+    "name": "wire-ca",
+    "path": "/ca/blog/",
+    "width": 390,
+    "height": 844,
+    "meanChannelDifference": 0,
+    "maxChannelDifference": 0
+  },
+  {
+    "name": "post-ca",
+    "path": "/ca/blog/short-note/",
+    "width": 390,
+    "height": 844,
+    "meanChannelDifference": 0,
+    "maxChannelDifference": 0
+  },
+  {
+    "name": "reply-ca",
+    "path": "/ca/contact/",
+    "width": 390,
+    "height": 844,
+    "meanChannelDifference": 0,
+    "maxChannelDifference": 0
+  },
+  {
+    "name": "no-signal-ca",
+    "path": "/ca/404.html",
+    "width": 390,
+    "height": 844,
+    "meanChannelDifference": 0,
+    "maxChannelDifference": 0
+  },
+  {
+    "name": "compact-en",
+    "path": "/projects/",
+    "width": 1280,
+    "height": 600,
+    "meanChannelDifference": 0,
+    "maxChannelDifference": 0
+  },
+  {
+    "name": "split-en",
+    "path": "/contact/",
+    "width": 720,
+    "height": 320,
+    "meanChannelDifference": 0,
+    "maxChannelDifference": 0
+  },
+  {
+    "name": "compact-es",
+    "path": "/es/projects/",
+    "width": 1280,
+    "height": 600,
+    "meanChannelDifference": 0,
+    "maxChannelDifference": 0
+  },
+  {
+    "name": "split-es",
+    "path": "/es/contact/",
+    "width": 720,
+    "height": 320,
+    "meanChannelDifference": 0,
+    "maxChannelDifference": 0
+  },
+  {
+    "name": "compact-ca",
+    "path": "/ca/projects/",
+    "width": 1280,
+    "height": 600,
+    "meanChannelDifference": 0,
+    "maxChannelDifference": 0
+  },
+  {
+    "name": "split-ca",
+    "path": "/ca/contact/",
+    "width": 720,
+    "height": 320,
+    "meanChannelDifference": 0,
+    "maxChannelDifference": 0
+  }
+]

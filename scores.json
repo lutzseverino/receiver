@@ -1,0 +1,426 @@
+{
+  "before": {
+    "home-ca": {
+      "scores": [
+        70,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:40377/ca/",
+      "tbt": 14853
+    },
+    "home-en": {
+      "scores": [
+        70,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:40377/",
+      "tbt": 48500
+    },
+    "home-es": {
+      "scores": [
+        70,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:40377/es/",
+      "tbt": 11409
+    },
+    "no-signal-ca": {
+      "scores": [
+        70,
+        100,
+        100,
+        66
+      ],
+      "url": "http://127.0.0.1:40377/ca/404.html",
+      "tbt": 11944
+    },
+    "no-signal-en": {
+      "scores": [
+        70,
+        100,
+        100,
+        66
+      ],
+      "url": "http://127.0.0.1:40377/404.html",
+      "tbt": 10589.5
+    },
+    "no-signal-es": {
+      "scores": [
+        70,
+        100,
+        100,
+        66
+      ],
+      "url": "http://127.0.0.1:40377/es/404.html",
+      "tbt": 7177
+    },
+    "post-ca": {
+      "scores": [
+        70,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:40377/ca/blog/short-note/",
+      "tbt": 7813
+    },
+    "post-en": {
+      "scores": [
+        70,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:40377/blog/short-note/",
+      "tbt": 12348.000000000002
+    },
+    "post-es": {
+      "scores": [
+        70,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:40377/es/blog/short-note/",
+      "tbt": 10857
+    },
+    "project-ca": {
+      "scores": [
+        70,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:40377/ca/projects/repo-standards/",
+      "tbt": 13882.999999999998
+    },
+    "project-en": {
+      "scores": [
+        70,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:40377/projects/repo-standards/",
+      "tbt": 8848
+    },
+    "project-es": {
+      "scores": [
+        70,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:40377/es/projects/repo-standards/",
+      "tbt": 7476
+    },
+    "projects-ca": {
+      "scores": [
+        70,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:40377/ca/projects/",
+      "tbt": 11447.999999999998
+    },
+    "projects-en": {
+      "scores": [
+        70,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:40377/projects/",
+      "tbt": 7588.999999999999
+    },
+    "projects-es": {
+      "scores": [
+        70,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:40377/es/projects/",
+      "tbt": 7803.999999999999
+    },
+    "reply-ca": {
+      "scores": [
+        70,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:40377/ca/contact/",
+      "tbt": 14634.5
+    },
+    "reply-en": {
+      "scores": [
+        70,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:40377/contact/",
+      "tbt": 8387.5
+    },
+    "reply-es": {
+      "scores": [
+        70,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:40377/es/contact/",
+      "tbt": 7787
+    },
+    "wire-ca": {
+      "scores": [
+        70,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:40377/ca/blog/",
+      "tbt": 8752
+    },
+    "wire-en": {
+      "scores": [
+        70,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:40377/blog/",
+      "tbt": 7555
+    },
+    "wire-es": {
+      "scores": [
+        70,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:40377/es/blog/",
+      "tbt": 7168.000000000001
+    }
+  },
+  "after": {
+    "home-ca": {
+      "scores": [
+        100,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:36035/ca/",
+      "tbt": 55
+    },
+    "home-en": {
+      "scores": [
+        100,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:36035/",
+      "tbt": 49
+    },
+    "home-es": {
+      "scores": [
+        100,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:36035/es/",
+      "tbt": 32
+    },
+    "no-signal-ca": {
+      "scores": [
+        100,
+        100,
+        100,
+        66
+      ],
+      "url": "http://127.0.0.1:36035/ca/404.html",
+      "tbt": 29
+    },
+    "no-signal-en": {
+      "scores": [
+        100,
+        100,
+        100,
+        66
+      ],
+      "url": "http://127.0.0.1:36035/404.html",
+      "tbt": 40
+    },
+    "no-signal-es": {
+      "scores": [
+        100,
+        100,
+        100,
+        66
+      ],
+      "url": "http://127.0.0.1:36035/es/404.html",
+      "tbt": 57
+    },
+    "post-ca": {
+      "scores": [
+        100,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:36035/ca/blog/short-note/",
+      "tbt": 36
+    },
+    "post-en": {
+      "scores": [
+        100,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:36035/blog/short-note/",
+      "tbt": 30
+    },
+    "post-es": {
+      "scores": [
+        100,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:36035/es/blog/short-note/",
+      "tbt": 50
+    },
+    "project-ca": {
+      "scores": [
+        100,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:36035/ca/projects/repo-standards/",
+      "tbt": 42.5
+    },
+    "project-en": {
+      "scores": [
+        100,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:36035/projects/repo-standards/",
+      "tbt": 45
+    },
+    "project-es": {
+      "scores": [
+        100,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:36035/es/projects/repo-standards/",
+      "tbt": 34
+    },
+    "projects-ca": {
+      "scores": [
+        100,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:36035/ca/projects/",
+      "tbt": 35
+    },
+    "projects-en": {
+      "scores": [
+        100,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:36035/projects/",
+      "tbt": 30
+    },
+    "projects-es": {
+      "scores": [
+        100,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:36035/es/projects/",
+      "tbt": 31
+    },
+    "reply-ca": {
+      "scores": [
+        100,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:36035/ca/contact/",
+      "tbt": 28
+    },
+    "reply-en": {
+      "scores": [
+        100,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:36035/contact/",
+      "tbt": 15
+    },
+    "reply-es": {
+      "scores": [
+        100,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:36035/es/contact/",
+      "tbt": 14.5
+    },
+    "wire-ca": {
+      "scores": [
+        100,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:36035/ca/blog/",
+      "tbt": 30
+    },
+    "wire-en": {
+      "scores": [
+        100,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:36035/blog/",
+      "tbt": 37
+    },
+    "wire-es": {
+      "scores": [
+        100,
+        100,
+        100,
+        100
+      ],
+      "url": "http://127.0.0.1:36035/es/blog/",
+      "tbt": 43
+    }
+  }
+}
