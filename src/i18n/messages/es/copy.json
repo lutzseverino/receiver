@@ -1,54 +1,66 @@
 {
   "home.title": {
-    "message": "Provisional: Jasper Lutz Severino",
-    "source": "812108d7"
+    "message": "Jasper Lutz Severino",
+    "source": "d5184e2d"
   },
   "home.description": {
-    "message": "Provisional: quién es Jasper Lutz Severino y en qué trabaja.",
-    "source": "790e1d96"
+    "message": "Jasper Lutz Severino, en antena: proyectos, escritos y un canal que admite respuestas.",
+    "source": "f14bc6c2"
   },
   "projects.title": {
-    "message": "Provisional: Proyectos · Jasper Lutz Severino",
-    "source": "5d4f5184"
+    "message": "Proyectos · Jasper Lutz Severino",
+    "source": "7d3c0587"
   },
   "projects.description": {
-    "message": "Provisional: los proyectos que construye Jasper Lutz Severino.",
-    "source": "549279a8"
+    "message": "Los proyectos de Jasper Lutz Severino, cada uno con sus propias palabras.",
+    "source": "c41835f6"
   },
   "project.title": {
-    "message": "Provisional: {$project} · Jasper Lutz Severino",
-    "source": "d30b67c9"
+    "message": "{$name} · Jasper Lutz Severino",
+    "source": "3e53ce21"
+  },
+  "project.description": {
+    "message": "{$name}, un proyecto de Jasper Lutz Severino: {$tagline}",
+    "source": "3e489d8a"
   },
   "wire.title": {
-    "message": "Provisional: Teletipo · Jasper Lutz Severino",
-    "source": "05f18444"
+    "message": "Teletipo · Jasper Lutz Severino",
+    "source": "8476b7fc"
   },
   "wire.description": {
-    "message": "Provisional: publicaciones de Jasper Lutz Severino.",
-    "source": "1151f196"
+    "message": "Lo que escribe Jasper Lutz Severino, impreso línea a línea según llega por el teletipo.",
+    "source": "dc167c45"
   },
   "post.title": {
-    "message": "Provisional: {$post} · Jasper Lutz Severino",
-    "source": "5ef9fd34"
+    "message": "{$title} · Jasper Lutz Severino",
+    "source": "34bfd964"
+  },
+  "post.description": {
+    "message": "Del teletipo: {$summary}",
+    "source": "434db14b"
   },
   "reply.title": {
-    "message": "Provisional: Responder · Jasper Lutz Severino",
-    "source": "bd8d7aff"
+    "message": "Responder · Jasper Lutz Severino",
+    "source": "b106fd79"
   },
   "reply.description": {
-    "message": "Provisional: cómo contactar con Jasper Lutz Severino.",
-    "source": "14b224ee"
+    "message": "Escribe a Jasper Lutz Severino: una dirección de correo, GitHub y un espacio que pasa tu mensaje a tu aplicación de correo.",
+    "source": "0ded456c"
   },
   "reply.line-1": {
-    "message": "Provisional: escribir me llega mejor que una voz.",
-    "source": "ecf4e3e1"
+    "message": "este canal solo lleva palabras escritas.",
+    "source": "7e42425b"
   },
   "reply.line-2": {
-    "message": "Provisional: todo lo que llega aquí se lee.",
-    "source": "16ab1b70"
+    "message": "envíalas; me llegan.",
+    "source": "9d1cd522"
   },
   "signal.title": {
-    "message": "Provisional: Sin señal · Jasper Lutz Severino",
-    "source": "869d8f61"
+    "message": "Sin señal · Jasper Lutz Severino",
+    "source": "f02e2a4c"
+  },
+  "signal.description": {
+    "message": "Nada emite en esta dirección. El resto del dial sigue en antena.",
+    "source": "95cdd313"
   }
 }

@@ -25,8 +25,11 @@ const lead = await Promise.all(project.lead.map(renderMarkdown));
 
 <Base
   locale={locale}
-  title={format(locale, "copy.project.title", { project: project.name })}
-  description={project.tagline}
+  title={format(locale, "copy.project.title", { name: project.name })}
+  description={format(locale, "copy.project.description", {
+    name: project.name,
+    tagline: project.tagline,
+  })}
 >
   <h1>{project.name}</h1>
   <div lang="en">

@@ -1,15 +1,13 @@
 ---
-source: c3eb946a
+source: 36a17473
 ---
 
-Registro provisional:
+si oyes esto, la señal ha aguantado.
 
-si esto le llega a alguien, quédate un momento.
+escribo las cosas para que solo haya que decirlas una vez.
 
-ya no puedo hablar como antes. esto funciona, casi siempre.
+casi todo lo que hago pone en sintonía el trabajo de otros.
 
-pasé mi tiempo haciéndoles las cosas más fáciles a quienes hacen cosas.
+está más adelante en el dial, todavía en marcha.
 
-casi todo sigue ahí fuera, funcionando sin mí.
-
-el resto está más adelante en el dial.
+el resto llega si sigues girando.

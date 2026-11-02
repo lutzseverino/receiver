@@ -1,11 +1,9 @@
-Placeholder log:
+if you can hear this, the signal held.
 
-if this is reaching anyone, stay a moment.
+i write things down so they only have to be said once.
 
-i can't speak the way i used to. this works, mostly.
+most of what i make keeps other people's work in step.
 
-i spent my time making things easier for the people who make things.
+it's further along the dial, still running.
 
-most of it is still out there, running without me.
-
-the rest is further along the dial.
+the rest comes in if you keep turning.

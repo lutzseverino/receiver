@@ -1,15 +1,13 @@
 ---
-source: c3eb946a
+source: 36a17473
 ---
 
-Registre provisional:
+si sents això, el senyal ha aguantat.
 
-si això arriba a algú, queda't un moment.
+escric les coses perquè només calgui dir-les una vegada.
 
-ja no puc parlar com abans. això funciona, gairebé sempre.
+gairebé tot el que faig posa en sintonia la feina dels altres.
 
-vaig passar el temps fent les coses més fàcils a qui fa coses.
+és més endavant al dial, encara en marxa.
 
-gairebé tot encara és allà fora, funcionant sense mi.
-
-la resta és més endavant al dial.
+la resta arriba si continues girant.
