@@ -228,6 +228,31 @@ for (const width of [320, 360, 390])
     });
   });
 
+test("focused project links fit phone rows in every locale (lutzseverino/receiver#10)", async () => {
+  for (const width of [320, 360, 390])
+    for (const locale of ["", "es/", "ca/"])
+      await on(
+        `/${locale}projects/`,
+        { width, reducedMotion: true },
+        async (tab) => {
+          await idle(tab);
+          for (const kind of ["site", "source"]) {
+            const label = await tab.evaluate((kind) => {
+              const link = document.querySelector<HTMLAnchorElement>(
+                `main .entries > li:first-child [data-link="${kind}"]`,
+              )!;
+              link.focus();
+              return link.textContent!.trim().toUpperCase() + " ►";
+            }, kind);
+            await until(
+              async () => text((await inspect(tab))!).includes(label),
+              `${locale || "en"} ${label} fully drawn at ${width} px`,
+            );
+          }
+        },
+      );
+});
+
 test("the wire: titles left and dates right under their year, EN on an untranslated post, and a post prints row by row", async () => {
   await on("/blog/", { width: 1280 }, async (tab) => {
     const list = await skipIntro(tab);

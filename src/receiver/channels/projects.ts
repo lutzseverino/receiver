@@ -279,17 +279,17 @@ export function projectsLayout(context: LayoutContext): ChannelLayout {
       // while focus is on one of them
       const links = linkItems(project, null);
       if (links.some((link) => link.target === focused)) {
-        let c = L.x0 + 5;
-        for (const link of links) {
-          A.put(
-            c,
-            r + 1,
-            link.text,
-            link.target === focused ? 1 : 0.8,
-            link.target,
-          );
-          c += link.text.length + 3;
-        }
+        const rows = linkRows(links, L.W - 2);
+        rows.forEach((row, rowIndex) => {
+          for (const { item, col } of row)
+            A.put(
+              L.x0 + 2 + col,
+              r + 1 + rowIndex,
+              item.text,
+              item.target === focused ? 1 : 0.8,
+              item.target,
+            );
+        });
         return;
       }
       const under = project.onAir && !beside ? `${project.onAir} · ` : "";
