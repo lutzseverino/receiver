@@ -1,6 +1,6 @@
 # Receiver performance evidence — lutzseverino/receiver#29
 
-Before: main at 1bced0fb89c1caeefc7b6247b718feacbcaeb9cc. After: d80f9a8cf2b7205421ab5c2cbd29cf4f1e2aa3a3.
+Before: main at 1bced0fb89c1caeefc7b6247b718feacbcaeb9cc. After: eec92971e709a96a430f657d65e1771813dcfd5f.
 
 Lighthouse 13.6.0; Chrome for Testing 153.0.8010.12, Linux headless, software WebGL explicitly enabled. Node 24.22.2, pnpm 11.28.10. Complete production builds use test-only project and post fixtures; launch production still has no posts. All reports start with empty storage, normal motion and the receiver enabled, so the intro runs. No receiver blocking, hidden-canvas switch or score-only mode is used. NO SIGNAL is measured at /404.html, /es/404.html and /ca/404.html, retaining noindex and exempt only from the numerical SEO gate.
 
@@ -34,7 +34,7 @@ Performance / accessibility / best practices / SEO. See each JSON for exact URLs
 
 ## Reproduce
 
-Install the repository prerequisites and dependencies as docs/development/README.md directs. Install Lighthouse 13.6.0 in a per-task directory. Run measure.ts from the checkout root using Node 24; it imports the repository test-support builder, writes its localhost origin and holds the fixture server open. Before uses main1bced0f and after uses d80f9a8. Set PF_ROOT to your per-task directory and CHROME_PATH (and SITE_BROWSER for visuals) to your Chrome executable. Copy these scripts into PF_ROOT and install Lighthouse with npm install --prefix "$PF_ROOT/tools" lighthouse@13.6.0. Run node "$PF_ROOT/measure.ts" from each corresponding source checkout (pnpm install first); its Astro build uses SITE_PROJECTS=fixture through test/support/fixture.ts and the fixture-posts Vite definition in builtSite({ posts: FIXTURE_POSTS }). Copy the baseline url file to baseline-url before starting the after server. Run node "$PF_ROOT/matrix.mjs" before, then node "$PF_ROOT/matrix.mjs" after. Keep the two servers alive through node "$PF_ROOT/visuals.ts", then stop their PIDs. Run one matrix at a time. The command per URL is:
+Install the repository prerequisites and dependencies as docs/development/README.md directs. Install Lighthouse 13.6.0 in a per-task directory. Run measure.ts from the checkout root using Node 24; it imports the repository test-support builder, writes its localhost origin and holds the fixture server open. Before uses main1bced0f and after uses eec9297. Set PF_ROOT to your per-task directory and CHROME_PATH (and SITE_BROWSER for visuals) to your Chrome executable. Copy these scripts into PF_ROOT and install Lighthouse with npm install --prefix "$PF_ROOT/tools" lighthouse@13.6.0. Run node "$PF_ROOT/measure.ts" from each corresponding source checkout (pnpm install first); its Astro build uses SITE_PROJECTS=fixture through test/support/fixture.ts and the fixture-posts Vite definition in builtSite({ posts: FIXTURE_POSTS }). Copy the baseline url file to baseline-url before starting the after server. Run node "$PF_ROOT/matrix.mjs" before, then node "$PF_ROOT/matrix.mjs" after. Keep the two servers alive through node "$PF_ROOT/visuals.ts", then stop their PIDs. Run one matrix at a time. The command per URL is:
 
 ```sh
 CHROME_PATH=/path/to/chrome lighthouse "$URL" \
