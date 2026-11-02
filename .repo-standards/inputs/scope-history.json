@@ -1,7 +1,7 @@
 {
   "format": "repo-standards/scope-history/v6",
   "evidence": "historical",
-  "inspection": "sha256:27988e8170ee4c9bea5dcbb25f0590403250e35904bb2e99c30bc30c06db29b8",
+  "inspection": "sha256:5b7f823e2037a927cac1773ea41c756c72173a231bd331614e5993a834d654e2",
   "resolved": {
     "description": "The Repo Canon standards for every adopting repository",
     "declarations": [
@@ -70,7 +70,10 @@
         "rules": "rules/documentation.md",
         "targets": {
           "paths": [
+            "GLOSSARY.md",
             "docs/README.md",
+            "docs/adr/0001-draw-real-pages-on-the-display.md",
+            "docs/adr/README.md",
             "docs/development/README.md"
           ],
           "directories": []
@@ -674,15 +677,40 @@
       },
       {
         "id": "typescript-astro-stack",
-        "checks": [],
+        "checks": [
+          {
+            "id": "typescript-astro-stack-manifests",
+            "run": {
+              "executable": "node",
+              "script": "operations/check-typescript-astro-stack.mjs",
+              "resources": [
+                "operations/lib/typescript-node-stack.mjs",
+                "operations/lib/stack-files.mjs",
+                "operations/lib/typescript-web-stack.mjs",
+                "operations/lib/stack-check.mjs",
+                "operations/lib/local-markdown-links.mjs"
+              ],
+              "arguments": []
+            },
+            "prerequisite": {
+              "version-arguments": [
+                "--version"
+              ],
+              "version": ">=24.0.0 <25.0.0 || >=26.0.0 <27.0.0"
+            },
+            "timeout-seconds": 30
+          }
+        ],
         "fixes": [],
         "kind": "repository",
         "guidance": "guidance/typescript-astro-stack.md",
+        "rules": "rules/typescript-web-stacks.md",
         "targets": {
-          "paths": [],
+          "paths": [
+            "package.json"
+          ],
           "directories": []
-        },
-        "no-scope": true
+        }
       },
       {
         "id": "typescript-node-stack",
@@ -1569,7 +1597,7 @@
     ]
   },
   "discovery": {
-    "identity": "sha256:0d807e8bb07612b071e23e0ca6afddda182cf7b6b93477ce804c91fd553a2139",
+    "identity": "sha256:a95122b167c23eab5b0cf577b822c0edce02f830b617a85079ebc0284e4deaaf",
     "proposal": {
       "format": "repo-standards/scope/v2",
       "declarations": [
@@ -1578,11 +1606,35 @@
           "coverage": "Drafted from the repository tree by `discovery/draft-documentation-scope.mjs`: every file Git keeps under the documentation root `docs`, a new index for each of its directories without one, the development guide, and the domain glossaries and context maps the rules identify. Paths other declarations own are left out, and so is each README.md outside the documentation roots. Link-repair files and move destinations enter when the work needs them.",
           "candidates": [
             {
+              "path": "GLOSSARY.md",
+              "decision": "include",
+              "reason": "The domain glossary at the repository root.",
+              "evidence": [
+                "GLOSSARY.md"
+              ]
+            },
+            {
               "path": "docs/README.md",
               "decision": "include",
               "reason": "A file under the documentation root `docs`.",
               "evidence": [
                 "docs/README.md"
+              ]
+            },
+            {
+              "path": "docs/adr/0001-draw-real-pages-on-the-display.md",
+              "decision": "include",
+              "reason": "A file under the documentation root `docs`.",
+              "evidence": [
+                "docs/adr/0001-draw-real-pages-on-the-display.md"
+              ]
+            },
+            {
+              "path": "docs/adr/README.md",
+              "decision": "include",
+              "reason": "A file under the documentation root `docs`.",
+              "evidence": [
+                "docs/adr/README.md"
               ]
             },
             {
@@ -1624,40 +1676,319 @@
               "evidence": [
                 "docs/development/README.md"
               ]
+            },
+            {
+              "path": "src/components/ui/AGENTS.md",
+              "decision": "exclude",
+              "reason": "Agent guidance beside the generated shadcn code it governs; not documentation.",
+              "evidence": [
+                "src/components/ui/AGENTS.md"
+              ]
+            },
+            {
+              "path": "src/i18n/prose/ca/log.md",
+              "decision": "exclude",
+              "reason": "Product copy loaded by the i18n layer as prose.log; not documentation.",
+              "evidence": [
+                "src/i18n/format.ts"
+              ]
+            },
+            {
+              "path": "src/i18n/prose/en/log.md",
+              "decision": "exclude",
+              "reason": "Product copy loaded by the i18n layer as prose.log; not documentation.",
+              "evidence": [
+                "src/i18n/format.ts"
+              ]
+            },
+            {
+              "path": "src/i18n/prose/es/log.md",
+              "decision": "exclude",
+              "reason": "Product copy loaded by the i18n layer as prose.log; not documentation.",
+              "evidence": [
+                "src/i18n/format.ts"
+              ]
+            },
+            {
+              "path": "test/fixtures/github/lutzseverino/hemiciclo/README.md",
+              "decision": "exclude",
+              "reason": "A README.md outside the documentation roots, which the documentation check would read as a documentation root's index. If it is a Project README, the `project-readmes` declaration's proposal covers it.",
+              "evidence": [
+                "test/fixtures/github/lutzseverino/hemiciclo/README.md"
+              ]
+            },
+            {
+              "path": "test/fixtures/github/lutzseverino/postern/README.md",
+              "decision": "exclude",
+              "reason": "A README.md outside the documentation roots, which the documentation check would read as a documentation root's index. If it is a Project README, the `project-readmes` declaration's proposal covers it.",
+              "evidence": [
+                "test/fixtures/github/lutzseverino/postern/README.md"
+              ]
+            },
+            {
+              "path": "test/fixtures/github/lutzseverino/repo-canon/README.md",
+              "decision": "exclude",
+              "reason": "A README.md outside the documentation roots, which the documentation check would read as a documentation root's index. If it is a Project README, the `project-readmes` declaration's proposal covers it.",
+              "evidence": [
+                "test/fixtures/github/lutzseverino/repo-canon/README.md"
+              ]
+            },
+            {
+              "path": "test/fixtures/github/lutzseverino/repo-standards/README.md",
+              "decision": "exclude",
+              "reason": "A README.md outside the documentation roots, which the documentation check would read as a documentation root's index. If it is a Project README, the `project-readmes` declaration's proposal covers it.",
+              "evidence": [
+                "test/fixtures/github/lutzseverino/repo-standards/README.md"
+              ]
+            },
+            {
+              "path": "test/fixtures/github/lutzseverino/scriptorium/README.md",
+              "decision": "exclude",
+              "reason": "A README.md outside the documentation roots, which the documentation check would read as a documentation root's index. If it is a Project README, the `project-readmes` declaration's proposal covers it.",
+              "evidence": [
+                "test/fixtures/github/lutzseverino/scriptorium/README.md"
+              ]
+            },
+            {
+              "path": "test/fixtures/posts/long-wave.md",
+              "decision": "exclude",
+              "reason": "Test data the wire tests build from; not documentation.",
+              "evidence": [
+                "test/wire.test.ts"
+              ]
+            },
+            {
+              "path": "test/fixtures/posts/short-note.ca.md",
+              "decision": "exclude",
+              "reason": "Test data the wire tests build from; not documentation.",
+              "evidence": [
+                "test/wire.test.ts"
+              ]
+            },
+            {
+              "path": "test/fixtures/posts/short-note.es.md",
+              "decision": "exclude",
+              "reason": "Test data the wire tests build from; not documentation.",
+              "evidence": [
+                "test/wire.test.ts"
+              ]
+            },
+            {
+              "path": "test/fixtures/posts/short-note.md",
+              "decision": "exclude",
+              "reason": "Test data the wire tests build from; not documentation.",
+              "evidence": [
+                "test/wire.test.ts"
+              ]
             }
           ],
           "unresolved": []
         },
         {
           "id": "github-repository-configuration",
-          "coverage": "Intentionally empty. The declaration changes remote GitHub configuration of lutzseverino/site through its canonical-labels and pull-request-integration fixes and only reads the optional .github/pull-request-reviewer.json and .github/factory-review-policy.json, so it covers no project-content paths. Repository identity: the only Git remote, origin, is https://github.com/lutzseverino/site; `gh repo view` resolves lutzseverino/site, visibility PUBLIC, viewer permission ADMIN through the authenticated account lutzseverino (checked 2026-11-02). Remote configuration is authorized: the owner approved this adoption follow-up and its merge on lutzseverino/site#1 (https://github.com/lutzseverino/site/pull/1#issuecomment-6567277613, 2026-11-02), and the adoption guide lets the run apply its GitHub remote setup fixes (labels, pull request integration) on the owner's account. REPO_CANON_RUNS_ON: `gh variable list` returns no repository-level variables, so it is absent and classifies as unset (hosted default). The owner lutzseverino is a User account, not an organization, so no organization-level variable can supply a value; no uncertainty remains about an inherited value. Neither .github/pull-request-reviewer.json nor .github/factory-review-policy.json exists, and both stay untouched.",
+          "coverage": "Intentionally empty: remote fixes configure lutzseverino/receiver and optional reviewer and policy files are read only. The only Git remote is origin https://github.com/lutzseverino/receiver; gh resolves full_name lutzseverino/receiver, PUBLIC visibility, ADMIN permission. Owner lutzseverino is a User, so no organization-level variable applies. gh variable list returns no repository variables; REPO_CANON_RUNS_ON is absent, classified unset (hosted default). Neither reviewer nor factory policy file exists. Remote fixes are authorized by the owner-approved adoption plan on https://github.com/lutzseverino/receiver/pull/1#issuecomment-6567277613 (2026-11-02T02:00Z), reaffirmed by approved issue15 brief comment6574739189: run both only while configuration is unchanged; confirmation-required or blocked requires owner handoff, without confirmation or workaround.",
           "candidates": [],
           "unresolved": []
         },
         {
           "id": "project-readmes",
-          "coverage": "Intentionally empty. The repository tree at the adoption base (initial commit 'chore: start the repository') holds no files besides Git metadata: no manifest such as package.json, no workspace or build configuration, no maintained source, no documentation and no component boundary, so it contains no Project under rules/project-readmes.md and no non-root README.md path is proposed. The root README.md belongs to repository-readme. The planned personal website has no code yet; a Project README joins this scope when its Project exists.",
+          "coverage": "Intentionally empty. The root package.json is the repository's one Project; its root README.md belongs to repository-readme. The fixture repositories' READMEs under test/fixtures/github are test data read by src/data/fixture.ts, and fixtures are not Projects under the Project README rules. No non-root Project README is needed.",
           "candidates": [],
           "unresolved": []
         },
         {
           "id": "typescript-astro-stack",
-          "coverage": "Drafted from manifests and workspace configuration by `discovery/draft-typescript-astro-stack-scope.mjs`: one `package.json` per Project, included when it matches the stack's manifest facts and excluded naming its differences otherwise. A maintained workspace root package is a Project alongside its members; a shared-only root is not. Uncertain root membership stays unresolved. A root package without workspace members is a Project. The repository holds no matching web Project, so the declaration has no scope.",
-          "candidates": [],
-          "unresolved": [],
-          "noScope": true
+          "coverage": "Drafted from manifests and workspace configuration by `discovery/draft-typescript-astro-stack-scope.mjs`: one `package.json` per Project, included when it matches the stack's manifest facts and excluded naming its differences otherwise. A maintained workspace root package is a Project alongside its members; a shared-only root is not. Uncertain root membership stays unresolved. A root package without workspace members is a Project. The root private Astro package is the one Project, rendering real channel pages to static HTML per astro.config.mjs and docs/adr/0001-draw-real-pages-on-the-display.md.",
+          "candidates": [
+            {
+              "path": "package.json",
+              "decision": "include",
+              "reason": "Astro dependency and configuration evidence pages built ahead of time; confirm Site semantics from sources and assessment. The Project matches typescript-astro manifest facts; confirm the remaining rules through assessment.",
+              "evidence": [
+                "components.json",
+                "package.json",
+                "pnpm-lock.yaml",
+                "pnpm-workspace.yaml"
+              ]
+            }
+          ],
+          "unresolved": []
         },
         {
           "id": "typescript-node-stack",
           "coverage": "Drafted from manifests and workspace configuration by `discovery/draft-typescript-node-stack-scope.mjs`: one `package.json` per Project, included when it matches the stack's manifest facts and excluded naming its differences otherwise. A maintained workspace root package is a Project alongside its members; a shared-only root is not. Uncertain root membership stays unresolved. A root package without workspace members is a Project. The repository holds no Node.js Project, so the declaration has no scope.",
-          "candidates": [],
+          "candidates": [
+            {
+              "path": "package.json",
+              "decision": "exclude",
+              "reason": "Astro dependency and configuration evidence pages built ahead of time; confirm Site semantics from sources and assessment. Intended stack: typescript-astro.",
+              "evidence": [
+                ".agents/skills/babysit/body-links.mjs",
+                ".agents/skills/babysit/merge.mjs",
+                ".agents/skills/babysit/platform.mjs",
+                ".agents/skills/babysit/pull-request-reviewer.mjs",
+                ".agents/skills/babysit/request.mjs",
+                ".agents/skills/babysit/review-outcome.mjs",
+                ".agents/skills/babysit/review-policy.mjs",
+                ".agents/skills/babysit/reviewer.mjs",
+                ".agents/skills/babysit/trusted-review-config.mjs",
+                ".agents/skills/babysit/wait.mjs",
+                ".agents/skills/orchestrate/wait.mjs",
+                ".agents/skills/triage/ready.mjs",
+                ".github/scripts/validate-pr-metadata.mjs",
+                ".github/scripts/validate.mjs",
+                "README.md",
+                "astro.config.mjs",
+                "operations/lib/rendered-markdown.mjs",
+                "package.json",
+                "scripts/registry.mjs",
+                "scripts/translation-source.ts",
+                "scripts/validate-issue-contract.mjs",
+                "scripts/validate.mjs",
+                "src/components/ChannelNav.astro",
+                "src/components/LanguageLinks.astro",
+                "src/components/LocaleScript.astro",
+                "src/components/app/button.ts",
+                "src/components/app/label.ts",
+                "src/components/app/textarea.ts",
+                "src/components/pages/NoSignal.astro",
+                "src/components/ui/button.tsx",
+                "src/components/ui/label.tsx",
+                "src/components/ui/textarea.tsx",
+                "src/config.ts",
+                "src/data/fixture.ts",
+                "src/data/github.ts",
+                "src/data/posts.ts",
+                "src/data/projects.ts",
+                "src/data/readme.ts",
+                "src/i18n/choice.ts",
+                "src/i18n/format.ts",
+                "src/i18n/ids.ts",
+                "src/i18n/locales.ts",
+                "src/i18n/message.ts",
+                "src/i18n/pseudo.ts",
+                "src/i18n/translations.ts",
+                "src/layouts/Base.astro",
+                "src/lib/analytics.ts",
+                "src/lib/channels.ts",
+                "src/lib/dither.ts",
+                "src/lib/email.ts",
+                "src/lib/feed.ts",
+                "src/lib/glyph-coverage.ts",
+                "src/lib/markdown.ts",
+                "src/lib/post-markdown.ts",
+                "src/lib/utils.ts",
+                "src/lib/wire.ts",
+                "src/pages/404.astro",
+                "src/pages/[...locale]/blog/[slug].astro",
+                "src/pages/[...locale]/blog/index.astro",
+                "src/pages/[...locale]/contact.astro",
+                "src/pages/[...locale]/index.astro",
+                "src/pages/[...locale]/projects/[repo].astro",
+                "src/pages/[...locale]/projects/index.astro",
+                "src/pages/[...locale]/rss.xml.ts",
+                "src/pages/[locale]/404.astro",
+                "src/pages/blog/[slug]/[image].ts",
+                "src/receiver/font.ts",
+                "src/receiver/layout.ts",
+                "src/receiver/loader.ts",
+                "src/receiver/receiver.ts",
+                "src/receiver/settings.ts",
+                "src/receiver/sound.ts",
+                "src/receiver/tube.ts",
+                "src/scripts/reply.ts"
+              ]
+            }
+          ],
           "unresolved": [],
           "noScope": true
         },
         {
           "id": "typescript-vite-stack",
           "coverage": "Drafted from manifests and workspace configuration by `discovery/draft-typescript-vite-stack-scope.mjs`: one `package.json` per Project, included when it matches the stack's manifest facts and excluded naming its differences otherwise. A maintained workspace root package is a Project alongside its members; a shared-only root is not. Uncertain root membership stays unresolved. A root package without workspace members is a Project. The repository holds no matching web Project, so the declaration has no scope.",
-          "candidates": [],
+          "candidates": [
+            {
+              "path": "package.json",
+              "decision": "exclude",
+              "reason": "Astro dependency and configuration evidence pages built ahead of time; confirm Site semantics from sources and assessment. Intended stack: typescript-astro.",
+              "evidence": [
+                ".agents/skills/babysit/body-links.mjs",
+                ".agents/skills/babysit/merge.mjs",
+                ".agents/skills/babysit/platform.mjs",
+                ".agents/skills/babysit/pull-request-reviewer.mjs",
+                ".agents/skills/babysit/request.mjs",
+                ".agents/skills/babysit/review-outcome.mjs",
+                ".agents/skills/babysit/review-policy.mjs",
+                ".agents/skills/babysit/reviewer.mjs",
+                ".agents/skills/babysit/trusted-review-config.mjs",
+                ".agents/skills/babysit/wait.mjs",
+                ".agents/skills/orchestrate/wait.mjs",
+                ".agents/skills/triage/ready.mjs",
+                ".github/scripts/validate-pr-metadata.mjs",
+                ".github/scripts/validate.mjs",
+                "README.md",
+                "astro.config.mjs",
+                "operations/lib/rendered-markdown.mjs",
+                "package.json",
+                "scripts/registry.mjs",
+                "scripts/translation-source.ts",
+                "scripts/validate-issue-contract.mjs",
+                "scripts/validate.mjs",
+                "src/components/ChannelNav.astro",
+                "src/components/LanguageLinks.astro",
+                "src/components/LocaleScript.astro",
+                "src/components/app/button.ts",
+                "src/components/app/label.ts",
+                "src/components/app/textarea.ts",
+                "src/components/pages/NoSignal.astro",
+                "src/components/ui/button.tsx",
+                "src/components/ui/label.tsx",
+                "src/components/ui/textarea.tsx",
+                "src/config.ts",
+                "src/data/fixture.ts",
+                "src/data/github.ts",
+                "src/data/posts.ts",
+                "src/data/projects.ts",
+                "src/data/readme.ts",
+                "src/i18n/choice.ts",
+                "src/i18n/format.ts",
+                "src/i18n/ids.ts",
+                "src/i18n/locales.ts",
+                "src/i18n/message.ts",
+                "src/i18n/pseudo.ts",
+                "src/i18n/translations.ts",
+                "src/layouts/Base.astro",
+                "src/lib/analytics.ts",
+                "src/lib/channels.ts",
+                "src/lib/dither.ts",
+                "src/lib/email.ts",
+                "src/lib/feed.ts",
+                "src/lib/glyph-coverage.ts",
+                "src/lib/markdown.ts",
+                "src/lib/post-markdown.ts",
+                "src/lib/utils.ts",
+                "src/lib/wire.ts",
+                "src/pages/404.astro",
+                "src/pages/[...locale]/blog/[slug].astro",
+                "src/pages/[...locale]/blog/index.astro",
+                "src/pages/[...locale]/contact.astro",
+                "src/pages/[...locale]/index.astro",
+                "src/pages/[...locale]/projects/[repo].astro",
+                "src/pages/[...locale]/projects/index.astro",
+                "src/pages/[...locale]/rss.xml.ts",
+                "src/pages/[locale]/404.astro",
+                "src/pages/blog/[slug]/[image].ts",
+                "src/receiver/font.ts",
+                "src/receiver/layout.ts",
+                "src/receiver/loader.ts",
+                "src/receiver/receiver.ts",
+                "src/receiver/settings.ts",
+                "src/receiver/sound.ts",
+                "src/receiver/tube.ts",
+                "src/scripts/reply.ts"
+              ]
+            }
+          ],
           "unresolved": [],
           "noScope": true
         }
@@ -1666,14 +1997,34 @@
     "absence": [],
     "named": {
       "targets": {
+        "GLOSSARY.md": {
+          "type": "file",
+          "sha256": "ab556f400cc449969acd32122d5cd0973343dd622b7bfe6a136dfa0c2cb1e513",
+          "executable": false
+        },
         "docs/README.md": {
           "type": "file",
-          "sha256": "f75e88e463b9771dc27ea20e2b0e7cad0a683d8c0e4f05ca708374522ce63b49",
+          "sha256": "98f1ae49fb2b06a5793dd7cd9060e0bca57770d9f59d2629403f6322cc4dc849",
+          "executable": false
+        },
+        "docs/adr/0001-draw-real-pages-on-the-display.md": {
+          "type": "file",
+          "sha256": "c50e2cf609285ec781dbab8225ccd9b8597595b10f6a8458274144a420b673fd",
+          "executable": false
+        },
+        "docs/adr/README.md": {
+          "type": "file",
+          "sha256": "e86f26995b8f2e9b886a7395f48ceb74bcf78af37bb710578b8888533a65310f",
           "executable": false
         },
         "docs/development/README.md": {
           "type": "file",
-          "sha256": "5e425c7df60cc5fcfb6cd84991490fe6ca3c97e62aa683ca99ddfea10da0459d",
+          "sha256": "3098cf9c56793912d3aa21a928b0115216ad050e656543daab36f9eec9f5c7b0",
+          "executable": false
+        },
+        "package.json": {
+          "type": "file",
+          "sha256": "7f570c90dfb496c9f13dfd302a5831f77f60afda26cbdf4b4369ac3f38e23b84",
           "executable": false
         }
       }
@@ -1684,11 +2035,35 @@
         "coverage": "Drafted from the repository tree by `discovery/draft-documentation-scope.mjs`: every file Git keeps under the documentation root `docs`, a new index for each of its directories without one, the development guide, and the domain glossaries and context maps the rules identify. Paths other declarations own are left out, and so is each README.md outside the documentation roots. Link-repair files and move destinations enter when the work needs them.",
         "candidates": [
           {
+            "path": "GLOSSARY.md",
+            "decision": "include",
+            "reason": "The domain glossary at the repository root.",
+            "evidence": [
+              "GLOSSARY.md"
+            ]
+          },
+          {
             "path": "docs/README.md",
             "decision": "include",
             "reason": "A file under the documentation root `docs`.",
             "evidence": [
               "docs/README.md"
+            ]
+          },
+          {
+            "path": "docs/adr/0001-draw-real-pages-on-the-display.md",
+            "decision": "include",
+            "reason": "A file under the documentation root `docs`.",
+            "evidence": [
+              "docs/adr/0001-draw-real-pages-on-the-display.md"
+            ]
+          },
+          {
+            "path": "docs/adr/README.md",
+            "decision": "include",
+            "reason": "A file under the documentation root `docs`.",
+            "evidence": [
+              "docs/adr/README.md"
             ]
           },
           {
@@ -1730,28 +2105,246 @@
             "evidence": [
               "docs/development/README.md"
             ]
+          },
+          {
+            "path": "test/fixtures/github/lutzseverino/hemiciclo/README.md",
+            "decision": "exclude",
+            "reason": "A README.md outside the documentation roots, which the documentation check would read as a documentation root's index. If it is a Project README, the `project-readmes` declaration's proposal covers it.",
+            "evidence": [
+              "test/fixtures/github/lutzseverino/hemiciclo/README.md"
+            ]
+          },
+          {
+            "path": "test/fixtures/github/lutzseverino/postern/README.md",
+            "decision": "exclude",
+            "reason": "A README.md outside the documentation roots, which the documentation check would read as a documentation root's index. If it is a Project README, the `project-readmes` declaration's proposal covers it.",
+            "evidence": [
+              "test/fixtures/github/lutzseverino/postern/README.md"
+            ]
+          },
+          {
+            "path": "test/fixtures/github/lutzseverino/repo-canon/README.md",
+            "decision": "exclude",
+            "reason": "A README.md outside the documentation roots, which the documentation check would read as a documentation root's index. If it is a Project README, the `project-readmes` declaration's proposal covers it.",
+            "evidence": [
+              "test/fixtures/github/lutzseverino/repo-canon/README.md"
+            ]
+          },
+          {
+            "path": "test/fixtures/github/lutzseverino/repo-standards/README.md",
+            "decision": "exclude",
+            "reason": "A README.md outside the documentation roots, which the documentation check would read as a documentation root's index. If it is a Project README, the `project-readmes` declaration's proposal covers it.",
+            "evidence": [
+              "test/fixtures/github/lutzseverino/repo-standards/README.md"
+            ]
+          },
+          {
+            "path": "test/fixtures/github/lutzseverino/scriptorium/README.md",
+            "decision": "exclude",
+            "reason": "A README.md outside the documentation roots, which the documentation check would read as a documentation root's index. If it is a Project README, the `project-readmes` declaration's proposal covers it.",
+            "evidence": [
+              "test/fixtures/github/lutzseverino/scriptorium/README.md"
+            ]
+          }
+        ],
+        "unresolved": [
+          "Which of these Markdown files under `src` are documentation this scope must cover, such as a document to move into a documentation category: `src/components/ui/AGENTS.md`, `src/i18n/prose/ca/log.md`, `src/i18n/prose/en/log.md`, and `src/i18n/prose/es/log.md`? Include each one, with its destination when it moves.",
+          "Which of these Markdown files under `test` are documentation this scope must cover, such as a document to move into a documentation category: `test/fixtures/posts/long-wave.md`, `test/fixtures/posts/short-note.ca.md`, `test/fixtures/posts/short-note.es.md`, and `test/fixtures/posts/short-note.md`? Include each one, with its destination when it moves."
+        ]
+      },
+      {
+        "id": "typescript-astro-stack",
+        "coverage": "Drafted from manifests and workspace configuration by `discovery/draft-typescript-astro-stack-scope.mjs`: one `package.json` per Project, included when it matches the stack's manifest facts and excluded naming its differences otherwise. A maintained workspace root package is a Project alongside its members; a shared-only root is not. Uncertain root membership stays unresolved. A root package without workspace members is a Project.",
+        "candidates": [
+          {
+            "path": "package.json",
+            "decision": "include",
+            "reason": "Astro dependency and configuration evidence pages built ahead of time; confirm Site semantics from sources and assessment. The Project matches typescript-astro manifest facts; confirm the remaining rules through assessment.",
+            "evidence": [
+              "components.json",
+              "package.json",
+              "pnpm-lock.yaml",
+              "pnpm-workspace.yaml"
+            ]
           }
         ],
         "unresolved": []
       },
       {
-        "id": "typescript-astro-stack",
-        "coverage": "Drafted from manifests and workspace configuration by `discovery/draft-typescript-astro-stack-scope.mjs`: one `package.json` per Project, included when it matches the stack's manifest facts and excluded naming its differences otherwise. A maintained workspace root package is a Project alongside its members; a shared-only root is not. Uncertain root membership stays unresolved. A root package without workspace members is a Project. The repository holds no matching web Project, so the declaration has no scope.",
-        "candidates": [],
-        "unresolved": [],
-        "noScope": true
-      },
-      {
         "id": "typescript-node-stack",
         "coverage": "Drafted from manifests and workspace configuration by `discovery/draft-typescript-node-stack-scope.mjs`: one `package.json` per Project, included when it matches the stack's manifest facts and excluded naming its differences otherwise. A maintained workspace root package is a Project alongside its members; a shared-only root is not. Uncertain root membership stays unresolved. A root package without workspace members is a Project. The repository holds no Node.js Project, so the declaration has no scope.",
-        "candidates": [],
+        "candidates": [
+          {
+            "path": "package.json",
+            "decision": "exclude",
+            "reason": "Astro dependency and configuration evidence pages built ahead of time; confirm Site semantics from sources and assessment. Intended stack: typescript-astro.",
+            "evidence": [
+              ".agents/skills/babysit/body-links.mjs",
+              ".agents/skills/babysit/merge.mjs",
+              ".agents/skills/babysit/platform.mjs",
+              ".agents/skills/babysit/pull-request-reviewer.mjs",
+              ".agents/skills/babysit/request.mjs",
+              ".agents/skills/babysit/review-outcome.mjs",
+              ".agents/skills/babysit/review-policy.mjs",
+              ".agents/skills/babysit/reviewer.mjs",
+              ".agents/skills/babysit/trusted-review-config.mjs",
+              ".agents/skills/babysit/wait.mjs",
+              ".agents/skills/orchestrate/wait.mjs",
+              ".agents/skills/triage/ready.mjs",
+              ".github/scripts/validate-pr-metadata.mjs",
+              ".github/scripts/validate.mjs",
+              "README.md",
+              "astro.config.mjs",
+              "operations/lib/rendered-markdown.mjs",
+              "package.json",
+              "scripts/registry.mjs",
+              "scripts/translation-source.ts",
+              "scripts/validate-issue-contract.mjs",
+              "scripts/validate.mjs",
+              "src/components/ChannelNav.astro",
+              "src/components/LanguageLinks.astro",
+              "src/components/LocaleScript.astro",
+              "src/components/app/button.ts",
+              "src/components/app/label.ts",
+              "src/components/app/textarea.ts",
+              "src/components/pages/NoSignal.astro",
+              "src/components/ui/button.tsx",
+              "src/components/ui/label.tsx",
+              "src/components/ui/textarea.tsx",
+              "src/config.ts",
+              "src/data/fixture.ts",
+              "src/data/github.ts",
+              "src/data/posts.ts",
+              "src/data/projects.ts",
+              "src/data/readme.ts",
+              "src/i18n/choice.ts",
+              "src/i18n/format.ts",
+              "src/i18n/ids.ts",
+              "src/i18n/locales.ts",
+              "src/i18n/message.ts",
+              "src/i18n/pseudo.ts",
+              "src/i18n/translations.ts",
+              "src/layouts/Base.astro",
+              "src/lib/analytics.ts",
+              "src/lib/channels.ts",
+              "src/lib/dither.ts",
+              "src/lib/email.ts",
+              "src/lib/feed.ts",
+              "src/lib/glyph-coverage.ts",
+              "src/lib/markdown.ts",
+              "src/lib/post-markdown.ts",
+              "src/lib/utils.ts",
+              "src/lib/wire.ts",
+              "src/pages/404.astro",
+              "src/pages/[...locale]/blog/[slug].astro",
+              "src/pages/[...locale]/blog/index.astro",
+              "src/pages/[...locale]/contact.astro",
+              "src/pages/[...locale]/index.astro",
+              "src/pages/[...locale]/projects/[repo].astro",
+              "src/pages/[...locale]/projects/index.astro",
+              "src/pages/[...locale]/rss.xml.ts",
+              "src/pages/[locale]/404.astro",
+              "src/pages/blog/[slug]/[image].ts",
+              "src/receiver/font.ts",
+              "src/receiver/layout.ts",
+              "src/receiver/loader.ts",
+              "src/receiver/receiver.ts",
+              "src/receiver/settings.ts",
+              "src/receiver/sound.ts",
+              "src/receiver/tube.ts",
+              "src/scripts/reply.ts"
+            ]
+          }
+        ],
         "unresolved": [],
         "noScope": true
       },
       {
         "id": "typescript-vite-stack",
         "coverage": "Drafted from manifests and workspace configuration by `discovery/draft-typescript-vite-stack-scope.mjs`: one `package.json` per Project, included when it matches the stack's manifest facts and excluded naming its differences otherwise. A maintained workspace root package is a Project alongside its members; a shared-only root is not. Uncertain root membership stays unresolved. A root package without workspace members is a Project. The repository holds no matching web Project, so the declaration has no scope.",
-        "candidates": [],
+        "candidates": [
+          {
+            "path": "package.json",
+            "decision": "exclude",
+            "reason": "Astro dependency and configuration evidence pages built ahead of time; confirm Site semantics from sources and assessment. Intended stack: typescript-astro.",
+            "evidence": [
+              ".agents/skills/babysit/body-links.mjs",
+              ".agents/skills/babysit/merge.mjs",
+              ".agents/skills/babysit/platform.mjs",
+              ".agents/skills/babysit/pull-request-reviewer.mjs",
+              ".agents/skills/babysit/request.mjs",
+              ".agents/skills/babysit/review-outcome.mjs",
+              ".agents/skills/babysit/review-policy.mjs",
+              ".agents/skills/babysit/reviewer.mjs",
+              ".agents/skills/babysit/trusted-review-config.mjs",
+              ".agents/skills/babysit/wait.mjs",
+              ".agents/skills/orchestrate/wait.mjs",
+              ".agents/skills/triage/ready.mjs",
+              ".github/scripts/validate-pr-metadata.mjs",
+              ".github/scripts/validate.mjs",
+              "README.md",
+              "astro.config.mjs",
+              "operations/lib/rendered-markdown.mjs",
+              "package.json",
+              "scripts/registry.mjs",
+              "scripts/translation-source.ts",
+              "scripts/validate-issue-contract.mjs",
+              "scripts/validate.mjs",
+              "src/components/ChannelNav.astro",
+              "src/components/LanguageLinks.astro",
+              "src/components/LocaleScript.astro",
+              "src/components/app/button.ts",
+              "src/components/app/label.ts",
+              "src/components/app/textarea.ts",
+              "src/components/pages/NoSignal.astro",
+              "src/components/ui/button.tsx",
+              "src/components/ui/label.tsx",
+              "src/components/ui/textarea.tsx",
+              "src/config.ts",
+              "src/data/fixture.ts",
+              "src/data/github.ts",
+              "src/data/posts.ts",
+              "src/data/projects.ts",
+              "src/data/readme.ts",
+              "src/i18n/choice.ts",
+              "src/i18n/format.ts",
+              "src/i18n/ids.ts",
+              "src/i18n/locales.ts",
+              "src/i18n/message.ts",
+              "src/i18n/pseudo.ts",
+              "src/i18n/translations.ts",
+              "src/layouts/Base.astro",
+              "src/lib/analytics.ts",
+              "src/lib/channels.ts",
+              "src/lib/dither.ts",
+              "src/lib/email.ts",
+              "src/lib/feed.ts",
+              "src/lib/glyph-coverage.ts",
+              "src/lib/markdown.ts",
+              "src/lib/post-markdown.ts",
+              "src/lib/utils.ts",
+              "src/lib/wire.ts",
+              "src/pages/404.astro",
+              "src/pages/[...locale]/blog/[slug].astro",
+              "src/pages/[...locale]/blog/index.astro",
+              "src/pages/[...locale]/contact.astro",
+              "src/pages/[...locale]/index.astro",
+              "src/pages/[...locale]/projects/[repo].astro",
+              "src/pages/[...locale]/projects/index.astro",
+              "src/pages/[...locale]/rss.xml.ts",
+              "src/pages/[locale]/404.astro",
+              "src/pages/blog/[slug]/[image].ts",
+              "src/receiver/font.ts",
+              "src/receiver/layout.ts",
+              "src/receiver/loader.ts",
+              "src/receiver/receiver.ts",
+              "src/receiver/settings.ts",
+              "src/receiver/sound.ts",
+              "src/receiver/tube.ts",
+              "src/scripts/reply.ts"
+            ]
+          }
+        ],
         "unresolved": [],
         "noScope": true
       }
@@ -2356,6 +2949,31 @@
           "sha256": "0a83bd932b528b37f817acfeae56cfc35728a95ecd373e868bc8dceecfbb1226",
           "executable": false
         },
+        ".github/workflows/validate.yml": {
+          "type": "file",
+          "sha256": "eefa28e82b43a509801640e9776279a76435067fb91147dc2a99d0b309faabf0",
+          "executable": false
+        },
+        ".gitignore": {
+          "type": "file",
+          "sha256": "c760594e89b7b78ec030eb86107c075f9d8177fa7987881c04ff6ea47d5d40cc",
+          "executable": false
+        },
+        ".oxlintrc.json": {
+          "type": "file",
+          "sha256": "6711855d764a658b6b0ccecb7eaeba6388b9d85dcf10d6678362447575f75ab0",
+          "executable": false
+        },
+        ".prettierignore": {
+          "type": "file",
+          "sha256": "8f3816a59ab01197495aff9ec4d0e996a55c6d13c77c47ce0286de093fecccc9",
+          "executable": false
+        },
+        ".prettierrc.json": {
+          "type": "file",
+          "sha256": "8502fc123a6899007d4de20ab7b5066645bae7f6c7bdcb4125aa89cb8eb1b49b",
+          "executable": false
+        },
         "AGENTS.md": {
           "type": "file",
           "sha256": "ddc8a1fecde13610ba656ee98c9d2cb128b15b7fc20e9068beb0eef9eaf4ba1b",
@@ -2366,6 +2984,11 @@
           "sha256": "7339c01ea325a5537d74bedf311b671930a24c6b1134618565167e20ea2b18de",
           "executable": false
         },
+        "GLOSSARY.md": {
+          "type": "file",
+          "sha256": "ab556f400cc449969acd32122d5cd0973343dd622b7bfe6a136dfa0c2cb1e513",
+          "executable": false
+        },
         "LICENSE": {
           "type": "file",
           "sha256": "f62d8b70caa8f3a801147295eb388f6faad2bc6bfdb3837b5eda14d54a9fbddb",
@@ -2373,12 +2996,32 @@
         },
         "README.md": {
           "type": "file",
-          "sha256": "0481f0bac627aa7ab5467a593b32360a32ad3d11ba3be9b3b012442645257c71",
+          "sha256": "4b80dcec15542840af89b1207cf89f05f052f2565b36d952e590d3933e4b165b",
+          "executable": false
+        },
+        "astro.config.mjs": {
+          "type": "file",
+          "sha256": "b71301367c17ed793b375e8e6f13c0c8d4442fe8b5dd4c153143c6e3d3b1be0c",
+          "executable": false
+        },
+        "components.json": {
+          "type": "file",
+          "sha256": "fbcd76debcd1545c0a6b05831d8f7af15255477454a8a69dffcd1c87394eb3dc",
           "executable": false
         },
         "docs/README.md": {
           "type": "file",
-          "sha256": "f75e88e463b9771dc27ea20e2b0e7cad0a683d8c0e4f05ca708374522ce63b49",
+          "sha256": "98f1ae49fb2b06a5793dd7cd9060e0bca57770d9f59d2629403f6322cc4dc849",
+          "executable": false
+        },
+        "docs/adr/0001-draw-real-pages-on-the-display.md": {
+          "type": "file",
+          "sha256": "c50e2cf609285ec781dbab8225ccd9b8597595b10f6a8458274144a420b673fd",
+          "executable": false
+        },
+        "docs/adr/README.md": {
+          "type": "file",
+          "sha256": "e86f26995b8f2e9b886a7395f48ceb74bcf78af37bb710578b8888533a65310f",
           "executable": false
         },
         "docs/agents/README.md": {
@@ -2403,12 +3046,47 @@
         },
         "docs/development/README.md": {
           "type": "file",
-          "sha256": "5e425c7df60cc5fcfb6cd84991490fe6ca3c97e62aa683ca99ddfea10da0459d",
+          "sha256": "3098cf9c56793912d3aa21a928b0115216ad050e656543daab36f9eec9f5c7b0",
           "executable": false
         },
         "operations/lib/rendered-markdown.mjs": {
           "type": "file",
           "sha256": "b89f24c60f8ad3ad1ed45590629e87661337931e858b84acfac5296a057430c2",
+          "executable": false
+        },
+        "package.json": {
+          "type": "file",
+          "sha256": "7f570c90dfb496c9f13dfd302a5831f77f60afda26cbdf4b4369ac3f38e23b84",
+          "executable": false
+        },
+        "pnpm-lock.yaml": {
+          "type": "file",
+          "sha256": "4ab1a9e9a578b88ad6aa1a29c07013ca7709ad742362d4d8b3d74ca83189f222",
+          "executable": false
+        },
+        "pnpm-workspace.yaml": {
+          "type": "file",
+          "sha256": "ee3a2d6635b7918a34eb7814078688be082544e231bc1b809fdafec5c34ee3cd",
+          "executable": false
+        },
+        "posts/.gitkeep": {
+          "type": "file",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "executable": false
+        },
+        "registry-manifest.json": {
+          "type": "file",
+          "sha256": "eeeba5c7927c4841d8ca09e9df37ebe885ba7889a673deff3135fe61a709004c",
+          "executable": false
+        },
+        "scripts/registry.mjs": {
+          "type": "file",
+          "sha256": "9976bb59aa4ef2c1d5ab0a85500d55eebe2cfd642417208bbf2fa1c6e9f2605e",
+          "executable": false
+        },
+        "scripts/translation-source.ts": {
+          "type": "file",
+          "sha256": "3540606d8f26ec187cb204e8ed18979d119e144b7dff0c08f290da66a40c1261",
           "executable": false
         },
         "scripts/validate-issue-contract.mjs": {
@@ -2419,6 +3097,606 @@
         "scripts/validate.mjs": {
           "type": "file",
           "sha256": "daeedb8713e64e0334ede3825297ec6338a85ee8051c0dc0385f5533373ecc32",
+          "executable": false
+        },
+        "src/components/ChannelNav.astro": {
+          "type": "file",
+          "sha256": "928cdbb8c89c18912d6710352e734e4c6b6ee72e5f2e4bddcedc58c6bbc6ea0f",
+          "executable": false
+        },
+        "src/components/LanguageLinks.astro": {
+          "type": "file",
+          "sha256": "0fe909719f5ee37529821835211fc02a020792003a190f91071903d901367290",
+          "executable": false
+        },
+        "src/components/LocaleScript.astro": {
+          "type": "file",
+          "sha256": "c8013727e0f1952a4a4d0e7a2393aeb8c9341d9ecbde2b6ed9b30112c589c9ba",
+          "executable": false
+        },
+        "src/components/app/button.ts": {
+          "type": "file",
+          "sha256": "7f0246349143006681f8e1fa560c354738aaf015d70d6a8ee1eebd7ea7986b25",
+          "executable": false
+        },
+        "src/components/app/label.ts": {
+          "type": "file",
+          "sha256": "318db24d56e8507ad20fab570eac89f5216fb01281a4692c50685ed51cd19d4f",
+          "executable": false
+        },
+        "src/components/app/textarea.ts": {
+          "type": "file",
+          "sha256": "9eff884a55fea3916dcb5ee76988e3847c5187350423929352aaffe8f2511e34",
+          "executable": false
+        },
+        "src/components/pages/NoSignal.astro": {
+          "type": "file",
+          "sha256": "e408a42dfc363041bc03f86423a8c5e3b39b5c577f38c1bb04d2b1c9c3f4f02c",
+          "executable": false
+        },
+        "src/components/ui/AGENTS.md": {
+          "type": "file",
+          "sha256": "3e5fba990faf8a6cae6be9abd5c2c3ecb07e11933794d21b00e7f06a642c5e08",
+          "executable": false
+        },
+        "src/components/ui/button.tsx": {
+          "type": "file",
+          "sha256": "355c398aee0867a220b905448a0af44c19c847b2ed8e0ad7a34924d223722851",
+          "executable": false
+        },
+        "src/components/ui/label.tsx": {
+          "type": "file",
+          "sha256": "cd659c4214d471a63374eece5424df39bab762c31979f96346c46b08c5cefc97",
+          "executable": false
+        },
+        "src/components/ui/textarea.tsx": {
+          "type": "file",
+          "sha256": "ee5c869462b6963be45f308342fc9f08bccf6a7d46f88d6470a5301560d87f9c",
+          "executable": false
+        },
+        "src/config.ts": {
+          "type": "file",
+          "sha256": "87ac8a546127cc833fbf4796d903b7bc6d0392a11bbd0c96cf447a2dd87d1f0c",
+          "executable": false
+        },
+        "src/data/fixture.ts": {
+          "type": "file",
+          "sha256": "2baad8a7cb4f7c19ff4841bbeaca1e88ea58714e700d9abb7f3e1404a61e4a01",
+          "executable": false
+        },
+        "src/data/github.ts": {
+          "type": "file",
+          "sha256": "65eadb9798dc8ce53fba8b2e2d75ef702d6c4f689f20b14861de717b65cb3600",
+          "executable": false
+        },
+        "src/data/posts.ts": {
+          "type": "file",
+          "sha256": "492f0182bb8331287eeea1bee2810258575678b49f3488663655ee49af1828bf",
+          "executable": false
+        },
+        "src/data/projects.ts": {
+          "type": "file",
+          "sha256": "a7406716c3876fdc2c7bae73c534cdbc49cf98680c55da9d98aaa7523e924afa",
+          "executable": false
+        },
+        "src/data/projects.yaml": {
+          "type": "file",
+          "sha256": "11ef99e39a6343da55ce7e9b61b3ed1e7d8a694e7bb86a191a4dbe63408669c1",
+          "executable": false
+        },
+        "src/data/readme.ts": {
+          "type": "file",
+          "sha256": "8d1b7c2d3c84b890e383b0820543c6b66244e57550a50e443cc71581548ae6e6",
+          "executable": false
+        },
+        "src/i18n/choice.ts": {
+          "type": "file",
+          "sha256": "5d130e87acffae6f3bfd83a8bb2aa933f48784d11696de56c104bcf22182869b",
+          "executable": false
+        },
+        "src/i18n/format.ts": {
+          "type": "file",
+          "sha256": "7073c971d4637c67974dd20081d5952480c6bc27396bd40351564f00adfe350c",
+          "executable": false
+        },
+        "src/i18n/ids.ts": {
+          "type": "file",
+          "sha256": "d0a0c7b4fed1301f2fc621fc3ae615b94bc272bf156168dfc8337ad29192e9c7",
+          "executable": false
+        },
+        "src/i18n/locales.ts": {
+          "type": "file",
+          "sha256": "abe63cd5d359b2d4ad19eaff77515c6a4fecbd3e82f8e7637dc0d343b0a6af6b",
+          "executable": false
+        },
+        "src/i18n/message.ts": {
+          "type": "file",
+          "sha256": "36685b4632380fc72ffcc1a22091ec6b462b486c75bd516bc94758d76c663614",
+          "executable": false
+        },
+        "src/i18n/messages/ca/common.json": {
+          "type": "file",
+          "sha256": "b2f63d722086c831ab721fe0a256f248bf1ab810b33853071394c62d6505e8a4",
+          "executable": false
+        },
+        "src/i18n/messages/ca/copy.json": {
+          "type": "file",
+          "sha256": "5162665804aaf29899f8c0685be924b51212e03e1a2b3eb4fd4db0c96fbbfe2d",
+          "executable": false
+        },
+        "src/i18n/messages/ca/projects.json": {
+          "type": "file",
+          "sha256": "675f67bf7329d700ae563225bc71b5e2dd604e33c43681b8628430725ce9d5ac",
+          "executable": false
+        },
+        "src/i18n/messages/ca/receiver.json": {
+          "type": "file",
+          "sha256": "33f6eeb37cb2cd558a12b2cf2be292a1d671e265f4d3b490ee2e446e1dd3a835",
+          "executable": false
+        },
+        "src/i18n/messages/ca/reply.json": {
+          "type": "file",
+          "sha256": "7789a0a54ef909f9ab034e0ef57662c174a5ef780a80e1b92c436bc5db4379fb",
+          "executable": false
+        },
+        "src/i18n/messages/ca/signal.json": {
+          "type": "file",
+          "sha256": "a423fac9b589e1f287f53ad03e610b557ff08209e184180bd898dad0a7eef5ba",
+          "executable": false
+        },
+        "src/i18n/messages/ca/wire.json": {
+          "type": "file",
+          "sha256": "41500c7143bfa98f18f545f22c813d79fe9c27975e8c317dddc578b42c8d045e",
+          "executable": false
+        },
+        "src/i18n/messages/en/common.json": {
+          "type": "file",
+          "sha256": "3384fd9fe882a4f5fb294c95eb4a126fdd4e862fdac00da258be1232eefdbc00",
+          "executable": false
+        },
+        "src/i18n/messages/en/copy.json": {
+          "type": "file",
+          "sha256": "0961b21bf8ea935701d1b7d5576bee9ce03b8ed962fe55a4ddadabf6ba2034fc",
+          "executable": false
+        },
+        "src/i18n/messages/en/projects.json": {
+          "type": "file",
+          "sha256": "bb9b79e906e95194afde3f671a311f79e8b3c75efb4732826100820d6aa04093",
+          "executable": false
+        },
+        "src/i18n/messages/en/receiver.json": {
+          "type": "file",
+          "sha256": "d80f2484688c9a6acb93c30b9b19d9922d9f1a4eb8527f37c78f58859b07169a",
+          "executable": false
+        },
+        "src/i18n/messages/en/reply.json": {
+          "type": "file",
+          "sha256": "2de8f66309979c45e4c0629e3be9a1ec33b61d8047e7a73dfd34da35d195ef2f",
+          "executable": false
+        },
+        "src/i18n/messages/en/signal.json": {
+          "type": "file",
+          "sha256": "fedda1e07b4deb6e8133b1db157a704e4888902e69c6e80e0970dd4a53abbe6e",
+          "executable": false
+        },
+        "src/i18n/messages/en/wire.json": {
+          "type": "file",
+          "sha256": "9bc818219d067582b75976078fc1f615a26a92a5916485c4ace13c01fb87ebdc",
+          "executable": false
+        },
+        "src/i18n/messages/es/common.json": {
+          "type": "file",
+          "sha256": "3bbed470ba6b1fcc29af4fc6120e13d2542ed5f3beee76c6ee061772c5b21c4b",
+          "executable": false
+        },
+        "src/i18n/messages/es/copy.json": {
+          "type": "file",
+          "sha256": "1440122d1ae33413bc882ee583270e2f0ad4f55a2ffe6b594ac4b2f248fd7955",
+          "executable": false
+        },
+        "src/i18n/messages/es/projects.json": {
+          "type": "file",
+          "sha256": "67252f38d655d226a04c650d633434796ce93d8a5a586e1417d5aa80cfcbf43d",
+          "executable": false
+        },
+        "src/i18n/messages/es/receiver.json": {
+          "type": "file",
+          "sha256": "6e1e2afc6e5415e85096c3777e1275ff43ad39af24dfacad7302f3cbdf9878a4",
+          "executable": false
+        },
+        "src/i18n/messages/es/reply.json": {
+          "type": "file",
+          "sha256": "059c04160991dbb2be8bce6b61e4c18c5bb8f63f6458120b1d9ffb2bee373f0b",
+          "executable": false
+        },
+        "src/i18n/messages/es/signal.json": {
+          "type": "file",
+          "sha256": "dcde7c9dde5122a671e4162420e084fdb43009097b86a482c4a137d0ccd00189",
+          "executable": false
+        },
+        "src/i18n/messages/es/wire.json": {
+          "type": "file",
+          "sha256": "1a6b3616e5eb487ad809ed38c4b45b41c5a3fe631f4e55cdeda7ebe40c09d43a",
+          "executable": false
+        },
+        "src/i18n/prose/ca/log.md": {
+          "type": "file",
+          "sha256": "0f69bcf9c38f24681a79a3fa30255adab0fac126a08197ad6914a96126892322",
+          "executable": false
+        },
+        "src/i18n/prose/en/log.md": {
+          "type": "file",
+          "sha256": "35b37c1bee6f7d5cc7928332e6ab7d2ecb917fc0ae07b7b53b5fd550bde5b490",
+          "executable": false
+        },
+        "src/i18n/prose/es/log.md": {
+          "type": "file",
+          "sha256": "90a273f416c603de93fc109ad4db1659999c6a08a6d397bcade7d160bdd068bb",
+          "executable": false
+        },
+        "src/i18n/pseudo.ts": {
+          "type": "file",
+          "sha256": "34e8b56a6e9c33295588bbaeca5948082711a95197a8651fe88ce139eb62f730",
+          "executable": false
+        },
+        "src/i18n/translations.ts": {
+          "type": "file",
+          "sha256": "f717e92242bcec0fc63ef6b8cedf5184dc13374d8ab60eecbd6e827a61789d33",
+          "executable": false
+        },
+        "src/layouts/Base.astro": {
+          "type": "file",
+          "sha256": "ba5f8a1dc9630e64f8171207090488a018f6e109ba08cce5a202e64c7001a21a",
+          "executable": false
+        },
+        "src/lib/analytics.ts": {
+          "type": "file",
+          "sha256": "89c505e9229eb1298fa00b41a9e31fb9f46ad883e08634efb53de575d88d882c",
+          "executable": false
+        },
+        "src/lib/channels.ts": {
+          "type": "file",
+          "sha256": "12ed89faba9b48a6786e62fcf71956e0903c9d3042734521d8ddabe594e005aa",
+          "executable": false
+        },
+        "src/lib/dither.ts": {
+          "type": "file",
+          "sha256": "092f2e7612df963ccca4d67bf7358c9556440b59942eba2b29b298024c5c6abe",
+          "executable": false
+        },
+        "src/lib/email.ts": {
+          "type": "file",
+          "sha256": "dd06a1502de3c452bfe56c21fbf4122796b60fe61adaa1328975554ef8d8a4d9",
+          "executable": false
+        },
+        "src/lib/feed.ts": {
+          "type": "file",
+          "sha256": "6bfe327f6f895921ba1b64d06bb17c9ef672fb6e17fff57d2200f27b5b08cd11",
+          "executable": false
+        },
+        "src/lib/glyph-coverage.ts": {
+          "type": "file",
+          "sha256": "6440508ab2e8c113e535033780d33f76f4c016e9b0cc048ccd2d0d7d7d3e79e6",
+          "executable": false
+        },
+        "src/lib/markdown.ts": {
+          "type": "file",
+          "sha256": "8e4dbc352ad999cd76fb089088090e488036d6ba2f7b8b30f2897b005ef3a0d0",
+          "executable": false
+        },
+        "src/lib/post-markdown.ts": {
+          "type": "file",
+          "sha256": "b2762d369ffb96a57379bf5b2ad8e34c5552f19d333642059664b3f397becca0",
+          "executable": false
+        },
+        "src/lib/utils.ts": {
+          "type": "file",
+          "sha256": "55bbdc94cef3e0c8a8bba386e94f97228dd2c967fe61466fc565378890550c08",
+          "executable": false
+        },
+        "src/lib/wire.ts": {
+          "type": "file",
+          "sha256": "932a7f95c889ee5e1fbb611a70eedbc62673b7669850708d85169b0878ccbf3d",
+          "executable": false
+        },
+        "src/pages/404.astro": {
+          "type": "file",
+          "sha256": "df2d033ff4090fd2a3c061b88bbbbe586b883b04e478da994c237e1bb9f25d36",
+          "executable": false
+        },
+        "src/pages/[...locale]/blog/[slug].astro": {
+          "type": "file",
+          "sha256": "ed32fb6c3df8c56f8b62460796f98b65dea3b9088f3c73de8433a31988f5ef91",
+          "executable": false
+        },
+        "src/pages/[...locale]/blog/index.astro": {
+          "type": "file",
+          "sha256": "c68fc40aa6eccbb881daaf3225bd5a0502158a05420d7a01bf498c0e8ef549c3",
+          "executable": false
+        },
+        "src/pages/[...locale]/contact.astro": {
+          "type": "file",
+          "sha256": "70c78014db181cd2214c43bd65ab115acce48800887327fcaf1d110d94db1903",
+          "executable": false
+        },
+        "src/pages/[...locale]/index.astro": {
+          "type": "file",
+          "sha256": "a8a38a9be888f344d7566f2e04b5392b9159958ab977bf7827fbfb7ae1380880",
+          "executable": false
+        },
+        "src/pages/[...locale]/projects/[repo].astro": {
+          "type": "file",
+          "sha256": "cfbf46145ace18e743753bfd4f57b739ae800e5eddfccf9ae9ed8a1ab723158f",
+          "executable": false
+        },
+        "src/pages/[...locale]/projects/index.astro": {
+          "type": "file",
+          "sha256": "f184a07eaf44bf09d61c4595396c7a72d078ea46123d365d262c9aa134e7b8ba",
+          "executable": false
+        },
+        "src/pages/[...locale]/rss.xml.ts": {
+          "type": "file",
+          "sha256": "dd0588f2b0b66efff3ac2aea7f5d030771304780777fbe077861615b1c4ba459",
+          "executable": false
+        },
+        "src/pages/[locale]/404.astro": {
+          "type": "file",
+          "sha256": "c9deebd2c703de444f0e3229f4e0aea09e7f547092e41125735136659915fffd",
+          "executable": false
+        },
+        "src/pages/blog/[slug]/[image].ts": {
+          "type": "file",
+          "sha256": "8c4c2fb15f61aa5424e1433bcdd3f438490ee5ad4d6b2a13e5dda67ffb88d2e0",
+          "executable": false
+        },
+        "src/receiver/font.ts": {
+          "type": "file",
+          "sha256": "c27beef6b58ce074d8257f450825890d2391752e03e4505018310281dd99c33b",
+          "executable": false
+        },
+        "src/receiver/layout.ts": {
+          "type": "file",
+          "sha256": "d56d0bd43bad3a54e2ae554c4c4d34c2b599efed6e645a3159f5c6b766bfc880",
+          "executable": false
+        },
+        "src/receiver/loader.ts": {
+          "type": "file",
+          "sha256": "73cf0dff28effcb42a4024b236b6ab2cb022ada0bee752d770c0076308eff899",
+          "executable": false
+        },
+        "src/receiver/receiver.ts": {
+          "type": "file",
+          "sha256": "7fcafcfe927b082abe82756ac8401a848c2dbc7058bf083f1e2e4d0a4b8f823e",
+          "executable": false
+        },
+        "src/receiver/settings.ts": {
+          "type": "file",
+          "sha256": "aba7e99e58b4747f30f3e3ec916956b39816161c10aede983af02c9c26f06e24",
+          "executable": false
+        },
+        "src/receiver/sound.ts": {
+          "type": "file",
+          "sha256": "0343c79f5ad23cc26d83897466ab9d57520a106a128e66ea6429c54ce3f4070d",
+          "executable": false
+        },
+        "src/receiver/tube.ts": {
+          "type": "file",
+          "sha256": "da3ff9f47f43b59d56cecad40fe632bca428a1a72b2bbd8238afebff6290b46c",
+          "executable": false
+        },
+        "src/scripts/reply.ts": {
+          "type": "file",
+          "sha256": "9cb6fbab3d2d1e5f5c278a652b3aa02cc9aef0293ef216aba62c2a7519eab188",
+          "executable": false
+        },
+        "src/styles/global.css": {
+          "type": "file",
+          "sha256": "45709dd72e49ec94b5491865e6991dca5dc0e03ca1c8871d5875c229f3727ec9",
+          "executable": false
+        },
+        "test/build.test.ts": {
+          "type": "file",
+          "sha256": "0963c13dfc0bc8dd983d3f4d54bf81755985f29f4855a45957516516ca8d259b",
+          "executable": false
+        },
+        "test/data.test.ts": {
+          "type": "file",
+          "sha256": "207321584e62d469ee8af3e25c5d6415b1baa40ca6da4c62c0b98dd8b3ffcea1",
+          "executable": false
+        },
+        "test/email.test.ts": {
+          "type": "file",
+          "sha256": "c487ae0300956af48e5fcf17307bfd1a66dc2690068690570f9f92ae96e620ae",
+          "executable": false
+        },
+        "test/fixtures/github/lutzseverino/hemiciclo/README.md": {
+          "type": "file",
+          "sha256": "a0e1a4590b5fdc1535dd10e78a1644e18b09710eaa23e7b583149e02176ab011",
+          "executable": false
+        },
+        "test/fixtures/github/lutzseverino/hemiciclo/repository.json": {
+          "type": "file",
+          "sha256": "36c6517ee1c694a649e72ec86838f465d3c5cf4b93ab53f401376a4bd647588b",
+          "executable": false
+        },
+        "test/fixtures/github/lutzseverino/postern/README.md": {
+          "type": "file",
+          "sha256": "20591f240ffe2f5fe841cb20b5e15ae35dad51e05761cfa3037e966e7cee7733",
+          "executable": false
+        },
+        "test/fixtures/github/lutzseverino/postern/release.json": {
+          "type": "file",
+          "sha256": "5402fb03ca8c69977053a0ca703b61e1a93930268a35766b11198c9d2521bd9c",
+          "executable": false
+        },
+        "test/fixtures/github/lutzseverino/postern/repository.json": {
+          "type": "file",
+          "sha256": "b4f8853e195d42d22ec0de17b2053f3b2d391203a7dd420901d235794359d2b1",
+          "executable": false
+        },
+        "test/fixtures/github/lutzseverino/repo-canon/README.md": {
+          "type": "file",
+          "sha256": "a31473ea62ba36dc2bec84d6374770cdb5d708c896c8cb9155cc83bc80583117",
+          "executable": false
+        },
+        "test/fixtures/github/lutzseverino/repo-canon/release.json": {
+          "type": "file",
+          "sha256": "2910f12ded314549d311ddab05e25c58ed71aa3ba2c2afce45019d6adf4df470",
+          "executable": false
+        },
+        "test/fixtures/github/lutzseverino/repo-canon/repository.json": {
+          "type": "file",
+          "sha256": "dc4326b4830341713f14e72f29f281495a05fa2e13de38f7990f3c0be8fe37a6",
+          "executable": false
+        },
+        "test/fixtures/github/lutzseverino/repo-standards/README.md": {
+          "type": "file",
+          "sha256": "a73e60e8f9b4b572a59639261767fe92a841b7d30af764b964135e8e51087292",
+          "executable": false
+        },
+        "test/fixtures/github/lutzseverino/repo-standards/release.json": {
+          "type": "file",
+          "sha256": "21fdfaec4df38eb83cfac5a9017366d7bc6b7aa3e625cda650c0ece1db44a430",
+          "executable": false
+        },
+        "test/fixtures/github/lutzseverino/repo-standards/repository.json": {
+          "type": "file",
+          "sha256": "c4d7f4f127b0d6f13667ca566e555de590623932349cdd52013fbed6d7081695",
+          "executable": false
+        },
+        "test/fixtures/github/lutzseverino/scriptorium/README.md": {
+          "type": "file",
+          "sha256": "c510dc91cdc33fc29c0f45e3a0ec5e3fcc0d603fbca7f35fdc871b69dd64a795",
+          "executable": false
+        },
+        "test/fixtures/github/lutzseverino/scriptorium/release.json": {
+          "type": "file",
+          "sha256": "7474cf45408a100172cb52d11fefbeb532ab56c491f368e4e53292ee24a3b10f",
+          "executable": false
+        },
+        "test/fixtures/github/lutzseverino/scriptorium/repository.json": {
+          "type": "file",
+          "sha256": "575008a50518b7f1b0a59a9e017224dff6ab5e2cd114fe4052e97c49d7b8f261",
+          "executable": false
+        },
+        "test/fixtures/posts/images/gradient.png": {
+          "type": "file",
+          "sha256": "d2b836553f4856c7dbf9ab551b0cb2fc1c20e653eb51c6e9e786743cd4197efc",
+          "executable": false
+        },
+        "test/fixtures/posts/long-wave.md": {
+          "type": "file",
+          "sha256": "2be30d980b75e9f8ba0cde6a48bac775d7809a35061aa066ee5df56426c31082",
+          "executable": false
+        },
+        "test/fixtures/posts/short-note.ca.md": {
+          "type": "file",
+          "sha256": "2f865f48dc20234265454a4f8cc75503568da19960ac3ec05ac3d4f3ff23695c",
+          "executable": false
+        },
+        "test/fixtures/posts/short-note.es.md": {
+          "type": "file",
+          "sha256": "cdf7fcdd69ee5d96572580738cfec86768fca0c4662492fbc61c49666045e543",
+          "executable": false
+        },
+        "test/fixtures/posts/short-note.md": {
+          "type": "file",
+          "sha256": "b023eea5742f7455c140e44a34ce4f52b135c789bc3c7929cb6bae4345fbb631",
+          "executable": false
+        },
+        "test/format.test.ts": {
+          "type": "file",
+          "sha256": "64f063708a37f143f82de6b5350e049cbedbb87f145b3e0cbd86b9f2f9887384",
+          "executable": false
+        },
+        "test/glyphs.test.ts": {
+          "type": "file",
+          "sha256": "0469da48ff5067d303b533f64b98fa1cc095356253815fe745cd680660583166",
+          "executable": false
+        },
+        "test/language.test.ts": {
+          "type": "file",
+          "sha256": "d8936f201c0ee1cdadf39bc25531b69bd1dc31a2f9851f258f9c88b272a8a508",
+          "executable": false
+        },
+        "test/locale-choice.test.ts": {
+          "type": "file",
+          "sha256": "358511ab1c8819a357aae9bcdf46f5c630d0b610a2a6f95694cd96ec09d00d01",
+          "executable": false
+        },
+        "test/plain-pages.test.ts": {
+          "type": "file",
+          "sha256": "6dce26109ade507238c29a4fa1a1c9b9de2991cde5531c895a527a5e7284e25b",
+          "executable": false
+        },
+        "test/posts.test.ts": {
+          "type": "file",
+          "sha256": "98965deebe16ea45e27e18e41eb969567cbe0510754da7d964994058e3d839ce",
+          "executable": false
+        },
+        "test/projects.test.ts": {
+          "type": "file",
+          "sha256": "212a85b3bd016778cd0d46a13f78434108770a31201d20aa0b5cc5b5115e6412",
+          "executable": false
+        },
+        "test/pseudo-locale.test.ts": {
+          "type": "file",
+          "sha256": "a02e68f8e4b30662193fad2c895a302a99d740298972029d88014f2c9d68bb90",
+          "executable": false
+        },
+        "test/readme.test.ts": {
+          "type": "file",
+          "sha256": "edc6e94f5cbbab882f522bc42d8fe7babae06dc1e73fb0b65068fcad5ce15541",
+          "executable": false
+        },
+        "test/receiver.test.ts": {
+          "type": "file",
+          "sha256": "e260d21c97951d91982b16b4369eba0e7e98ac7c5d92b2442291d8eab8168c7c",
+          "executable": false
+        },
+        "test/reply.test.ts": {
+          "type": "file",
+          "sha256": "82e857e3f924c9baef6ba7d0c148233fffa31c9f5e897939a3acf0f6af991699",
+          "executable": false
+        },
+        "test/support/audit.ts": {
+          "type": "file",
+          "sha256": "7ac721508cc1683ef6a283f35a932b70b0e8b2e3b0cafd0b6048ac8f94515390",
+          "executable": false
+        },
+        "test/support/browser.ts": {
+          "type": "file",
+          "sha256": "fbec188a1ad2a11c3407312008d28a3d42c42e2cdd53812bb1e955749f114920",
+          "executable": false
+        },
+        "test/support/fixture.ts": {
+          "type": "file",
+          "sha256": "990c0eee4efa5a09baa057fa0b809dfeeed57a66e42af71a1808257bd8e69c5d",
+          "executable": false
+        },
+        "test/support/html.ts": {
+          "type": "file",
+          "sha256": "738d7d164c213dc1a6f9b965d1ff98764d977c43ea331d3068251cc038de3af1",
+          "executable": false
+        },
+        "test/support/site.ts": {
+          "type": "file",
+          "sha256": "f7a9abcb0cc8acd50ec95a260a54543e56df5a6b8a6b90b76c4cafe078003d1c",
+          "executable": false
+        },
+        "test/translations.test.ts": {
+          "type": "file",
+          "sha256": "0e259a675e0d7dddf54ca9190c6cdc04d9825097a9f197c73bed68ad8b139276",
+          "executable": false
+        },
+        "test/wire.test.ts": {
+          "type": "file",
+          "sha256": "6e35bcd7447276963bbbe290d5c1d5777db980f86a8a08674921de7087674b0f",
+          "executable": false
+        },
+        "tsconfig.json": {
+          "type": "file",
+          "sha256": "816aafac8e55e020f2cd237e63f05b1ffb8314ddc0876332ea4aa8840e6f6907",
           "executable": false
         },
         "vendor/marked/LICENSE": {
@@ -2478,13 +3756,28 @@
           ".claude",
           ".gitattributes",
           ".github",
+          ".gitignore",
+          ".oxlintrc.json",
+          ".prettierignore",
+          ".prettierrc.json",
           "AGENTS.md",
           "CONTRIBUTING.md",
+          "GLOSSARY.md",
           "LICENSE",
           "README.md",
+          "astro.config.mjs",
+          "components.json",
           "docs",
           "operations",
+          "package.json",
+          "pnpm-lock.yaml",
+          "pnpm-workspace.yaml",
+          "posts",
+          "registry-manifest.json",
           "scripts",
+          "src",
+          "test",
+          "tsconfig.json",
           "vendor"
         ],
         ".agents": [
@@ -2741,12 +4034,18 @@
         ".github/workflows": [
           ".github/workflows/issue-contracts.yml",
           ".github/workflows/pr-metadata.yml",
-          ".github/workflows/standards-update.yml"
+          ".github/workflows/standards-update.yml",
+          ".github/workflows/validate.yml"
         ],
         "docs": [
           "docs/README.md",
+          "docs/adr",
           "docs/agents",
           "docs/development"
+        ],
+        "docs/adr": [
+          "docs/adr/0001-draw-real-pages-on-the-display.md",
+          "docs/adr/README.md"
         ],
         "docs/agents": [
           "docs/agents/README.md",
@@ -2763,9 +4062,248 @@
         "operations/lib": [
           "operations/lib/rendered-markdown.mjs"
         ],
+        "posts": [
+          "posts/.gitkeep"
+        ],
         "scripts": [
+          "scripts/registry.mjs",
+          "scripts/translation-source.ts",
           "scripts/validate-issue-contract.mjs",
           "scripts/validate.mjs"
+        ],
+        "src": [
+          "src/components",
+          "src/config.ts",
+          "src/data",
+          "src/i18n",
+          "src/layouts",
+          "src/lib",
+          "src/pages",
+          "src/receiver",
+          "src/scripts",
+          "src/styles"
+        ],
+        "src/components": [
+          "src/components/ChannelNav.astro",
+          "src/components/LanguageLinks.astro",
+          "src/components/LocaleScript.astro",
+          "src/components/app",
+          "src/components/pages",
+          "src/components/ui"
+        ],
+        "src/components/app": [
+          "src/components/app/button.ts",
+          "src/components/app/label.ts",
+          "src/components/app/textarea.ts"
+        ],
+        "src/components/pages": [
+          "src/components/pages/NoSignal.astro"
+        ],
+        "src/components/ui": [
+          "src/components/ui/AGENTS.md",
+          "src/components/ui/button.tsx",
+          "src/components/ui/label.tsx",
+          "src/components/ui/textarea.tsx"
+        ],
+        "src/data": [
+          "src/data/fixture.ts",
+          "src/data/github.ts",
+          "src/data/posts.ts",
+          "src/data/projects.ts",
+          "src/data/projects.yaml",
+          "src/data/readme.ts"
+        ],
+        "src/i18n": [
+          "src/i18n/choice.ts",
+          "src/i18n/format.ts",
+          "src/i18n/ids.ts",
+          "src/i18n/locales.ts",
+          "src/i18n/message.ts",
+          "src/i18n/messages",
+          "src/i18n/prose",
+          "src/i18n/pseudo.ts",
+          "src/i18n/translations.ts"
+        ],
+        "src/i18n/messages": [
+          "src/i18n/messages/ca",
+          "src/i18n/messages/en",
+          "src/i18n/messages/es"
+        ],
+        "src/i18n/messages/ca": [
+          "src/i18n/messages/ca/common.json",
+          "src/i18n/messages/ca/copy.json",
+          "src/i18n/messages/ca/projects.json",
+          "src/i18n/messages/ca/receiver.json",
+          "src/i18n/messages/ca/reply.json",
+          "src/i18n/messages/ca/signal.json",
+          "src/i18n/messages/ca/wire.json"
+        ],
+        "src/i18n/messages/en": [
+          "src/i18n/messages/en/common.json",
+          "src/i18n/messages/en/copy.json",
+          "src/i18n/messages/en/projects.json",
+          "src/i18n/messages/en/receiver.json",
+          "src/i18n/messages/en/reply.json",
+          "src/i18n/messages/en/signal.json",
+          "src/i18n/messages/en/wire.json"
+        ],
+        "src/i18n/messages/es": [
+          "src/i18n/messages/es/common.json",
+          "src/i18n/messages/es/copy.json",
+          "src/i18n/messages/es/projects.json",
+          "src/i18n/messages/es/receiver.json",
+          "src/i18n/messages/es/reply.json",
+          "src/i18n/messages/es/signal.json",
+          "src/i18n/messages/es/wire.json"
+        ],
+        "src/i18n/prose": [
+          "src/i18n/prose/ca",
+          "src/i18n/prose/en",
+          "src/i18n/prose/es"
+        ],
+        "src/i18n/prose/ca": [
+          "src/i18n/prose/ca/log.md"
+        ],
+        "src/i18n/prose/en": [
+          "src/i18n/prose/en/log.md"
+        ],
+        "src/i18n/prose/es": [
+          "src/i18n/prose/es/log.md"
+        ],
+        "src/layouts": [
+          "src/layouts/Base.astro"
+        ],
+        "src/lib": [
+          "src/lib/analytics.ts",
+          "src/lib/channels.ts",
+          "src/lib/dither.ts",
+          "src/lib/email.ts",
+          "src/lib/feed.ts",
+          "src/lib/glyph-coverage.ts",
+          "src/lib/markdown.ts",
+          "src/lib/post-markdown.ts",
+          "src/lib/utils.ts",
+          "src/lib/wire.ts"
+        ],
+        "src/pages": [
+          "src/pages/404.astro",
+          "src/pages/[...locale]",
+          "src/pages/[locale]",
+          "src/pages/blog"
+        ],
+        "src/pages/[...locale]": [
+          "src/pages/[...locale]/blog",
+          "src/pages/[...locale]/contact.astro",
+          "src/pages/[...locale]/index.astro",
+          "src/pages/[...locale]/projects",
+          "src/pages/[...locale]/rss.xml.ts"
+        ],
+        "src/pages/[...locale]/blog": [
+          "src/pages/[...locale]/blog/[slug].astro",
+          "src/pages/[...locale]/blog/index.astro"
+        ],
+        "src/pages/[...locale]/projects": [
+          "src/pages/[...locale]/projects/[repo].astro",
+          "src/pages/[...locale]/projects/index.astro"
+        ],
+        "src/pages/[locale]": [
+          "src/pages/[locale]/404.astro"
+        ],
+        "src/pages/blog": [
+          "src/pages/blog/[slug]"
+        ],
+        "src/pages/blog/[slug]": [
+          "src/pages/blog/[slug]/[image].ts"
+        ],
+        "src/receiver": [
+          "src/receiver/font.ts",
+          "src/receiver/layout.ts",
+          "src/receiver/loader.ts",
+          "src/receiver/receiver.ts",
+          "src/receiver/settings.ts",
+          "src/receiver/sound.ts",
+          "src/receiver/tube.ts"
+        ],
+        "src/scripts": [
+          "src/scripts/reply.ts"
+        ],
+        "src/styles": [
+          "src/styles/global.css"
+        ],
+        "test": [
+          "test/build.test.ts",
+          "test/data.test.ts",
+          "test/email.test.ts",
+          "test/fixtures",
+          "test/format.test.ts",
+          "test/glyphs.test.ts",
+          "test/language.test.ts",
+          "test/locale-choice.test.ts",
+          "test/plain-pages.test.ts",
+          "test/posts.test.ts",
+          "test/projects.test.ts",
+          "test/pseudo-locale.test.ts",
+          "test/readme.test.ts",
+          "test/receiver.test.ts",
+          "test/reply.test.ts",
+          "test/support",
+          "test/translations.test.ts",
+          "test/wire.test.ts"
+        ],
+        "test/fixtures": [
+          "test/fixtures/github",
+          "test/fixtures/posts"
+        ],
+        "test/fixtures/github": [
+          "test/fixtures/github/lutzseverino"
+        ],
+        "test/fixtures/github/lutzseverino": [
+          "test/fixtures/github/lutzseverino/hemiciclo",
+          "test/fixtures/github/lutzseverino/postern",
+          "test/fixtures/github/lutzseverino/repo-canon",
+          "test/fixtures/github/lutzseverino/repo-standards",
+          "test/fixtures/github/lutzseverino/scriptorium"
+        ],
+        "test/fixtures/github/lutzseverino/hemiciclo": [
+          "test/fixtures/github/lutzseverino/hemiciclo/README.md",
+          "test/fixtures/github/lutzseverino/hemiciclo/repository.json"
+        ],
+        "test/fixtures/github/lutzseverino/postern": [
+          "test/fixtures/github/lutzseverino/postern/README.md",
+          "test/fixtures/github/lutzseverino/postern/release.json",
+          "test/fixtures/github/lutzseverino/postern/repository.json"
+        ],
+        "test/fixtures/github/lutzseverino/repo-canon": [
+          "test/fixtures/github/lutzseverino/repo-canon/README.md",
+          "test/fixtures/github/lutzseverino/repo-canon/release.json",
+          "test/fixtures/github/lutzseverino/repo-canon/repository.json"
+        ],
+        "test/fixtures/github/lutzseverino/repo-standards": [
+          "test/fixtures/github/lutzseverino/repo-standards/README.md",
+          "test/fixtures/github/lutzseverino/repo-standards/release.json",
+          "test/fixtures/github/lutzseverino/repo-standards/repository.json"
+        ],
+        "test/fixtures/github/lutzseverino/scriptorium": [
+          "test/fixtures/github/lutzseverino/scriptorium/README.md",
+          "test/fixtures/github/lutzseverino/scriptorium/release.json",
+          "test/fixtures/github/lutzseverino/scriptorium/repository.json"
+        ],
+        "test/fixtures/posts": [
+          "test/fixtures/posts/images",
+          "test/fixtures/posts/long-wave.md",
+          "test/fixtures/posts/short-note.ca.md",
+          "test/fixtures/posts/short-note.es.md",
+          "test/fixtures/posts/short-note.md"
+        ],
+        "test/fixtures/posts/images": [
+          "test/fixtures/posts/images/gradient.png"
+        ],
+        "test/support": [
+          "test/support/audit.ts",
+          "test/support/browser.ts",
+          "test/support/fixture.ts",
+          "test/support/html.ts",
+          "test/support/site.ts"
         ],
         "vendor": [
           "vendor/marked",
@@ -2937,6 +4475,9 @@
         "docs": {
           "type": "directory"
         },
+        "docs/adr": {
+          "type": "directory"
+        },
         "docs/agents": {
           "type": "directory"
         },
@@ -2949,7 +4490,127 @@
         "operations/lib": {
           "type": "directory"
         },
+        "posts": {
+          "type": "directory"
+        },
         "scripts": {
+          "type": "directory"
+        },
+        "src": {
+          "type": "directory"
+        },
+        "src/components": {
+          "type": "directory"
+        },
+        "src/components/app": {
+          "type": "directory"
+        },
+        "src/components/pages": {
+          "type": "directory"
+        },
+        "src/components/ui": {
+          "type": "directory"
+        },
+        "src/data": {
+          "type": "directory"
+        },
+        "src/i18n": {
+          "type": "directory"
+        },
+        "src/i18n/messages": {
+          "type": "directory"
+        },
+        "src/i18n/messages/ca": {
+          "type": "directory"
+        },
+        "src/i18n/messages/en": {
+          "type": "directory"
+        },
+        "src/i18n/messages/es": {
+          "type": "directory"
+        },
+        "src/i18n/prose": {
+          "type": "directory"
+        },
+        "src/i18n/prose/ca": {
+          "type": "directory"
+        },
+        "src/i18n/prose/en": {
+          "type": "directory"
+        },
+        "src/i18n/prose/es": {
+          "type": "directory"
+        },
+        "src/layouts": {
+          "type": "directory"
+        },
+        "src/lib": {
+          "type": "directory"
+        },
+        "src/pages": {
+          "type": "directory"
+        },
+        "src/pages/[...locale]": {
+          "type": "directory"
+        },
+        "src/pages/[...locale]/blog": {
+          "type": "directory"
+        },
+        "src/pages/[...locale]/projects": {
+          "type": "directory"
+        },
+        "src/pages/[locale]": {
+          "type": "directory"
+        },
+        "src/pages/blog": {
+          "type": "directory"
+        },
+        "src/pages/blog/[slug]": {
+          "type": "directory"
+        },
+        "src/receiver": {
+          "type": "directory"
+        },
+        "src/scripts": {
+          "type": "directory"
+        },
+        "src/styles": {
+          "type": "directory"
+        },
+        "test": {
+          "type": "directory"
+        },
+        "test/fixtures": {
+          "type": "directory"
+        },
+        "test/fixtures/github": {
+          "type": "directory"
+        },
+        "test/fixtures/github/lutzseverino": {
+          "type": "directory"
+        },
+        "test/fixtures/github/lutzseverino/hemiciclo": {
+          "type": "directory"
+        },
+        "test/fixtures/github/lutzseverino/postern": {
+          "type": "directory"
+        },
+        "test/fixtures/github/lutzseverino/repo-canon": {
+          "type": "directory"
+        },
+        "test/fixtures/github/lutzseverino/repo-standards": {
+          "type": "directory"
+        },
+        "test/fixtures/github/lutzseverino/scriptorium": {
+          "type": "directory"
+        },
+        "test/fixtures/posts": {
+          "type": "directory"
+        },
+        "test/fixtures/posts/images": {
+          "type": "directory"
+        },
+        "test/support": {
           "type": "directory"
         },
         "vendor": {
@@ -2984,7 +4645,9 @@
           "executable": false
         },
         ".gitignore": {
-          "type": "missing"
+          "type": "file",
+          "sha256": "c760594e89b7b78ec030eb86107c075f9d8177fa7987881c04ff6ea47d5d40cc",
+          "executable": false
         },
         ".agents/.gitignore": {
           "type": "missing"
@@ -3133,6 +4796,9 @@
         "docs/.gitignore": {
           "type": "missing"
         },
+        "docs/adr/.gitignore": {
+          "type": "missing"
+        },
         "docs/agents/.gitignore": {
           "type": "missing"
         },
@@ -3145,7 +4811,127 @@
         "operations/lib/.gitignore": {
           "type": "missing"
         },
+        "posts/.gitignore": {
+          "type": "missing"
+        },
         "scripts/.gitignore": {
+          "type": "missing"
+        },
+        "src/.gitignore": {
+          "type": "missing"
+        },
+        "src/components/.gitignore": {
+          "type": "missing"
+        },
+        "src/components/app/.gitignore": {
+          "type": "missing"
+        },
+        "src/components/pages/.gitignore": {
+          "type": "missing"
+        },
+        "src/components/ui/.gitignore": {
+          "type": "missing"
+        },
+        "src/data/.gitignore": {
+          "type": "missing"
+        },
+        "src/i18n/.gitignore": {
+          "type": "missing"
+        },
+        "src/i18n/messages/.gitignore": {
+          "type": "missing"
+        },
+        "src/i18n/messages/ca/.gitignore": {
+          "type": "missing"
+        },
+        "src/i18n/messages/en/.gitignore": {
+          "type": "missing"
+        },
+        "src/i18n/messages/es/.gitignore": {
+          "type": "missing"
+        },
+        "src/i18n/prose/.gitignore": {
+          "type": "missing"
+        },
+        "src/i18n/prose/ca/.gitignore": {
+          "type": "missing"
+        },
+        "src/i18n/prose/en/.gitignore": {
+          "type": "missing"
+        },
+        "src/i18n/prose/es/.gitignore": {
+          "type": "missing"
+        },
+        "src/layouts/.gitignore": {
+          "type": "missing"
+        },
+        "src/lib/.gitignore": {
+          "type": "missing"
+        },
+        "src/pages/.gitignore": {
+          "type": "missing"
+        },
+        "src/pages/[...locale]/.gitignore": {
+          "type": "missing"
+        },
+        "src/pages/[...locale]/blog/.gitignore": {
+          "type": "missing"
+        },
+        "src/pages/[...locale]/projects/.gitignore": {
+          "type": "missing"
+        },
+        "src/pages/[locale]/.gitignore": {
+          "type": "missing"
+        },
+        "src/pages/blog/.gitignore": {
+          "type": "missing"
+        },
+        "src/pages/blog/[slug]/.gitignore": {
+          "type": "missing"
+        },
+        "src/receiver/.gitignore": {
+          "type": "missing"
+        },
+        "src/scripts/.gitignore": {
+          "type": "missing"
+        },
+        "src/styles/.gitignore": {
+          "type": "missing"
+        },
+        "test/.gitignore": {
+          "type": "missing"
+        },
+        "test/fixtures/.gitignore": {
+          "type": "missing"
+        },
+        "test/fixtures/github/.gitignore": {
+          "type": "missing"
+        },
+        "test/fixtures/github/lutzseverino/.gitignore": {
+          "type": "missing"
+        },
+        "test/fixtures/github/lutzseverino/hemiciclo/.gitignore": {
+          "type": "missing"
+        },
+        "test/fixtures/github/lutzseverino/postern/.gitignore": {
+          "type": "missing"
+        },
+        "test/fixtures/github/lutzseverino/repo-canon/.gitignore": {
+          "type": "missing"
+        },
+        "test/fixtures/github/lutzseverino/repo-standards/.gitignore": {
+          "type": "missing"
+        },
+        "test/fixtures/github/lutzseverino/scriptorium/.gitignore": {
+          "type": "missing"
+        },
+        "test/fixtures/posts/.gitignore": {
+          "type": "missing"
+        },
+        "test/fixtures/posts/images/.gitignore": {
+          "type": "missing"
+        },
+        "test/support/.gitignore": {
           "type": "missing"
         },
         "vendor/.gitignore": {
@@ -3169,5 +4955,22 @@
       }
     }
   },
-  "scopeChanges": []
+  "scopeChanges": [
+    {
+      "id": "documentation",
+      "additions": [
+        "GLOSSARY.md",
+        "docs/adr/0001-draw-real-pages-on-the-display.md",
+        "docs/adr/README.md"
+      ],
+      "removals": []
+    },
+    {
+      "id": "typescript-astro-stack",
+      "additions": [
+        "package.json"
+      ],
+      "removals": []
+    }
+  ]
 }

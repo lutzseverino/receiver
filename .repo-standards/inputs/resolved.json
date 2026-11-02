@@ -66,7 +66,10 @@
       "rules": "rules/documentation.md",
       "targets": {
         "paths": [
+          "GLOSSARY.md",
           "docs/README.md",
+          "docs/adr/0001-draw-real-pages-on-the-display.md",
+          "docs/adr/README.md",
           "docs/development/README.md"
         ],
         "directories": []
@@ -670,15 +673,40 @@
     },
     {
       "id": "typescript-astro-stack",
-      "checks": [],
+      "checks": [
+        {
+          "id": "typescript-astro-stack-manifests",
+          "run": {
+            "executable": "node",
+            "script": "operations/check-typescript-astro-stack.mjs",
+            "resources": [
+              "operations/lib/typescript-node-stack.mjs",
+              "operations/lib/stack-files.mjs",
+              "operations/lib/typescript-web-stack.mjs",
+              "operations/lib/stack-check.mjs",
+              "operations/lib/local-markdown-links.mjs"
+            ],
+            "arguments": []
+          },
+          "prerequisite": {
+            "version-arguments": [
+              "--version"
+            ],
+            "version": ">=24.0.0 <25.0.0 || >=26.0.0 <27.0.0"
+          },
+          "timeout-seconds": 30
+        }
+      ],
       "fixes": [],
       "kind": "repository",
       "guidance": "guidance/typescript-astro-stack.md",
+      "rules": "rules/typescript-web-stacks.md",
       "targets": {
-        "paths": [],
+        "paths": [
+          "package.json"
+        ],
         "directories": []
-      },
-      "no-scope": true
+      }
     },
     {
       "id": "typescript-node-stack",
