@@ -7,8 +7,11 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { Post } from "../src/data/posts.ts";
 import type { Project } from "../src/data/projects.ts";
+import { readReadme } from "../src/data/readme.ts";
 import { glyphSources, checkGlyphs } from "../src/lib/glyph-coverage.ts";
 import { displayText, uncovered } from "../src/receiver/font.ts";
+// the site's own projects come from the committed fixture, never GitHub
+import "./support/fixture.ts";
 
 test("typographic punctuation maps to ASCII", () => {
   assert.equal(
@@ -30,12 +33,23 @@ test("the font lacks emoji, tildes and braces", () => {
   assert.deepEqual(uncovered("a ~ {b} 😀 ~"), ["~", "{", "}", "😀"]);
 });
 
+// a project as the projects channel reads it from its README
+const readme = readReadme(
+  [
+    '<h1 align="center">Fixture</h1>',
+    '<p align="center">A fixture project.</p>',
+    "",
+    "Its lead, with a snowman ☃.",
+    "",
+  ].join("\n"),
+  { url: "https://github.com/lutzseverino/fixture", branch: "main" },
+);
 const project: Project = {
   id: "fixture",
-  name: "Fixture",
-  tagline: "A fixture project.",
-  stack: ["TypeScript"],
-  lead: ["Its lead, with a snowman ☃."],
+  name: readme.name!,
+  tagline: readme.tagline!,
+  stack: readme.stack,
+  lead: readme.lead,
   repo: "https://github.com/lutzseverino/fixture",
   site: null,
   since: 2026,

@@ -5,7 +5,7 @@
 // the bundle's size and the accessibility audit with the display running.
 // The display's own `inspect()` reports what it draws.
 import assert from "node:assert/strict";
-import { mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { gzipSync } from "node:zlib";
 import { after, before, test } from "node:test";
@@ -26,16 +26,6 @@ let origin: string;
 let browser: Browser;
 before(async () => {
   site = await builtSite();
-  // a project page, as the projects channel will build one: the channel
-  // link is current but is not the page
-  const list = site.read("projects/index.html");
-  mkdirSync(path.join(site.dir, "projects/fixture"), { recursive: true });
-  writeFileSync(
-    path.join(site.dir, "projects/fixture/index.html"),
-    list
-      .replace('aria-current="page"', 'aria-current="true"')
-      .replace(/<h1>[^<]*<\/h1>/, "<h1>Fixture</h1>"),
-  );
   origin = await serveSite(site);
   browser = await Browser.launch();
 });
@@ -429,7 +419,7 @@ test("the wheel and a touch drag scroll the page", async () => {
 });
 
 test("Esc on a project page tunes to the projects; 1 to 4 tune to home, projects, wire and reply; m toggles the sound and l the language", async () => {
-  const tab = await open("/projects/fixture/", { width: 1280 });
+  const tab = await open("/projects/repo-standards/", { width: 1280 });
   await skipIntro(tab);
   await press(tab, "Escape");
   await tunedTo(tab, "/projects/");
@@ -628,20 +618,29 @@ test("with storage unavailable, the language follows the head script's choice", 
 test("an idle display stops requesting animation frames", async () => {
   const tab = await open("/", { width: 1280 });
   await skipIntro(tab);
-  await pause(500);
-  const frames = await tab.evaluate(
-    () =>
-      new Promise<number>((resolve) => {
-        let count = 0;
-        const own = window.requestAnimationFrame.bind(window);
-        window.requestAnimationFrame = (callback) => {
-          count++;
-          return own(callback);
-        };
-        setTimeout(() => resolve(count), 1000);
-      }),
-  );
-  assert.equal(frames, 0);
+  await tab.evaluate(() => {
+    const counted = window as unknown as { frames: number };
+    counted.frames = 0;
+    const own = window.requestAnimationFrame.bind(window);
+    window.requestAnimationFrame = (callback) => {
+      counted.frames++;
+      return own(callback);
+    };
+  });
+  /** The frames the page requests in the next second. */
+  const second = () =>
+    tab.evaluate(
+      () =>
+        new Promise<number>((resolve) => {
+          const counted = window as unknown as { frames: number };
+          counted.frames = 0;
+          setTimeout(() => resolve(counted.frames), 1000);
+        }),
+    );
+  // the afterglow and the light map settle within a few seconds, however
+  // slowly the machine draws; then the loop stays asleep
+  await until(async () => (await second()) === 0, "the loop to sleep", 10_000);
+  assert.equal(await second(), 0);
   await tab.close();
 });
 
@@ -682,7 +681,7 @@ test("the receiver's JavaScript is under 80 KB gzipped", () => {
 });
 
 test("with the display running, every page passes the WCAG 2.2 A and AA audit, and assistive technology gets the HTML layer, never the canvas", async () => {
-  for (const file of site.pages.filter((page) => !page.includes("fixture")))
+  for (const file of site.pages)
     for (const width of [320, 1280]) {
       const tab = await open(pagePath(file), { width });
       await skipIntro(tab);
