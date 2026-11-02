@@ -311,20 +311,22 @@ export function projectsLayout(context: LayoutContext): ChannelLayout {
     const c1 = L.x0 + L.W - 1;
     const w = c1 - c0 + 1;
     const hot = grid.hover !== null && grid.hover === project.open;
-    const B = still
-      ? A
-      : clip(
-          grid,
-          top,
-          bottom,
-          step((now - selectedAt) / SELECT_MS, 6),
-          sel * 11 + 1,
-        );
+    // the links keep the body's last rows, a blank row above them; the card
+    // and what follows it take the rows above, cut where the body is short
+    const links = linkRows(linkItems(project, openLabel), w - 1);
+    const linksAt = bottom - links.length + 1;
+    const card = clip(grid, top, linksAt - 2);
+    const B = clip(
+      grid,
+      top,
+      linksAt - 2,
+      still ? 1 : step((now - selectedAt) / SELECT_MS, 6),
+      sel * 11 + 1,
+    );
     const iw = w - 6;
     const nameLines = wrapText(project.name.toUpperCase(), iw);
     const metaLines = wrapItems(metaItems(project), iw);
     const factLines = wrapItems(factItems(project), w - 1);
-    const links = linkRows(linkItems(project, openLabel), w - 1);
     // the tagline gets at most 4 lines, fewer if the rest would not fit
     const fixed =
       4 +
@@ -348,7 +350,7 @@ export function projectsLayout(context: LayoutContext): ChannelLayout {
     const r0 = top;
     const r1 = r0 + inner + 3;
     frame(
-      A,
+      card,
       c0,
       r0,
       c1,
@@ -371,12 +373,10 @@ export function projectsLayout(context: LayoutContext): ChannelLayout {
     y++;
     for (const line of metaLines) B.put(c0 + 3, y++, line, 0.42);
     if (project.open)
-      for (let r = r0; r <= r1; r++) A.region(c0, c1, r, project.open);
+      for (let r = r0; r <= r1; r++) card.region(c0, c1, r, project.open);
     let r = r1 + 2;
     for (const line of factLines) B.put(c0 + 1, r++, line, 0.45);
-    // the links sit on the body's last rows, a blank row above them, with
-    // the lead between when there is room for two lines of it
-    const linksAt = Math.max(bottom - links.length + 1, r + 1);
+    // the lead fills what room there is above the links, two lines or more
     const room = linksAt - 1 - (r + 1);
     if (project.lead && room >= 2) {
       const lead = wrapText(project.lead, w - 1);

@@ -10,7 +10,7 @@
 import { channel } from "../../lib/channels.ts";
 import { portraitPath } from "../../lib/portrait-files.ts";
 import { displayLabel } from "../font.ts";
-import { fit, frame, step, wrapText } from "../draw.ts";
+import { clip, fit, frame, step, wrapText } from "../draw.ts";
 import type { ChannelLayout, Grid, LayoutContext } from "../layout.ts";
 import { hash01 } from "../tube.ts";
 import { BLINK_MS, textOf } from "./common.ts";
@@ -236,12 +236,22 @@ export function replyLayout(context: LayoutContext): ChannelLayout {
             n + (oneRow(way, width) ? 1 : 1 + addressLines(way, width).length),
           0,
         );
-      const textRows = (width: number) =>
-        wrapText(reply.name, width).length +
-        1 +
-        wordLines(width).length +
-        1 +
+      /** What the text block shows: all of it, or, where the box would not
+       * keep room for a few rows, without the two lines, then without the
+       * name too; the addresses always stay. */
+      type Parts = { name: boolean; words: boolean };
+      const PARTS: Parts[] = [
+        { name: true, words: true },
+        { name: true, words: false },
+        { name: false, words: false },
+      ];
+      const textRows = (width: number, parts: Parts) =>
+        (parts.name ? wrapText(reply.name, width).length + 1 : 0) +
+        (parts.words ? wordLines(width).length + 1 : 0) +
         wayRows(width);
+      /** The fewest rows the box takes: its frame, a typed row and its
+       * status. */
+      const BOX_ROWS = 4;
 
       // everything is sized to the body, so the page never scrolls; rows
       // count from the body's top
@@ -249,15 +259,30 @@ export function replyLayout(context: LayoutContext): ChannelLayout {
       let port: { X0: number; r: number };
       let text: { c: number; r: number; w: number };
       let box: { ic: number; r0: number; r1: number };
+      let parts = PARTS.at(-1)!;
       if (w < 58) {
-        // a phone: one column, the box taking what is left
-        const tr = textRows(w);
-        D = Math.max(
-          40,
-          Math.min(96, rows8(w * 5 * 0.6), rows8((V - tr - 2 - 6) * 8)),
-        );
-        // too short for the portrait and a box of a few rows: no portrait
-        if (D / 8 + 1 + tr + 1 + 4 > V || !reply.portrait) D = 0;
+        // a phone: one column, the box taking what is left; where that is
+        // too little, the portrait goes first, then the two lines, then the
+        // name
+        D = 0;
+        let tr = textRows(w, parts);
+        for (const candidate of PARTS) {
+          const rows = textRows(w, candidate);
+          const portrait = reply.portrait
+            ? Math.max(
+                40,
+                Math.min(96, rows8(w * 5 * 0.6), rows8((V - rows - 2 - 6) * 8)),
+              )
+            : 0;
+          if (portrait && portrait / 8 + 1 + rows + 1 + BOX_ROWS <= V) {
+            [parts, tr, D] = [candidate, rows, portrait];
+            break;
+          }
+          if (rows + 1 + BOX_ROWS <= V) {
+            [parts, tr] = [candidate, rows];
+            break;
+          }
+        }
         port = { X0: left * 5 + Math.floor((w * 5 - D) / 2), r: 0 };
         text = { c: left, r: D ? D / 8 + 1 : 0, w };
         box = { ic: left + 2, r0: text.r + tr + 1, r1: V - 1 };
@@ -267,20 +292,33 @@ export function replyLayout(context: LayoutContext): ChannelLayout {
           : 0;
         const ic = left + (D ? Math.ceil(D / 5) + 5 : 2);
         const tw = c1 - ic + 1;
+        parts =
+          PARTS.find(
+            (candidate) => textRows(tw, candidate) + 1 + BOX_ROWS <= V,
+          ) ?? parts;
         port = { X0: left * 5, r: Math.floor((V - D / 8) / 2) };
         text = { c: ic, r: 0, w: tw };
-        box = { ic, r0: textRows(tw) + 1, r1: V - 1 };
+        box = { ic, r0: textRows(tw, parts) + 1, r1: V - 1 };
       }
+      // however short the display, the box keeps its rows: what does not fit
+      // above it is cut
+      box.r0 = Math.max(0, Math.min(box.r0, V - BOX_ROWS));
+      const above = clip(grid, top, top + box.r0 - 1);
       size = D;
       if (D) paintPortrait(grid, port.X0, (top + port.r) * 8, D, now);
 
       // the name, the two lines and the ways to reach the owner
       let r = top + text.r;
-      for (const line of wrapText(reply.name, text.w))
-        grid.put(text.c, r++, line, 1);
-      r++;
-      for (const line of wordLines(text.w)) grid.put(text.c, r++, line, 0.78);
-      r++;
+      if (parts.name) {
+        for (const line of wrapText(reply.name, text.w))
+          above.put(text.c, r++, line, 1);
+        r++;
+      }
+      if (parts.words) {
+        for (const line of wordLines(text.w))
+          above.put(text.c, r++, line, 0.78);
+        r++;
+      }
       const active = document.activeElement;
       const lit = (target: HTMLElement | null, otherwise: number) =>
         target && (grid.hover === target || active === target) ? 1 : otherwise;
@@ -288,7 +326,7 @@ export function replyLayout(context: LayoutContext): ChannelLayout {
         const copy = copyLabel(way);
         const copyAt = (c: number) => {
           if (!way.copy) return;
-          grid.put(
+          above.put(
             c,
             r,
             copy,
@@ -299,9 +337,9 @@ export function replyLayout(context: LayoutContext): ChannelLayout {
             way.copy,
           );
         };
-        grid.put(text.c, r, way.label, 0.42);
+        above.put(text.c, r, way.label, 0.42);
         if (oneRow(way, text.w)) {
-          grid.put(
+          above.put(
             text.c + labelWidth,
             r,
             way.address,
@@ -312,7 +350,7 @@ export function replyLayout(context: LayoutContext): ChannelLayout {
         } else {
           copyAt(text.c + labelWidth);
           for (const line of addressLines(way, text.w))
-            grid.put(
+            above.put(
               text.c,
               ++r,
               line,

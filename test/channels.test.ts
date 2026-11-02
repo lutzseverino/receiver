@@ -369,3 +369,34 @@ test("with the display running, the wire and a post pass the WCAG 2.2 A and AA a
       });
     }
 });
+
+test("short and narrow displays keep every action of projects and reply in view", async () => {
+  // a short desktop: the preview's links stay on the body's last rows
+  await on("/projects/", { width: 1280, height: 600 }, async (tab) => {
+    const state = await skipIntro(tab);
+    for (const label of ["OPEN ►", "VISIT SITE ►", "SOURCE ►"]) {
+      const region = state.regions.find((found) => found.text === label);
+      assert.ok(region, `${label} at 1280 × 600`);
+      assert.ok(region.row < state.rows.length - 1, `${label} above the bar`);
+    }
+  });
+  // a phone: a focused project link shows whole
+  await on("/es/projects/", { width: 320 }, async (tab) => {
+    await skipIntro(tab);
+    await tab.evaluate(() =>
+      document.querySelector<HTMLElement>('main [data-link="source"]')!.focus(),
+    );
+    const state = await idle(tab);
+    const region = state.regions.find((found) => found.focused);
+    assert.ok(region, "the focused link is drawn");
+    assert.match(region.text, /CÓDIGO FUENTE ►/);
+    assert.ok(state.marker, "► marks it");
+  });
+  // a short landscape phone: the box, SEND and COPY stay reachable
+  await on("/contact/", { width: 720, height: 320 }, async (tab) => {
+    const state = await skipIntro(tab);
+    assert.ok(state.regions.some((region) => region.tag === "TEXTAREA"));
+    assert.ok(state.regions.some((region) => region.text === "SEND ►"));
+    assert.ok(state.regions.some((region) => region.text === "COPY"));
+  });
+});
