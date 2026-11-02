@@ -1,0 +1,11 @@
+# The projects channel's allowlist: the repositories it shows, in this order.
+# Each entry names a public GitHub repository as `owner/repo`; `featured: true`
+# gives it the ON AIR mark. Every build reads each one's README and GitHub
+# metadata; a missing or private repository fails the build, and an archived
+# one is left out with a warning.
+- repo: lutzseverino/repo-standards
+  featured: true
+- repo: lutzseverino/repo-canon
+- repo: lutzseverino/scriptorium
+- repo: lutzseverino/postern
+- repo: lutzseverino/hemiciclo

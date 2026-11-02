@@ -2,5 +2,37 @@
   "empty": {
     "message": "ENCARA NO HI HA RES EN AQUESTA BANDA",
     "source": "f9262a79"
+  },
+  "on-air": {
+    "message": "EN ANTENA",
+    "source": "c9cdc20f"
+  },
+  "stack": {
+    "message": "Tecnologies",
+    "source": "e5516412"
+  },
+  "since": {
+    "message": "Des de",
+    "source": "98af1ed6"
+  },
+  "release": {
+    "message": "Darrera versió",
+    "source": "4abf09ee"
+  },
+  "release.none": {
+    "message": "Encara no hi ha cap versió",
+    "source": "10fd38ea"
+  },
+  "updated": {
+    "message": "Actualitzat",
+    "source": "3a5ecca1"
+  },
+  "site": {
+    "message": "Visitar el lloc web",
+    "source": "49193e74"
+  },
+  "source": {
+    "message": "Codi font",
+    "source": "0e570ca6"
   }
 }

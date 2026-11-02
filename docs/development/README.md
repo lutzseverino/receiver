@@ -58,14 +58,42 @@ pnpm validate
 `build` in that order. The `Validate` workflow runs it for every pull request
 on Node.js 24 and 26.
 
+## Projects
+
+The projects channel shows the repositories `src/data/projects.yaml` lists,
+in its order; an entry is a public repository as `owner/repo`, with
+`featured: true` for the one that carries the ON AIR mark. Every build and
+development server reads each one's README on its default branch and its
+GitHub metadata. The README's header gives the name (its `<h1>` or level-1
+heading), the tagline (its first `<p>`) and the stack (its `img.shields.io`
+badges' alt text); the paragraphs after the header give the lead. GitHub
+gives the latest release, the last push, the homepage and the creation year.
+A README without a tagline shows the repository's description, and one
+without a name the repository's name.
+
+The build uses the `GITHUB_TOKEN` its environment provides, as workflows do;
+without one, GitHub's unauthenticated limit of 60 requests an hour applies,
+and a build makes three requests per project. A missing or private repository,
+a failed request, or a project with neither a tagline nor a description
+fails the build, naming the repository. An archived repository is left out,
+with a warning naming it.
+
+With `SITE_PROJECTS=fixture`, as the `Validate` workflow sets it, `pnpm build`
+and `pnpm dev` read the committed fixture in `test/fixtures/github/` instead: the five repositories' READMEs as
+of 2026-11-01 and their GitHub metadata as of 2026-11-02.
+
 ## Tests
 
 The tests use Node's test runner with no test framework. Those that need the
 site build it once per file into a temporary folder under `node_modules/`.
-`build.test.ts` reads the built HTML: every route in every locale, its
-`lang`, headings, landmarks and navigation, its canonical and `hreflang`
-links, and the absence of the channel frequencies, the email address and the
-analytics beacon. `plain-pages.test.ts`, `reply.test.ts` and
+Every built or served site reads the projects from the fixture, and no test
+reaches GitHub. `readme.test.ts` and `projects.test.ts` check what each README
+and GitHub answer gives a project, and how the allowlist and failures are
+handled. `build.test.ts` reads the built HTML: every route in every locale,
+its `lang`, headings, landmarks and navigation, its canonical and `hreflang`
+links, the projects and their pages, and the absence of the channel
+frequencies, the email address, unlisted repositories and the analytics
+beacon. `plain-pages.test.ts`, `reply.test.ts` and
 `language.test.ts` drive a headless browser through the Chrome DevTools
 Protocol over Node's own WebSocket (`test/support/browser.ts`), with no
 browser package. They check every page without JavaScript at 320, 360 and

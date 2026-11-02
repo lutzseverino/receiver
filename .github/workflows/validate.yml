@@ -28,5 +28,9 @@ jobs:
           package-manager-cache: false
       - run: npm install --global pnpm@11.28.10
       - run: pnpm install --frozen-lockfile
-      # the browser tests drive the runner's Chrome
+      # the browser tests drive the runner's Chrome; the build reads the
+      # projects from the committed fixture, so no pull request's checks
+      # depend on other repositories' live state
       - run: pnpm validate
+        env:
+          SITE_PROJECTS: fixture
