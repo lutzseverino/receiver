@@ -240,3 +240,34 @@ and shared dot glyphs; long pages show the opening screen. The localized
 manifest and card alt text use the `copy` catalogs. `discovery.test.ts` checks
 the published files and rejects all three address forms in agent surfaces,
 structured data and feeds.
+
+## Deployment
+
+`.github/workflows/deploy-site.yml` builds on pushes to `main` and daily at
+04:23 UTC. The build reads live project data with the built-in GitHub token;
+only Validate uses fixtures. Build and deploy share the `github-pages`
+concurrency group without cancelling a run in progress. A failed build leaves
+the previous deployment live.
+
+The build job has `contents: read` and `pages: read`; deploy has `pages: write`
+and `id-token: write`. After a successful deploy, a separate job with only
+`actions: write` reads this run's workflow ID and enables it through GitHub's
+API. It makes no commits and uses no repository secrets. Failure of that step
+fails the run; failure of the build or deploy skips it. The owner should enable
+GitHub Actions email notifications for failed workflows. Enabling an active
+workflow is not documented to reset GitHub's 60-day inactivity clock: a dated
+follow-up under `/srv/dev/projects/handoffs/receiver/` checks its state and
+continuing scheduled runs 60 days after the first deploy.
+
+Pages uses the Actions source and `lutzseverino.com` as its custom domain in
+repository settings, with no `CNAME` file. HTTPS enforcement follows certificate
+issuance. Account steps for the owner's supervised local Codex computer-use
+agent are in
+`/srv/dev/projects/handoffs/receiver/deploy-account-steps-2026-11-02.md`:
+GitHub account domain verification **before** Cloudflare serving DNS records,
+then Web Analytics before merge; Search Console and Bing sitemap submission
+only after deployment. The public analytics token is committed to
+`src/config.ts` before merge. Delete the account handoff after its steps are
+reported complete. Issue #13 stays open until deployment, the first scheduled
+run, analytics, search-console reports and deployed Lighthouse checks are
+recorded.
