@@ -129,3 +129,41 @@ test("discovery files cover routes and protect the reply address in all forms", 
   ])
     assert.ok(JSON.parse(site.read(file)).description);
 });
+
+test("post alternates link to published PNGs for images from other source formats and folders", async () => {
+  const { cp, mkdtemp, mkdir, readFile, writeFile, rm } =
+    await import("node:fs/promises");
+  const path = await import("node:path");
+  const sharp = (await import("sharp")).default;
+  const posts = await mkdtemp(path.resolve("node_modules/.discovery-posts-"));
+  try {
+    await cp(FIXTURE_POSTS, posts, { recursive: true });
+    await mkdir(path.join(posts, "assets"));
+    await sharp(path.join(posts, "images/gradient.png"))
+      .jpeg()
+      .toFile(path.join(posts, "assets/gradient.jpg"));
+    const file = path.join(posts, "long-wave.md");
+    await writeFile(
+      file,
+      (await readFile(file, "utf8")).replace(
+        "./images/gradient.png",
+        "./assets/gradient.jpg",
+      ),
+    );
+    const site = await builtSite({ posts });
+    assert.match(
+      site.read("blog/long-wave.md"),
+      /!\[A gradient, from dark to lit\]\(https:\/\/lutzseverino.com\/blog\/long-wave\/gradient.png\)/,
+    );
+    assert.equal(
+      (
+        await sharp(
+          path.join(site.dir, "blog/long-wave/gradient.png"),
+        ).metadata()
+      ).format,
+      "png",
+    );
+  } finally {
+    await rm(posts, { recursive: true, force: true });
+  }
+});
