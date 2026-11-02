@@ -8,6 +8,9 @@
 // `main`, its language links and the receiver's controls, which only the
 // receiver's script shows: SOUND and PLAIN while the display runs, and the
 // way back to it on the plain page.
+import { cardPath, markdownPath, structuredData } from "@/lib/discovery";
+import type { Project } from "@/data/projects";
+import type { Post } from "@/data/posts";
 import ChannelNav from "@/components/ChannelNav.astro";
 import { Button } from "@/components/app/button";
 import LanguageLinks from "@/components/LanguageLinks.astro";
@@ -28,6 +31,8 @@ import "@/styles/global.css";
 
 type Props = {
   locale: Locale;
+  project?: Project;
+  post?: Post;
   title: string;
   description: string;
   /** The languages the page exists in, English first; all by default. */
@@ -46,6 +51,8 @@ type Props = {
 
 const {
   locale,
+  project,
+  post,
   title,
   description,
   locales = LOCALES,
@@ -86,6 +93,66 @@ const beacon = analyticsBeacon(ANALYTICS_TOKEN);
       type="application/rss+xml"
       title={format(locale, "copy.wire.title")}
       href={feedPath(locale)}
+    />
+    <meta property="og:type" content={post ? "article" : "website"} />
+    <meta property="og:site_name" content="Jasper Lutz Severino" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical.href} />
+    <meta
+      property="og:locale"
+      content={
+        { en: "en_US", es: "es_ES", ca: "ca_ES", "en-XA": "en_US" }[locale] ??
+        "en_US"
+      }
+    />
+    <meta
+      property="og:image"
+      content={new URL(cardPath(canonical.pathname), Astro.site).href}
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content={format(locale, "copy.card.alt", { title })}
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta
+      name="twitter:image"
+      content={new URL(cardPath(canonical.pathname), Astro.site).href}
+    />
+    <meta
+      name="twitter:image:alt"
+      content={format(locale, "copy.card.alt", { title })}
+    />
+    <link
+      rel="alternate"
+      type="text/markdown"
+      href={markdownPath(canonical.pathname)}
+    />
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" sizes="32x32" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link
+      rel="manifest"
+      href={
+        locale === "en" ? "/site.webmanifest" : `/${locale}/site.webmanifest`
+      }
+    />
+    <script
+      is:inline
+      type="application/ld+json"
+      set:html={structuredData({
+        url: canonical.href,
+        title,
+        description,
+        locale,
+        project,
+        post,
+      })}
     />
     <slot name="head" />
     {beacon && <script is:inline defer {...beacon} />}

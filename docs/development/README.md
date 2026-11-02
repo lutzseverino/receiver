@@ -187,3 +187,22 @@ its language's feed. Tests build the site from `test/fixtures/posts/` through
 files by hand. Pages import the components through `src/components/app/`, and
 styling shared by every component of a kind targets its `data-slot` in
 `src/styles/global.css`.
+
+## Discovery
+
+The shared head reads the page's title, description, locale and optional
+project or post into Open Graph, Twitter and escaped JSON-LD. After HTML is
+built, `src/lib/discovery-build.ts` writes robots, the sitemap with reciprocal
+language links, `llms.txt`, Markdown alternates, cards and icons. Routes and
+page copy come from that build, including fixture posts in tests. NO SIGNAL
+pages have alternates and cards but remain outside the sitemap.
+
+Markdown alternates use `/index.md` for home and `<page>.md` elsewhere,
+including `/es.md` and `/ca.md` for those home pages. They all stay English:
+posts use their English source body and other pages use the English HTML
+layer's `main`. Reply uses only a link to `/contact/`. Its card likewise omits
+the address. Cards are 1200×630 PNGs, using the receiver's generic text layout
+and shared dot glyphs; long pages show the opening screen. The localized
+manifest and card alt text use the `copy` catalogs. `discovery.test.ts` checks
+the published files and rejects all three address forms in agent surfaces,
+structured data and feeds.

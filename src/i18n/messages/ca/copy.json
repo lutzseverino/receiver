@@ -62,5 +62,17 @@
   "signal.description": {
     "message": "No hi ha res emetent en aquesta adreça. La resta del dial continua en antena.",
     "source": "95cdd313"
+  },
+  "card.alt": {
+    "message": "Pantalla de matriu de punts que mostra {$title}",
+    "source": "30d7c448"
+  },
+  "manifest.name": {
+    "message": "Receiver · Jasper Lutz Severino",
+    "source": "317bc15d"
+  },
+  "manifest.description": {
+    "message": "Projectes de programari, escrits i respostes en una pantalla blava de matriu de punts.",
+    "source": "1ef1776d"
   }
 }
