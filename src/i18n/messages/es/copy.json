@@ -62,5 +62,17 @@
   "signal.description": {
     "message": "No hay nada emitiendo en esta dirección. El resto del dial sigue en antena.",
     "source": "95cdd313"
+  },
+  "card.alt": {
+    "message": "Pantalla de matriz de puntos que muestra {$title}",
+    "source": "30d7c448"
+  },
+  "manifest.name": {
+    "message": "Receiver · Jasper Lutz Severino",
+    "source": "317bc15d"
+  },
+  "manifest.description": {
+    "message": "Proyectos de software, escritos y respuestas en una pantalla azul de matriz de puntos.",
+    "source": "1ef1776d"
   }
 }

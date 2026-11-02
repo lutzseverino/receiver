@@ -14,5 +14,8 @@
   "reply.line-1": "this channel only carries written words.",
   "reply.line-2": "send them through; they reach me.",
   "signal.title": "No signal · Jasper Lutz Severino",
-  "signal.description": "Nothing is broadcasting at this address. The rest of the dial is still on air."
+  "signal.description": "Nothing is broadcasting at this address. The rest of the dial is still on air.",
+  "card.alt": "Dot-matrix display showing {$title}",
+  "manifest.name": "Receiver · Jasper Lutz Severino",
+  "manifest.description": "Software projects, writing and replies on a blue dot-matrix display."
 }

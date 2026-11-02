@@ -54,7 +54,21 @@ export default defineConfig({
   // lines keep the space between them
   compressHTML: true,
   prefetch: false,
-  integrations: [react(), glyphCoverage, noSignalPages],
+  integrations: [
+    react(),
+    glyphCoverage,
+    noSignalPages,
+    {
+      name: "discovery",
+      hooks: {
+        "astro:build:done": async ({ dir }) => {
+          const { buildDiscovery } =
+            await import("./src/lib/discovery-build.ts");
+          await buildDiscovery(dir, postsDirectory);
+        },
+      },
+    },
+  ],
   vite: {
     plugins: [tailwindcss()],
     // the published posts' folder (src/data/posts.ts); only a test's build
