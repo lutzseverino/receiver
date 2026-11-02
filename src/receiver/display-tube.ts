@@ -84,7 +84,12 @@ export async function createDisplayTube(
     cells.clear();
   }
 
+  const visibility = new AbortController();
+  document.addEventListener("visibilitychange", present, {
+    signal: visibility.signal,
+  });
   worker.onerror = () => {
+    visibility.abort();
     worker.terminate();
     disposed = true;
     onFailure();
@@ -116,6 +121,7 @@ export async function createDisplayTube(
       present();
     },
     dispose() {
+      visibility.abort();
       disposed = true;
       worker.terminate();
     },

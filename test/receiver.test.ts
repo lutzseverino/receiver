@@ -467,6 +467,81 @@ test("the worker presents the same lit pixels as the fallback", async () => {
   assert.deepEqual(pictures[0], pictures[1]);
 });
 
+test("a final frame pending at tab sleep is presented on return", async () => {
+  // Keep the real worker but hold its acknowledgement, so the next frame
+  // is pending when visibility changes. No rasterisation is mocked.
+  const tab = await open("/projects/", {
+    width: 390,
+    reducedMotion: true,
+    scripts: [
+      `
+      window.holdAck = true;
+      window.pretendHidden = false;
+      Object.defineProperty(document, "hidden", { get: () => window.pretendHidden });
+      window.Worker = class extends Worker {
+        handlers = 0;
+        set onmessage(handler) {
+          this.handlers++;
+          super.onmessage = this.handlers === 1 ? handler : (event) => {
+            if (window.holdAck) window.releaseAck = () => {
+              window.holdAck = false;
+              handler(event);
+            };
+            else handler(event);
+          };
+        }
+      };
+    `,
+    ],
+  });
+  await idle(tab);
+  await until(
+    () =>
+      tab.evaluate(
+        () =>
+          typeof (window as unknown as { releaseAck?: () => void })
+            .releaseAck === "function",
+      ),
+    "the real worker to finish its first frame",
+  );
+  await pause(500);
+  const before = await tab.send("Page.captureScreenshot", { format: "png" });
+  await press(tab, "m");
+  await pause(500);
+  assert.equal(
+    (await tab.send("Page.captureScreenshot", { format: "png" })).data,
+    before.data,
+    "the next frame is held behind the acknowledgement",
+  );
+  await tab.evaluate(() => {
+    const control = window as unknown as {
+      pretendHidden: boolean;
+      releaseAck(): void;
+    };
+    control.pretendHidden = true;
+    control.releaseAck();
+  });
+  await pause(300);
+  assert.equal(
+    (await tab.send("Page.captureScreenshot", { format: "png" })).data,
+    before.data,
+    "a hidden tab keeps the frame pending",
+  );
+  await tab.evaluate(() => {
+    (window as unknown as { pretendHidden: boolean }).pretendHidden = false;
+    document.dispatchEvent(new Event("visibilitychange"));
+  });
+  await until(
+    async () => {
+      const after = await tab.send("Page.captureScreenshot", { format: "png" });
+      return after.data !== before.data;
+    },
+    "the pending SOUND frame to be presented",
+    2000,
+  );
+  await tab.close();
+});
+
 test("without OffscreenCanvas the receiver still draws the final channel", async () => {
   const tab = await open("/projects/", {
     width: 390,
