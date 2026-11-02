@@ -28,7 +28,8 @@ type Props = {
   locales?: readonly SiteLocale[];
   /** Whether search engines should leave the page out, as for NO SIGNAL. */
   noindex?: boolean;
-  /** Whether the head may send a visit on to the visitor's language. */
+  /** Whether the head may send a visit on to the visitor's language. A
+   * language the address chooses is saved either way. */
   redirect?: boolean;
   /** The page's path in the default locale, when its address doesn't say,
    * as for NO SIGNAL. */
@@ -53,7 +54,7 @@ const beacon = analyticsBeacon(ANALYTICS_TOKEN);
 <html lang={locale} class="dark">
   <head>
     <meta charset="utf-8" />
-    {redirect && <LocaleScript locale={locale} />}
+    <LocaleScript locale={locale} redirect={redirect} />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex" />}

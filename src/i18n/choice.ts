@@ -102,9 +102,11 @@ export function localeChoice(locales: readonly string[]) {
   return { KEY, page, redirect, query, choosing, saved, save };
 }
 
-/** The inline script that sends a visit to the visitor's language before
- * the first paint. */
-export const localeScript = () => `(() => {
+/** The inline script that runs before the first paint. It always saves a
+ * choice the address names, as a language link's `?locale=` does, and
+ * strips it from the address. With `redirect`, it then sends the visit on to
+ * the visitor's language; without, as on NO SIGNAL, the page stays. */
+export const localeScript = ({ redirect }: { redirect: boolean }) => `(() => {
   const choice = (${localeChoice.toString()})(${JSON.stringify(LOCALES)});
   const { chosen, search } = choice.query(location.search);
   if (chosen !== null) {
@@ -114,11 +116,15 @@ export const localeScript = () => `(() => {
       "",
       location.pathname + search + location.hash,
     );
-  }
+  }${
+    redirect
+      ? `
   const to = choice.redirect(
     location.pathname,
     chosen ?? choice.saved(),
     navigator.languages || [navigator.language],
   );
-  if (to !== null) location.replace(to + search + location.hash);
+  if (to !== null) location.replace(to + search + location.hash);`
+      : ""
+  }
 })();`;

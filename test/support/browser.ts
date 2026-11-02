@@ -45,7 +45,7 @@ type Message = {
 
 /** How a tab shows its page: its width in CSS pixels, whether it runs the
  * page's scripts, the browser's languages, and what local storage holds
- * before the page loads. */
+ * before the first page loads. */
 export type View = {
   width: number;
   javascript?: boolean;
@@ -209,11 +209,18 @@ export class Browser {
         acceptLanguage: view.languages.join(","),
       });
     }
-    if (view.storage)
-      await tab.send("Page.addScriptToEvaluateOnNewDocument", {
-        source: `if (location.origin !== "null") for (const [key, value] of Object.entries(${JSON.stringify(view.storage)})) localStorage.setItem(key, value);`,
-      });
+    // the storage is seeded before the first page's scripts only, so what
+    // later pages save stays
+    const seed = view.storage
+      ? ((await tab.send("Page.addScriptToEvaluateOnNewDocument", {
+          source: `if (location.origin !== "null") for (const [key, value] of Object.entries(${JSON.stringify(view.storage)})) localStorage.setItem(key, value);`,
+        })) as { identifier: string })
+      : undefined;
     await tab.goto(url);
+    if (seed)
+      await tab.send("Page.removeScriptToEvaluateOnNewDocument", {
+        identifier: seed.identifier,
+      });
     return tab;
   }
 

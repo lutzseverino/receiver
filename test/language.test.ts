@@ -87,3 +87,22 @@ test("NO SIGNAL never sends a visit on to another language", async () => {
   assert.deepEqual(await where(tab), { path: "/no-such-page/", lang: "en" });
   await tab.close();
 });
+
+test("a language chosen on NO SIGNAL persists, and the dial it links to stays in it", async () => {
+  const tab = await visit("/no-such-page/", ["en-US"], { locale: "en" });
+  const chosen = tab.event("Page.loadEventFired");
+  await tab.evaluate(() =>
+    document.querySelector<HTMLAnchorElement>('a[hreflang="ca"]')!.click(),
+  );
+  await chosen.next;
+  assert.deepEqual(await where(tab), { path: "/ca/404.html", lang: "ca" });
+  assert.equal(await tab.evaluate(() => localStorage.getItem("locale")), "ca");
+  const dial = tab.event("Page.loadEventFired");
+  await tab.evaluate(() =>
+    document.querySelector<HTMLAnchorElement>('main a[href="/ca/"]')!.click(),
+  );
+  await dial.next;
+  await tab.evaluate(() => new Promise((resolve) => setTimeout(resolve, 200)));
+  assert.deepEqual(await where(tab), { path: "/ca/", lang: "ca" });
+  await tab.close();
+});

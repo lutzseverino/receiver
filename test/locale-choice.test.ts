@@ -2,7 +2,8 @@
 // the saved choice and the browser's languages.
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { localeChoice } from "../src/i18n/choice.ts";
+import vm from "node:vm";
+import { localeChoice, localeScript } from "../src/i18n/choice.ts";
 import { LOCALES, defaultPath } from "../src/i18n/locales.ts";
 
 const { redirect, query, choosing } = localeChoice(LOCALES);
@@ -60,4 +61,78 @@ test("a page's path in the default locale drops its locale's prefix", () => {
   assert.equal(defaultPath("/ca/contact/"), "/contact/");
   assert.equal(defaultPath("/escape/"), "/escape/");
   assert.equal(defaultPath("/es/404.html"), "/404.html");
+});
+
+/** Runs the head's script on `href` with `saved` in local storage and a
+ * browser preferring `languages`: where it sends the visit, the address it
+ * leaves, and the choice it saves. */
+function runScript(
+  redirect: boolean,
+  href: string,
+  saved: string | null,
+  languages: string[],
+) {
+  const url = new URL(href, "https://lutzseverino.com");
+  const storage = new Map<string, string>(
+    saved === null ? [] : [["locale", saved]],
+  );
+  const result: { replaced: string | null; address: string } = {
+    replaced: null,
+    address: url.pathname + url.search,
+  };
+  const store = {
+    getItem: (key: string) => storage.get(key) ?? null,
+    setItem: (key: string, value: string) => void storage.set(key, value),
+    removeItem: (key: string) => void storage.delete(key),
+  };
+  const window = { localStorage: store, sessionStorage: new Map() };
+  vm.runInNewContext(localeScript({ redirect }), {
+    window,
+    location: {
+      pathname: url.pathname,
+      search: url.search,
+      hash: "",
+      replace: (to: string) => (result.replaced = to),
+    },
+    history: {
+      state: null,
+      replaceState: (_: unknown, __: string, to: string) =>
+        (result.address = to),
+    },
+    navigator: { languages },
+    URLSearchParams,
+  });
+  return { ...result, saved: storage.get("locale") ?? null };
+}
+
+test("without redirection, the head's script still saves a chosen language and strips it from the address", () => {
+  assert.deepEqual(runScript(false, "/ca/404.html?locale=ca", "en", ["en"]), {
+    replaced: null,
+    address: "/ca/404.html",
+    saved: "ca",
+  });
+  // and the dial the page links back to then stays in that language
+  assert.deepEqual(runScript(true, "/ca/", "ca", ["en"]), {
+    replaced: null,
+    address: "/ca/",
+    saved: "ca",
+  });
+});
+
+test("without redirection, the head's script never sends a visit on", () => {
+  for (const saved of [null, "en", "es", "ca"])
+    for (const languages of [["es"], ["ca"], ["en"]])
+      assert.equal(
+        runScript(false, "/no-such-page/", saved, languages).replaced,
+        null,
+      );
+});
+
+test("with redirection, the head's script saves the choice and sends the visit to it", () => {
+  assert.deepEqual(runScript(true, "/es/contact/?locale=en", null, ["es"]), {
+    replaced: "/contact/",
+    address: "/es/contact/",
+    saved: "en",
+  });
+  assert.equal(runScript(true, "/", null, ["es"]).replaced, "/es/");
 });
