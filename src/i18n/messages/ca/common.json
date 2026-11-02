@@ -1,0 +1,26 @@
+{
+  "nav.label": {
+    "message": "Canals",
+    "source": "4c8906cf"
+  },
+  "channel.home": {
+    "message": "Inici",
+    "source": "3a786953"
+  },
+  "channel.projects": {
+    "message": "Projectes",
+    "source": "04e2a972"
+  },
+  "channel.wire": {
+    "message": "Teletip",
+    "source": "149987d3"
+  },
+  "channel.reply": {
+    "message": "Respondre",
+    "source": "c253f451"
+  },
+  "language.label": {
+    "message": "Idioma",
+    "source": "a4fe6526"
+  }
+}

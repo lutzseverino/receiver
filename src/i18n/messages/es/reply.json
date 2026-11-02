@@ -1,0 +1,42 @@
+{
+  "email": {
+    "message": "Correo",
+    "source": "969ccbd3"
+  },
+  "email.spelled": {
+    "message": "{$user} arroba {$domain} punto {$suffix}",
+    "source": "ab7a4518"
+  },
+  "github": {
+    "message": "GitHub",
+    "source": "f911e414"
+  },
+  "copy": {
+    "message": "Copiar",
+    "source": "e21f935f"
+  },
+  "copied": {
+    "message": "Copiado",
+    "source": "8d525e5f"
+  },
+  "message": {
+    "message": "Mensaje",
+    "source": "2f77668a"
+  },
+  "message.hint": {
+    "message": "Ctrl o Cmd + Intro lo envía.",
+    "source": "b05c5fcc"
+  },
+  "send": {
+    "message": "Enviar",
+    "source": "f6f4688f"
+  },
+  "sent": {
+    "message": "Entregado a tu aplicación de correo.",
+    "source": "9a18a162"
+  },
+  "subject": {
+    "message": "Te escuché en el {$frequency}",
+    "source": "3442f937"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "email": "Email",
+  "email.spelled": "{$user} at {$domain} dot {$suffix}",
+  "github": "GitHub",
+  "copy": "Copy",
+  "copied": "Copied",
+  "message": "Message",
+  "message.hint": "Ctrl or Cmd + Enter sends it.",
+  "send": "Send",
+  "sent": "Handed to your mail app.",
+  "subject": "Heard you on {$frequency}"
+}

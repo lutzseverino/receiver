@@ -1,0 +1,22 @@
+# Generated shadcn output, never formatted by hand (src/components/ui/AGENTS.md)
+src/components/ui/
+registry-manifest.json
+pnpm-lock.yaml
+# Repository Standards installs and verifies these
+.agents/
+.claude/
+.github/ISSUE_TEMPLATE/
+.github/PULL_REQUEST_TEMPLATE.md
+.github/scripts/
+.github/workflows/issue-contracts.yml
+.github/workflows/pr-metadata.yml
+.github/workflows/standards-update.yml
+.repo-standards/
+operations/
+scripts/validate.mjs
+scripts/validate-issue-contract.mjs
+vendor/
+AGENTS.md
+CONTRIBUTING.md
+LICENSE
+docs/agents/

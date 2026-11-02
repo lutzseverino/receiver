@@ -1,0 +1,32 @@
+---
+// The four channels, by name only: their frequencies are the display's.
+import { format } from "@/i18n/format";
+import { localePath, type Locale } from "@/i18n/locales";
+import { CHANNELS, channelOf } from "@/lib/channels";
+
+type Props = { locale: Locale; path: string };
+
+const { locale, path } = Astro.props;
+const current = channelOf(path);
+---
+
+<nav class="channels" aria-label={format(locale, "common.nav.label")}>
+  <ul>
+    {CHANNELS.map((channel) => (
+      <li>
+        <a
+          href={localePath(locale, channel.path)}
+          aria-current={
+            current?.id !== channel.id
+              ? undefined
+              : path === channel.path
+                ? "page"
+                : "true"
+          }
+        >
+          {format(locale, `common.channel.${channel.id}`)}
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>
