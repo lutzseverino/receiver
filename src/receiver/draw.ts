@@ -96,12 +96,12 @@ export function clip(
     (p >= 1 || hash01(col * 7 + seed, row * 13 + seed) < p);
   const clipped: Grid = {
     ...grid,
-    put(col, row, text, brightness, target, mark) {
+    put(col, row, text, brightness, target, options) {
       if (row < top || row > bottom) return;
-      if (p >= 1) return grid.put(col, row, text, brightness, target, mark);
+      if (p >= 1) return grid.put(col, row, text, brightness, target, options);
       for (let i = 0; i < text.length; i++)
         if (shown(col + i, row))
-          grid.put(col + i, row, text[i]!, brightness, target, mark);
+          grid.put(col + i, row, text[i]!, brightness, target, options);
     },
     region(c0, c1, row, target) {
       if (row >= top && row <= bottom) grid.region(c0, c1, row, target);

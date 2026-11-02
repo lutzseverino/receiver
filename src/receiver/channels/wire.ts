@@ -53,7 +53,8 @@ function listLines(page: Page, width: number): Line[] {
       const title = fit(displayLabel(link.textContent), width - right - 3);
       lines.push({
         segments: [
-          { text: title, brightness: 0.78, target: link },
+          // the titles, as round 13 draws them, are not underlined
+          { text: title, brightness: 0.78, target: link, underline: false },
           { text: " ".repeat(width - title.length - right), brightness: 0 },
           ...(mark ? [{ text: mark, brightness: 0.5 }] : []),
           { text: date, brightness: 0.38 },

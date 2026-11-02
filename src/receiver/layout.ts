@@ -36,14 +36,15 @@ export type Grid = {
   still: boolean;
   /** Draws `text` from cell (`col`, `row`) at `brightness`, 0 to 1; with a
    * `target`, the cells activate that element and show its focus, with the
-   * ► in cell `mark`, by default the one before the text. */
+   * ► in cell `mark`, by default the one before the text. A link's text is
+   * underlined unless `underline` is false. */
   put(
     col: number,
     row: number,
     text: string,
     brightness: number,
     target?: HTMLElement,
-    mark?: number,
+    options?: PutOptions,
   ): void;
   /** Makes cells `c0` to `c1` of `row` activate `target`, drawn or not. */
   region(c0: number, c1: number, row: number, target: HTMLElement): void;
@@ -62,6 +63,9 @@ export type Grid = {
   /** Records that the frame shows `effect`, for the browser tests. */
   saw(effect: string): void;
 };
+
+/** Where a drawn target's focus marker goes, and whether it is underlined. */
+export type PutOptions = { mark?: number; underline?: boolean };
 
 /** What a channel layout may ask of the receiver. */
 export type LayoutContext = {
@@ -103,6 +107,8 @@ export type Segment = {
   text: string;
   brightness: number;
   target?: HTMLElement;
+  /** Whether the text is underlined; a link's is, by default. */
+  underline?: boolean;
 };
 
 /** A line of the generic layout: its segments, or a band of a picture. */

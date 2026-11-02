@@ -259,7 +259,8 @@ export function projectsLayout(context: LayoutContext): ChannelLayout {
         fit(label, L.lw - 2),
         on ? 1 : hot ? 0.8 : 0.55,
         project.open ?? undefined,
-        L.x0,
+        // the list's names, as round 13 draws them, are not underlined
+        { mark: L.x0, underline: false },
       );
       // ON AIR: a dot beside the name, or the words on a phone, under it
       // when they don't fit beside it

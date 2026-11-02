@@ -570,15 +570,8 @@ export function startReceiver({
       hover,
       quiet: now - lastInput,
       still: still(),
-      put: (c, r, text, b, target, mark) =>
-        put(
-          c,
-          r,
-          displayText(text),
-          b,
-          target,
-          mark === undefined ? undefined : { mark },
-        ),
+      put: (c, r, text, b, target, options) =>
+        put(c, r, displayText(text), b, target, options),
       region: (c0, c1, r, target) =>
         regions.push({ c0, c1, r, target, marker: c0 - 1 }),
       plot,
@@ -673,7 +666,10 @@ export function startReceiver({
                   ? 1
                   : Math.max(0.8, segment.brightness)
                 : segment.brightness;
-              put(c, r, segment.text, b, segment.target, { mark: left - 2 });
+              put(c, r, segment.text, b, segment.target, {
+                mark: left - 2,
+                underline: segment.underline,
+              });
               c += segment.text.length;
             }
           }
