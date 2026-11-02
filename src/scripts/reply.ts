@@ -1,7 +1,7 @@
 // The reply page's script: it assembles the email address from the page's
 // encoded mail target, links it, enables COPY, and makes SEND, or Ctrl or
 // Cmd with Enter in the message, open the visitor's mail app
-// (specification lutzseverino/site#4, Email).
+// (specification lutzseverino/receiver#4, Email).
 import { decodeMailTarget, mailUrl } from "../lib/email.ts";
 
 const form = document.querySelector<HTMLFormElement>("form[data-mail]");

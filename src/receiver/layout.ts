@@ -37,7 +37,7 @@ export type Grid = {
   plot(x: number, y: number, brightness: number): void;
 };
 
-/** A channel's own drawing (Draft 6, lutzseverino/site#10): it claims the
+/** A channel's own drawing (Draft 6, lutzseverino/receiver#10): it claims the
  * pages it draws and paints their body on the grid. */
 export interface ChannelLayout {
   claims(page: Page): boolean;

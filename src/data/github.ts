@@ -118,7 +118,7 @@ async function request(
 ): Promise<Response> {
   const headers: Record<string, string> = {
     accept,
-    "user-agent": "lutzseverino-site",
+    "user-agent": "lutzseverino-receiver",
     "x-github-api-version": "2022-11-28",
   };
   if (token) headers.authorization = `Bearer ${token}`;

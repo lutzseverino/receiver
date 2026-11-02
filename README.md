@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>site</h1>
+  <h1>Receiver</h1>
   <p>The source of Jasper Lutz Severino's personal website, for anyone who wants to know who he is and what he works on.</p>
   <p>
     <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-6-3178C6?logo=typescript&amp;logoColor=white" alt="TypeScript 6" /></a>

@@ -1,5 +1,5 @@
 {
-  "name": "@lutzseverino/site",
+  "name": "@lutzseverino/receiver",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@11.28.10",

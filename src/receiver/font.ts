@@ -1,10 +1,10 @@
 // The display's dot font: 5×7 glyphs as five column bytes, bit 0 at the top,
 // as the prototype's round 13 draws them, with the accented letters and marks
 // Spanish and Catalan need from the owner-approved glyph table
-// (lutzseverino/site#8). The display's cells are 5×8, so a glyph that uses the
+// (lutzseverino/receiver#8). The display's cells are 5×8, so a glyph that uses the
 // eighth row, a descender, has an 8-row form in `G8`, which text cells take
 // first; 7-row places, such as big text, take `G`. Typographic punctuation
-// maps to the ASCII forms the font has (specification lutzseverino/site#4,
+// maps to the ASCII forms the font has (specification lutzseverino/receiver#4,
 // D17). Shared by the receiver and the build's glyph coverage check, so it
 // uses nothing either lacks.
 
@@ -104,7 +104,7 @@ const G: Record<string, Glyph> = {
   x: [0x44, 0x28, 0x10, 0x28, 0x44],
   y: [0x0c, 0x50, 0x50, 0x50, 0x3c],
   z: [0x44, 0x64, 0x54, 0x4c, 0x44],
-  // the approved glyph table (lutzseverino/site#8, approved 2026-11-02):
+  // the approved glyph table (lutzseverino/receiver#8, approved 2026-11-02):
   // lowercase keeps the 5×7 body with the accent in rows 0–1; accented
   // capitals are 6 rows with the accent on top, except Ñ, a 5-row N under
   // ñ's two-row wave, the owner's exception
