@@ -4,10 +4,11 @@
 // README lead when there is room, and OPEN, VISIT SITE and SOURCE. On a
 // short display the card drops its inner blank rows and the lead goes, as
 // the owner chose (lutzseverino/receiver#10). The pointer selects a project
-// only when it moves onto one; keyboard focus selects the project it is in. On a phone the list stands
-// alone, each project with its tagline. A project's page shows its hero,
-// its facts, its links and its lead. Moving between the list and a project
-// rewrites the display row by row, the same both ways.
+// only when it moves onto one; keyboard focus selects the project it is in.
+// On a phone the list stands alone, each project with its tagline. A
+// project's page shows its hero, its facts, its links and its lead. Moving
+// between the list and a project rewrites the display row by row, the same
+// both ways.
 import { displayLabel, displayText } from "../font.ts";
 import {
   bigWidth,
@@ -343,7 +344,8 @@ export function projectsLayout(context: LayoutContext): ChannelLayout {
       links.length;
     // where round 13's card would leave the tagline fewer than 2 lines, the
     // card drops its inner blank rows, so its facts and links keep theirs
-    const pad = view - fixed(1) < Math.min(2, allTags.length) ? 0 : 1;
+    const compact = view - fixed(1) < Math.min(2, allTags.length);
+    const pad = compact ? 0 : 1;
     // the tagline gets at most 4 lines, fewer if the rest would not fit
     const tagMost = Math.max(1, Math.min(4, view - fixed(pad)));
     const tagLines =
@@ -386,7 +388,7 @@ export function projectsLayout(context: LayoutContext): ChannelLayout {
     // the lead fills what room there is above the links, two lines or more;
     // a compact card leaves none
     const room = linksAt - 1 - (r + 1);
-    if (project.lead && pad && room >= 2) {
+    if (project.lead && !compact && room >= 2) {
       const lead = wrapText(project.lead, w - 1);
       lead
         .slice(0, room)

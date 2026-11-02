@@ -5,10 +5,10 @@
 // display too short to stack, such as a landscape phone, the name and the
 // addresses stand beside the box. What the visitor types goes into the
 // page's real form, which the box shows; SEND, or Ctrl or Cmd with Enter,
-// opens their mail app. The portrait, dithered at
-// build, arrives by contour, its outline first and then the inside a cell
-// at a time, and the signal dips now and then, one row of it breaking into
-// static for a moment.
+// opens their mail app. The portrait, dithered at build, arrives by
+// contour, its outline first and then the inside a cell at a time, and the
+// signal dips now and then, one row of it breaking into static for a
+// moment.
 import { channel } from "../../lib/channels.ts";
 import { portraitPath } from "../../lib/portrait-files.ts";
 import { displayLabel } from "../font.ts";
@@ -255,8 +255,9 @@ export function replyLayout(context: LayoutContext): ChannelLayout {
        * status. */
       const BOX_ROWS = 4;
       /** The rows under which the box moves beside the text: its frame, its
-       * status and three typed rows; and the fewest cells it then types in. */
+       * status and three typed rows. */
       const SPLIT_ROWS = 6;
+      /** The fewest cells the box beside the text types in. */
       const SPLIT_WIDTH = 16;
 
       // everything is sized to the body, so the page never scrolls; rows
@@ -327,9 +328,9 @@ export function replyLayout(context: LayoutContext): ChannelLayout {
           ),
         ),
       );
-      const sideBox = left + sideWidth + 4;
+      const sideColumn = left + sideWidth + 4;
       const beside =
-        box.r1 - box.r0 + 1 < SPLIT_ROWS && c1 - 1 - sideBox >= SPLIT_WIDTH;
+        box.r1 - box.r0 + 1 < SPLIT_ROWS && c1 - 1 - sideColumn >= SPLIT_WIDTH;
       if (beside) {
         D = 0;
         parts =
@@ -340,7 +341,7 @@ export function replyLayout(context: LayoutContext): ChannelLayout {
           r: Math.max(0, Math.floor((V - textRows(sideWidth, parts)) / 2)),
           w: sideWidth,
         };
-        box = { ic: sideBox, r0: 0, r1: V - 1 };
+        box = { ic: sideColumn, r0: 0, r1: V - 1 };
       }
       // however short the display, the box keeps its rows: what does not fit
       // above it, or beside it, is cut

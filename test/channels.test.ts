@@ -381,6 +381,7 @@ test("short and narrow displays keep every action of projects and reply in view"
       assert.ok(region, `${label} at 1280 × 600`);
       assert.ok(region.row < state.rows.length - 1, `${label} above the bar`);
     }
+    // the card's name stands alone on its row, right of the list's column
     const name = state.rows.findIndex((row) =>
       /^ {20,}REPO STANDARDS *$/.test(row),
     );
@@ -426,5 +427,8 @@ test("short and narrow displays keep every action of projects and reply in view"
       assert.match(text(state), new RegExp(`line ${word}`));
     assert.ok(state.regions.some((region) => region.text === "SEND ►"));
     assert.ok(state.regions.some((region) => region.text === "COPY"));
+    assert.ok(
+      state.regions.some((region) => region.text === "github.com/lutzseverino"),
+    );
   });
 });
