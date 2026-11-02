@@ -208,6 +208,23 @@ footer {
   color: var(--dim);
   font-family: var(--font-mono);
 }
+/* An untranslated post's EN mark, and a post's date and reading time. */
+.entries .language {
+  margin-inline-start: 0.5em;
+  color: var(--dim);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+.meta {
+  color: var(--dim);
+  font-family: var(--font-mono);
+}
+/* A post's images are dithered to the display's dots: they scale without
+   smoothing. */
+article img {
+  image-rendering: pixelated;
+}
 
 /* Projects: the ON AIR mark, a project's facts and its links. */
 .on-air {

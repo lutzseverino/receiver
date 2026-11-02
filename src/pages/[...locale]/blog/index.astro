@@ -1,9 +1,12 @@
 ---
-// The wire: every post, newest first, or NO TRAFFIC.
+// The wire: every post, newest first, grouped under its year, with its date,
+// or NO TRAFFIC. On the `es` and `ca` wires, a post without a translation is
+// listed in English, marked EN, and links to the English page.
 import { loadPosts, wirePosts } from "@/data/posts";
 import { format } from "@/i18n/format";
 import {
   DEFAULT_LOCALE,
+  LOCALE_NAMES,
   PSEUDO_LOCALE,
   localePath,
   localeRoutes,
@@ -11,6 +14,7 @@ import {
 } from "@/i18n/locales";
 import Base from "@/layouts/Base.astro";
 import { channel } from "@/lib/channels";
+import { byYear, wireDate } from "@/lib/wire";
 
 export function getStaticPaths() {
   return localeRoutes();
@@ -33,21 +37,34 @@ const posts = wirePosts(await loadPosts(), siteLocale);
   {posts.length === 0 ? (
     <p class="empty">{format(locale, "wire.empty")}</p>
   ) : (
-    <ul class="entries">
-      {posts.map((post) => (
-        <li lang={post.locale === siteLocale ? undefined : post.locale}>
-          <a
-            href={localePath(
-              post.locale,
-              `${channel("wire").path}${post.slug}/`,
-            )}
-            hreflang={post.locale === siteLocale ? undefined : post.locale}
-          >
-            {post.title}
-          </a>
-          <time datetime={post.date}>{post.date}</time>
-        </li>
-      ))}
-    </ul>
+    byYear(posts).map(([year, listed]) => (
+      <section class="year">
+        <h2>{year}</h2>
+        <ul class="entries">
+          {listed.map((post) => {
+            const foreign = post.locale !== siteLocale;
+            return (
+              <li lang={foreign ? post.locale : undefined}>
+                <a
+                  href={localePath(
+                    post.locale,
+                    `${channel("wire").path}${post.slug}/`,
+                  )}
+                  hreflang={foreign ? post.locale : undefined}
+                >
+                  {post.title}
+                </a>
+                {foreign && (
+                  <abbr class="language" title={LOCALE_NAMES[post.locale]}>
+                    {format(locale, "wire.english")}
+                  </abbr>
+                )}
+                <time datetime={post.date}>{wireDate(locale, post.date)}</time>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    ))
   )}
 </Base>

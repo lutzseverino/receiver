@@ -1,6 +1,6 @@
 // The built site, for the tests that read or serve it: one production build
-// per test file, from the projects fixture, into a temporary folder under
-// `node_modules/`, removed when the file's process exits.
+// per test file and posts folder, from the projects fixture, into a temporary
+// folder under `node_modules/`, removed when the file's process exits.
 import { mkdtempSync, readFileSync, readdirSync, rmSync } from "node:fs";
 import { createServer, type Server } from "node:http";
 import type { AddressInfo } from "node:net";
@@ -19,23 +19,45 @@ export type BuiltSite = {
   read(file: string): string;
 };
 
-let built: Promise<BuiltSite> | undefined;
+/** The test posts, which only a test's build publishes. */
+export const FIXTURE_POSTS = path.join(root, "test/fixtures/posts/");
 
-export function builtSite(): Promise<BuiltSite> {
-  return (built ??= (async () => {
-    const dir = mkdtempSync(path.join(root, "node_modules/.site-build-"));
-    process.on("exit", () => rmSync(dir, { recursive: true, force: true }));
-    await build({ root, outDir: dir, logLevel: "error" });
-    const pages = readdirSync(dir, { recursive: true, encoding: "utf8" })
-      .map((file) => file.split(path.sep).join("/"))
-      .filter((file) => file.endsWith(".html"))
-      .sort();
-    return {
-      dir,
-      pages,
-      read: (file) => readFileSync(path.join(dir, file), "utf8"),
-    };
-  })());
+const built = new Map<string, Promise<BuiltSite>>();
+
+/** The site built for production, or with `posts`, a folder of test posts,
+ * in place of the published ones. */
+export function builtSite({
+  posts,
+}: { posts?: string } = {}): Promise<BuiltSite> {
+  const key = posts ?? "";
+  let site = built.get(key);
+  if (!site) {
+    site = buildSite(posts);
+    built.set(key, site);
+  }
+  return site;
+}
+
+async function buildSite(posts: string | undefined): Promise<BuiltSite> {
+  const dir = mkdtempSync(path.join(root, "node_modules/.site-build-"));
+  process.on("exit", () => rmSync(dir, { recursive: true, force: true }));
+  await build({
+    root,
+    outDir: dir,
+    logLevel: "error",
+    ...(posts && {
+      vite: { define: { __POSTS_DIRECTORY__: JSON.stringify(posts) } },
+    }),
+  });
+  const pages = readdirSync(dir, { recursive: true, encoding: "utf8" })
+    .map((file) => file.split(path.sep).join("/"))
+    .filter((file) => file.endsWith(".html"))
+    .sort();
+  return {
+    dir,
+    pages,
+    read: (file) => readFileSync(path.join(dir, file), "utf8"),
+  };
 }
 
 /** The URL path a built page is served at: `es/projects/index.html` at

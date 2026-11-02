@@ -33,5 +33,14 @@ export default defineConfig({
   compressHTML: true,
   prefetch: false,
   integrations: [react(), noSignalPages],
-  vite: { plugins: [tailwindcss()] },
+  vite: {
+    plugins: [tailwindcss()],
+    // the published posts' folder (src/data/posts.ts); only a test's build
+    // points it elsewhere
+    define: {
+      __POSTS_DIRECTORY__: JSON.stringify(
+        fileURLToPath(new URL("./posts/", import.meta.url)),
+      ),
+    },
+  },
 });

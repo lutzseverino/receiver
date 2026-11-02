@@ -27,7 +27,8 @@ npm ci --ignore-scripts --prefix .repo-standards/runtime
 ```
 
 The site uses these tools: Astro 7 with React 19 for static rendering,
-Tailwind CSS 4 and shadcn CLI 4 (Base UI) for the form controls, TypeScript 6
+Tailwind CSS 4 and shadcn CLI 4 (Base UI) for the form controls, mdast and
+sharp for the posts' Markdown and their build-time dithered images, TypeScript 6
 checked with `astro check`, oxlint 1, Prettier 3 with
 `prettier-plugin-astro`, Node's test runner, `node --test`, and axe-core for
 the accessibility audit. Commands, from the repository root:
@@ -102,6 +103,13 @@ rules, and exercise the reply page's script and the first-visit language
 redirect. The audit serves the pages with a content security policy that
 stops their scripts, since axe needs the tab's timers.
 
+The production build has no posts, as the site launches. `wire.test.ts`
+builds the site a second time from the test posts in `test/fixtures/posts/`
+and checks the wire, the post pages, their dithered image and the feeds,
+parsing each feed as XML in the browser, and that the production build holds
+none of them. `posts.test.ts` checks each construct a post may and may not use,
+the front matter, translations, reading time and the dithering itself.
+
 ## Translations
 
 The site follows repo-standards.com's model, its
@@ -125,6 +133,38 @@ owner reviews the three languages of every interface string before merge.
 The development server also serves a pseudo-locale, `en-XA`, under `/en-xa/`:
 every text wrapped in `⟦ ⟧` and padded by about 30%, so text that skipped the
 catalogs or overflows its box shows. It is never built.
+
+## Posts
+
+A post is a Markdown file in `posts/`, published when it merges: there is no
+draft flag. `<slug>.md` is the post, in English; `<slug>.es.md` and
+`<slug>.ca.md` are its optional translations. Every file opens with the same
+front matter, and a translation keeps its post's date:
+
+```markdown
+---
+title: Long wave
+date: 2026-10-28
+summary: One sentence for the feed and the page's description.
+tags: [design]
+---
+```
+
+A post may use paragraphs, headings, unordered and ordered lists, block
+quotes, fenced code blocks, links and images, with emphasis, strong and inline
+code; the display draws those last three as plain text. Anything else, such as
+a table, a footnote, raw HTML, a nested list or an indented code block, fails
+the build, naming the file, the construct and its line. An image is a file
+beside the posts, such as `![The dial at night](./images/dial.png)`; the build
+dithers it to the display's two colours at the size the display shows it and
+serves it at `/blog/<slug>/<name>.png`. The wire's interface text, the empty
+state, the EN mark, the month abbreviations and the reading time, is in the
+`wire` catalogs.
+
+Each language has an RSS 2.0 feed at `/rss.xml`, `/es/rss.xml` and
+`/ca/rss.xml`, with the posts its wire lists in full; every page's head links
+its language's feed. Tests build the site from `test/fixtures/posts/` through
+`builtSite({ posts })` in `test/support/site.ts`; no other build reads them.
 
 ## Generated shadcn source
 

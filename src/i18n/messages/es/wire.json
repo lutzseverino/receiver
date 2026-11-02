@@ -2,5 +2,69 @@
   "empty": {
     "message": "SIN TRÁFICO",
     "source": "ab644331"
+  },
+  "english": {
+    "message": "EN",
+    "source": "69374b09"
+  },
+  "date": {
+    "message": "{$day} {$month}",
+    "source": "31bc84e3"
+  },
+  "date.full": {
+    "message": "{$day} {$month} {$year}",
+    "source": "e6a3e558"
+  },
+  "reading-time": {
+    "message": "{$minutes} MIN",
+    "source": "215bd76c"
+  },
+  "month.jan": {
+    "message": "ENE",
+    "source": "a9b687bc"
+  },
+  "month.feb": {
+    "message": "FEB",
+    "source": "1c429b61"
+  },
+  "month.mar": {
+    "message": "MAR",
+    "source": "8904c61a"
+  },
+  "month.apr": {
+    "message": "ABR",
+    "source": "4bc04668"
+  },
+  "month.may": {
+    "message": "MAY",
+    "source": "8f0e1fea"
+  },
+  "month.jun": {
+    "message": "JUN",
+    "source": "6eeb2fdb"
+  },
+  "month.jul": {
+    "message": "JUL",
+    "source": "482bf63a"
+  },
+  "month.aug": {
+    "message": "AGO",
+    "source": "b208119d"
+  },
+  "month.sep": {
+    "message": "SEP",
+    "source": "b6cb1069"
+  },
+  "month.oct": {
+    "message": "OCT",
+    "source": "08f2e117"
+  },
+  "month.nov": {
+    "message": "NOV",
+    "source": "dd730736"
+  },
+  "month.dec": {
+    "message": "DIC",
+    "source": "a04f893c"
   }
 }

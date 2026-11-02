@@ -1,4 +1,4 @@
-// The channels, the empty post data the pages read until Draft 3 fills it,
+// The channels, the published posts, of which the site launches with none,
 // the posts each wire lists, and the analytics beacon. The projects are
 // projects.test.ts's.
 import assert from "node:assert/strict";
@@ -27,6 +27,8 @@ const post = (slug: string, locale: Post["locale"], date: string): Post => ({
   summary: "",
   tags: [],
   body: "",
+  minutes: 1,
+  images: [],
   locales: ["en"],
 });
 
