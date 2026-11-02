@@ -3,6 +3,8 @@ import { readdir, readFile, writeFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { fromHtml } from "hast-util-from-html";
 import { toMdast } from "hast-util-to-mdast";
+import { fromMarkdown } from "mdast-util-from-markdown";
+import { visit } from "unist-util-visit";
 import { toMarkdown } from "mdast-util-to-markdown";
 import type { Element, Root, RootContent } from "hast";
 import sharp from "sharp";
@@ -37,7 +39,7 @@ const escapeXml = (value: string) =>
 
 /** Render text with the display's 5×8 glyphs, blue round dots on dark.
  * Cards take the page's HTML content, never a separately maintained caption. */
-function displaySvg(main: Element): string {
+async function displaySvg(main: Element, root: string): Promise<string> {
   const { document, HTMLElement, Node } = parseHTML(
     `<html><body>${toHtml(main)}</body></html>`,
   );
@@ -59,6 +61,18 @@ function displaySvg(main: Element): string {
   }
   let dots = "";
   for (const [row, line] of lines.slice(0, 22).entries()) {
+    if (line.image) {
+      const { element, width, height } = line.image;
+      const pixels = await sharp(path.join(root, element.getAttribute("src")!))
+        .resize(width, height)
+        .removeAlpha()
+        .raw()
+        .toBuffer();
+      for (let y = 0; y < height && row * 24 + y * 3 < 550; y++)
+        for (let x = 0; x < width; x++)
+          if (pixels[(y * width + x) * 3] > 100)
+            dots += `<circle cx="${36 + x * 3}" cy="${42 + row * 24 + y * 3}" r="1.15"/>`;
+    }
     let col = 0;
     for (const segment of line.segments) {
       for (const ch of displayText(segment.text)) {
@@ -123,7 +137,22 @@ export async function buildDiscovery(
         ),
         "utf8",
       );
-      markdown = `# ${english.title}\n\n${source.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, "").replace(/\]\(\.\/images\//g, `](${absolute(`/blog/${slug}/`)}`)}`;
+      const body = fromMarkdown(
+        source.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, ""),
+      );
+      visit(body, (node) => {
+        if (
+          node.type === "link" ||
+          node.type === "image" ||
+          node.type === "definition"
+        ) {
+          const url = node.url.startsWith("./images/")
+            ? node.url.replace("./images/", "./")
+            : node.url;
+          node.url = new URL(url, english.url).href;
+        }
+      });
+      markdown = `# ${english.title}\n\n${toMarkdown(body)}`;
     } else if (contact) {
       markdown = `# Reply\n\nWrite to ${OWNER_NAME} through the [reply page](${absolute("/contact/")}).\n`;
     } else {
@@ -140,7 +169,7 @@ export async function buildDiscovery(
       : page.main;
     await write(
       cardPath(page.pathname),
-      await sharp(Buffer.from(displaySvg(cardMain)))
+      await sharp(Buffer.from(await displaySvg(cardMain, root)))
         .png()
         .toBuffer(),
     );
@@ -173,7 +202,7 @@ export async function buildDiscovery(
   );
   await write(
     "llms.txt",
-    `# ${OWNER_NAME}\n\nPersonal website: software projects, writing on the Wire, and replies through [contact](${absolute("/contact/")}).\n\nSpanish: /es/; Catalan: /ca/. Markdown alternates stay English.\n\n## Pages and Markdown alternates\n\n${pages.map((p) => `- [${p.title}](${p.url}): [Markdown](${absolute(markdownPath(p.pathname))})`).join("\n")}\n\n## Feeds\n\n${LOCALES.map((l) => `- [${l} RSS](${absolute(l === "en" ? "/rss.xml" : `/${l}/rss.xml`)})`).join("\n")}\n`,
+    `# ${OWNER_NAME}\n\nPersonal website: software projects, writing on the Wire, and replies through [contact](${absolute("/contact/")}).\n\nSpanish: /es/; Catalan: /ca/. Markdown alternates stay English.\n\n## Pages and Markdown alternates\n\n${pages.map((p) => `- [${pages.find((english) => english.pathname === defaultPath(p.pathname))!.title}](${p.url}): [Markdown](${absolute(markdownPath(p.pathname))})`).join("\n")}\n\n## Feeds\n\n${LOCALES.map((l) => `- [${l} RSS](${absolute(l === "en" ? "/rss.xml" : `/${l}/rss.xml`)})`).join("\n")}\n`,
   );
   const iconDots = glyph8("R")
     .flatMap((bits, x) =>

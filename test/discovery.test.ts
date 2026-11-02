@@ -1,4 +1,4 @@
-// Discovery is tested at the published-file boundary (receiver#11).
+// Discovery is tested at the published-file boundary (lutzseverino/receiver#11).
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { builtSite, FIXTURE_POSTS } from "./support/site.ts";
@@ -28,6 +28,12 @@ test("discovery files cover routes and protect the reply address in all forms", 
     /User-agent: \*\nAllow: \/\nSitemap: https:\/\/lutzseverino.com\/sitemap.xml/,
   );
   assert.match(llms, /\/es\/.*\/ca\//);
+  assert.ok(!llms.includes("Proyectos"));
+  assert.ok(!llms.includes("Projectes"));
+  assert.match(
+    site.read("blog/long-wave.md"),
+    /https:\/\/lutzseverino.com\/blog\/short-note\//,
+  );
   const encoded: string[] = [];
   for (const file of site.pages) {
     const doc = fromHtml(site.read(file));
