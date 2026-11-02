@@ -6,7 +6,7 @@
 // keeps its real element as its target, which a click on the display
 // activates and whose focus the display marks with ►.
 import type { Channel } from "../lib/channels.ts";
-import { displayText } from "./font.ts";
+import { displayLabel, displayText } from "./font.ts";
 
 /** The page the display shows: its HTML layer's `main`, its path in the
  * default locale, its channel, and whether it is NO SIGNAL. */
@@ -162,9 +162,7 @@ function inline(
       case "BUTTON": {
         const button = child as HTMLButtonElement;
         segments.push({
-          text: `[${displayText(button.textContent ?? "")
-            .trim()
-            .toUpperCase()}]`,
+          text: `[${displayLabel(button.textContent)}]`,
           brightness: button.disabled ? 0.35 : 0.9,
           target: button,
         });

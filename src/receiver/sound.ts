@@ -87,7 +87,7 @@ export class Sound {
     this.#osc.start();
   }
 
-  /** Static and a whistle that fall away as a station, `distance` MHz off,
+  /** Static and a whistle that fall away as a channel, `distance` MHz off,
    * comes in. */
   tune(distance: number) {
     const ctx = this.#ctx;

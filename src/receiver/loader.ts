@@ -13,9 +13,11 @@ function offerDisplay() {
   if (button) button.hidden = false;
 }
 
-function load() {
+function load(intro: boolean) {
   import("./receiver.ts")
-    .then(({ startReceiver }) => startReceiver({ onPlain: offerDisplay }))
+    .then(({ startReceiver }) =>
+      startReceiver({ onPlain: offerDisplay, intro }),
+    )
     // a receiver that fails to load or start leaves the plain page
     .catch(() => {});
 }
@@ -27,9 +29,10 @@ document.addEventListener("click", (event) => {
   ) {
     settings.setPlain(false);
     displayButton()!.hidden = true;
-    load();
+    // the display comes back as it was, without a page load's intro
+    load(false);
   }
 });
 
 if (settings.plain()) offerDisplay();
-else requestAnimationFrame(() => setTimeout(load));
+else requestAnimationFrame(() => setTimeout(() => load(true)));

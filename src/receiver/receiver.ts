@@ -12,7 +12,7 @@
 // hidden.
 import { defaultPath, DEFAULT_LOCALE } from "../i18n/locales.ts";
 import { CHANNELS, channelOf, type Channel } from "../lib/channels.ts";
-import { displayText, glyph, glyph8, signal } from "./font.ts";
+import { displayLabel, displayText, glyph, glyph8, signal } from "./font.ts";
 import {
   textLines,
   type ChannelLayout,
@@ -21,15 +21,15 @@ import {
   type Page,
 } from "./layout.ts";
 import {
-  createScreen,
+  createTube,
   hash01,
   scratches,
   Texture,
   toDisplay,
   fromDisplay,
   CURVE,
-  type Screen,
-} from "./screen.ts";
+  type Tube,
+} from "./tube.ts";
 import { settings } from "./settings.ts";
 import { Sound } from "./sound.ts";
 
@@ -38,6 +38,9 @@ export type Options = {
   layouts?: readonly ChannelLayout[];
   /** Called after the visitor chooses PLAIN and the display stops. */
   onPlain: () => void;
+  /** Whether the intro runs: on a full page load, not when the visitor
+   * turns the display back on from the plain page. */
+  intro?: boolean;
 };
 
 /** What the display shows, for the browser tests: a seam, not an API. */
@@ -49,7 +52,7 @@ export type Inspection = {
   /** The focused element's marker, if the display shows it. */
   marker: { row: number; col: number } | null;
   /** What a click on the display activates: each drawn link or control,
-   * its text, and the point on the screen at its middle. */
+   * its text, and the point in the window at its middle. */
   regions: {
     text: string;
     row: number;
@@ -86,6 +89,10 @@ const frequencyOf = (channel: Channel | undefined) =>
 const presetOf = (channel: Channel | undefined) =>
   channel ? CHANNELS.indexOf(channel) + 1 : 0;
 
+/** The grid's geometry, in the prototype's terms: the window's size `W`
+ * by `H`, the dot pitch `p`, the gaps between cells `gx` and `gy`, a cell's
+ * width `cw` and height `chh`, the grid's `cols` and `rows` from its origin
+ * (`ox`, `oy`), and its `n` cells. */
 type Cells = {
   W: number;
   H: number;
@@ -134,16 +141,17 @@ type Intro = {
 export function startReceiver({
   layouts = [],
   onPlain,
+  intro: powerOn = true,
 }: Options): Receiver | null {
   const canvas = document.createElement("canvas");
-  let screen: Screen | null;
+  let tube: Tube | null;
   try {
-    screen = createScreen(canvas);
+    tube = createTube(canvas);
   } catch {
-    screen = null;
+    tube = null;
   }
-  if (!screen) return null;
-  const gl: Screen = screen;
+  if (!tube) return null;
+  const gl: Tube = tube;
 
   const root = document.documentElement;
   const display = document.createElement("div");
@@ -188,6 +196,9 @@ export function startReceiver({
   let rowsText: string[] = [];
   let marker: Inspection["marker"] = null;
   let stopped = false;
+  /** The address of the page the display shows, less its fragment. */
+  let shown = location.pathname + location.search;
+  const introRunning = () => intro !== null || reveal !== Infinity;
   const seen = new Set<string>();
   const view = {
     px: 0,
@@ -224,11 +235,7 @@ export function startReceiver({
   /** The channel's name, as the header and the channel bar show it. */
   const channelName = (channel: Channel | undefined) =>
     channel
-      ? displayText(
-          channelLinks()[CHANNELS.indexOf(channel)]?.textContent ?? "",
-        )
-          .trim()
-          .toUpperCase()
+      ? displayLabel(channelLinks()[CHANNELS.indexOf(channel)]?.textContent)
       : "";
 
   // ---- the grid ----
@@ -335,25 +342,24 @@ export function startReceiver({
     );
     const languageWidth = codes.join(sep).length;
     const soundButton = control("sound");
-    const soundText = displayText(
-      (sound.on ? soundButton?.dataset.on : soundButton?.dataset.off) ?? "",
-    ).toUpperCase();
+    const soundText = displayLabel(
+      sound.on ? soundButton?.dataset.on : soundButton?.dataset.off,
+    );
     const plainButton = control("plain");
-    const plainText = displayText(plainButton?.textContent ?? "")
-      .trim()
-      .toUpperCase();
-    // the scroll indicator, `100%`, always has its room
+    const plainText = displayLabel(plainButton?.textContent);
+    // the scroll indicator, PLAIN, the language label and SOUND on one row
     const single =
-      1 +
-        languageWidth +
-        2 +
-        4 +
-        2 +
-        plainText.length +
-        2 +
-        soundText.length +
-        1 <=
-      cells.cols;
+      [
+        1,
+        4,
+        2,
+        plainText.length,
+        3,
+        languageWidth,
+        2,
+        soundText.length,
+        1,
+      ].reduce((total, width) => total + width) <= cells.cols;
     return {
       languages,
       codes,
@@ -636,10 +642,24 @@ export function startReceiver({
     const paintBar = () => {
       const b = bar();
       const r = rows - 1;
-      // the language label at the left, SOUND at the right, and PLAIN beside
-      // SOUND, or with the scroll indicator on the row above when narrow;
-      // every item keeps a free cell before it for the focus marker
-      let c = 1;
+      // the language label beside SOUND, at the right; PLAIN beside them, or
+      // with the scroll indicator on the row above when narrow. Every item
+      // keeps a free cell before it for the focus marker.
+      const gap = b.languageWidth + 2 + b.soundText.length + 2 <= cols ? 2 : 1;
+      const soundAt = Math.max(
+        1 + b.languageWidth + gap,
+        cols - 1 - b.soundText.length,
+      );
+      if (b.soundButton)
+        put(
+          soundAt,
+          r,
+          b.soundText,
+          hover === b.soundButton ? 0.85 : sound.on ? 0.7 : 0.35,
+          b.soundButton,
+        );
+      const languageAt = soundAt - gap - b.languageWidth;
+      let c = languageAt;
       b.languages.forEach((link, i) => {
         if (i > 0) {
           put(c, r, b.sep, 0.4);
@@ -658,17 +678,8 @@ export function startReceiver({
         );
         c += b.codes[i]!.length;
       });
-      const soundAt = Math.max(c + 1, cols - 1 - b.soundText.length);
-      if (b.soundButton)
-        put(
-          soundAt,
-          r,
-          b.soundText,
-          hover === b.soundButton ? 0.85 : sound.on ? 0.7 : 0.35,
-          b.soundButton,
-        );
       const r2 = b.single ? r : r - 1;
-      const plainAt = b.single ? soundAt - 2 - b.plainText.length : 1;
+      const plainAt = b.single ? languageAt - 3 - b.plainText.length : 1;
       if (b.plainButton)
         put(
           plainAt,
@@ -678,15 +689,10 @@ export function startReceiver({
           b.plainButton,
         );
       // how far down the page is read
-      const shown = bodyRows();
-      if (!noise && lines.length > shown) {
-        const text = `${String(Math.round((scroll / (lines.length - shown)) * 100)).padStart(3)}%`;
-        put(
-          b.single ? plainAt - 2 - text.length : cols - 1 - text.length,
-          r2,
-          text,
-          0.45,
-        );
+      const shownRows = bodyRows();
+      if (!noise && lines.length > shownRows) {
+        const text = `${String(Math.round((scroll / (lines.length - shownRows)) * 100)).padStart(3)}%`;
+        put(b.single ? 1 : cols - 1 - text.length, r2, text, 0.45);
       }
     };
 
@@ -985,9 +991,7 @@ export function startReceiver({
     });
     const text = page.signal
       ? channelName(page.channel)
-      : displayText(page.main.querySelector("h1")?.textContent ?? "")
-          .trim()
-          .toUpperCase();
+      : displayLabel(page.main.querySelector("h1")?.textContent);
     const order = [...text].map(() => Math.random() * 0.85);
     await tween(650, (t) => {
       state.name = {
@@ -1001,7 +1005,7 @@ export function startReceiver({
         brightness: 1,
       };
     });
-    // the frequency dissolves into the station in blocks
+    // the frequency dissolves into the channel in blocks
     const fs = fixed(target);
     await tween(450, (t) => {
       state.big = [{ text: fs, p: 1 - t, seed: 1 }];
@@ -1026,7 +1030,7 @@ export function startReceiver({
   }
 
   function skip() {
-    if (intro || reveal !== Infinity) skipping = true;
+    if (introRunning()) skipping = true;
   }
 
   // ---- tuning ----
@@ -1131,6 +1135,7 @@ export function startReceiver({
       if (old && fresh) old.replaceWith(document.importNode(fresh, true));
     }
     if (push) history.pushState(null, "", url.href);
+    shown = location.pathname + location.search;
     page = readPage();
     for (const script of scripts) {
       const run = document.createElement("script");
@@ -1210,7 +1215,7 @@ export function startReceiver({
     "keydown",
     (event) => {
       sound.gesture();
-      if (intro || reveal !== Infinity) {
+      if (introRunning()) {
         if (!["Shift", "Control", "Alt", "Meta"].includes(event.key)) skip();
         return;
       }
@@ -1328,9 +1333,13 @@ export function startReceiver({
     listen,
   );
 
+  // back and forward tune, unless they only move within the page shown
   addEventListener(
     "popstate",
-    () => void tune(new URL(location.href), false),
+    () => {
+      if (location.pathname + location.search !== shown)
+        void tune(new URL(location.href), false);
+    },
     listen,
   );
 
@@ -1455,7 +1464,7 @@ export function startReceiver({
   }
 
   const inspect = (): Inspection => ({
-    state: intro || reveal !== Infinity ? "intro" : tuning ? "tuning" : "idle",
+    state: introRunning() ? "intro" : tuning ? "tuning" : "idle",
     frequency,
     rows: rowsText,
     marker,
@@ -1491,8 +1500,10 @@ export function startReceiver({
     return null;
   }
   syncControls();
-  introDone = runIntro().finally(() => {
-    skipping = false;
-  });
+  introDone = (powerOn ? runIntro() : Promise.resolve(compose())).finally(
+    () => {
+      skipping = false;
+    },
+  );
   return { stop };
 }

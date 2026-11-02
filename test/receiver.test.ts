@@ -475,7 +475,7 @@ test("tuning to a missing page shows NO SIGNAL at the requested address, in the 
   }
 });
 
-test("a failed fetch falls back to a normal navigation", async () => {
+test("when the next page can't be fetched, the browser loads it itself", async () => {
   const tab = await open("/", { width: 1280 });
   await skipIntro(tab);
   await tab.evaluate(() => {
@@ -569,7 +569,8 @@ test("PLAIN, sound and the language persist across a reload", async () => {
   await tab.evaluate(() =>
     document.querySelector<HTMLElement>('[data-control="display"]')!.click(),
   );
-  await running(tab);
+  // it comes back as it was, without the intro a page load runs
+  assert.equal((await running(tab)).state, "idle");
   await tab.goto(`${origin}/ca/`);
   await running(tab);
   await tab.close();
@@ -648,12 +649,10 @@ test("the receiver's JavaScript is under 80 KB gzipped", () => {
   // every script a page loads, and every chunk those import
   const files = new Set<string>();
   const follow = (code: string) => {
-    for (const [, file] of code.matchAll(/\/_astro\/([\w.-]+\.js)/g))
-      if (!files.has(file!)) {
-        files.add(file!);
-        follow(readFileSync(path.join(site.dir, "_astro", file!), "utf8"));
-      }
-    for (const [, file] of code.matchAll(/["'`]\.\/([\w.-]+\.js)["'`]/g))
+    // `/_astro/<file>` from a page, `./<file>` from a chunk
+    for (const [, file] of code.matchAll(
+      /(?:\/_astro\/|["'`]\.\/)([\w.-]+\.js)/g,
+    ))
       if (!files.has(file!)) {
         files.add(file!);
         follow(readFileSync(path.join(site.dir, "_astro", file!), "utf8"));

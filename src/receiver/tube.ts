@@ -1,7 +1,7 @@
-// The display's screen, as the prototype's round 13 renders it: one WebGL
+// The display's VFD tube, as the prototype's round 13 renders it: one WebGL
 // pass bends the dot matrix, drawn on 2D canvases, onto a gently curved
-// screen (curve k .03) behind a scratched, smoked acrylic cover that reflects
-// streetlights and lights its scratches where the dots shine. `createScreen`
+// glass (curve k .03) behind a scratched, smoked acrylic cover that reflects
+// streetlights and lights its scratches where the dots shine. `createTube`
 // returns `null` where WebGL is unavailable, and throws where its shader
 // fails, so the receiver leaves the plain page in place.
 
@@ -66,7 +66,7 @@ void main() {
 export const Texture = { Lit: 0, Ghost: 1, Scratch: 2, Light: 3 } as const;
 type Unit = (typeof Texture)[keyof typeof Texture];
 
-export type Screen = {
+export type Tube = {
   upload(unit: Unit, source: TexImageSource): void;
   draw(frame: {
     width: number;
@@ -77,7 +77,7 @@ export type Screen = {
   }): void;
 };
 
-export function createScreen(canvas: HTMLCanvasElement): Screen | null {
+export function createTube(canvas: HTMLCanvasElement): Tube | null {
   const gl = canvas.getContext("webgl", {
     antialias: false,
     alpha: false,
@@ -154,7 +154,7 @@ export function createScreen(canvas: HTMLCanvasElement): Screen | null {
   };
 }
 
-/** Screen pixel to display pixel: the projection and curve the shader
+/** Window pixel to display pixel: the projection and curve the shader
  * applies, for finding what the pointer is over. */
 export function toDisplay(
   x: number,
@@ -284,7 +284,7 @@ export function scratches(width: number, height: number): HTMLCanvasElement {
   return canvas;
 }
 
-/** Display pixel to screen pixel: `toDisplay` undone, by a few steps of
+/** Display pixel to window pixel: `toDisplay` undone, by a few steps of
  * fixed-point iteration, which the gentle curve lets converge. */
 export function fromDisplay(
   x: number,

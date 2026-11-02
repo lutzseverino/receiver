@@ -180,6 +180,13 @@ export function displayText(text: string): string {
     .replace(/\s+/g, " ");
 }
 
+/** An element's text as a label the display draws: in capitals, trimmed. */
+export function displayLabel(text: string | null | undefined): string {
+  return displayText(text ?? "")
+    .trim()
+    .toUpperCase();
+}
+
 const own = (ch: string): Glyph | undefined =>
   Object.hasOwn(G, ch) ? G[ch] : undefined;
 

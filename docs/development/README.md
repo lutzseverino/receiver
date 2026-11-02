@@ -100,14 +100,7 @@ Protocol over Node's own WebSocket (`test/support/browser.ts`), with no
 browser package. They check every page without JavaScript at 320, 360 and
 390 px and on a desktop, audit every page with axe-core's WCAG 2.2 A and AA
 rules, and exercise the reply page's script and the first-visit language
-redirect. `receiver.test.ts` drives the receiver on the display, which the
-headless browser draws with software WebGL: the intro and its skipping,
-tuning and history, the keyboard and the pointer, NO SIGNAL, reduced motion,
-the plain page without WebGL, the remembered settings in every storage state,
-the loop's sleep, the 80 KB gzipped budget for the site's JavaScript, and the
-audit with the display running. It reads what the display draws through the
-display element's `inspect()`. `glyphs.test.ts` covers the font's punctuation
-mapping and the build's glyph coverage check. The audit serves the pages with a content security policy that
+redirect. The audit serves the pages with a content security policy that
 stops their scripts, since axe needs the tab's timers.
 
 The production build has no posts, as the site launches. `wire.test.ts`
@@ -116,6 +109,15 @@ and checks the wire, the post pages, their dithered image and the feeds,
 parsing each feed as XML in the browser, and that the production build holds
 none of them. `posts.test.ts` checks each construct a post may and may not use,
 the front matter, translations, reading time and the dithering itself.
+
+`receiver.test.ts` drives the receiver on the display, which the headless
+browser draws with software WebGL: the intro and its skipping, tuning and
+history, the keyboard and the pointer, NO SIGNAL, reduced motion, the plain
+page without WebGL, the remembered settings in every storage state, the
+loop's sleep, the 80 KB gzipped budget for the site's JavaScript, and the
+audit with the display running. It reads what the display draws through the
+display element's `inspect()`. `glyphs.test.ts` covers the font's
+punctuation mapping and the build's glyph coverage check.
 
 ## Translations
 
