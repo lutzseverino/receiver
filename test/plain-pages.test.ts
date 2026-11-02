@@ -97,3 +97,20 @@ test("the audit finds a violation where there is one", async () => {
   await tab.close();
   assert.ok(violations.some((violation) => violation.startsWith("image-alt:")));
 });
+
+test("the audit waits for the page's transitions to settle", async () => {
+  // as the reply script enables SEND, which fades in from half opacity
+  const tab = await browser.open(`${scriptless}/`, { width: 1280 });
+  await tab.evaluate(() => {
+    const button = document.createElement("button");
+    button.textContent = "Send";
+    button.style.opacity = "0.5";
+    document.querySelector("main")!.append(button);
+    button.getBoundingClientRect();
+    button.style.transition = "opacity 2s";
+    button.style.opacity = "1";
+  });
+  const violations = await audit(tab);
+  await tab.close();
+  assert.deepEqual(violations, []);
+});
