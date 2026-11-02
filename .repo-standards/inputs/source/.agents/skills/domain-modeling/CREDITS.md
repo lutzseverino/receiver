@@ -1,0 +1,5 @@
+# Credits
+
+This skill is Repo Canon's own, taken from the `domain-modeling` skill in [Matt Pocock's skills](https://github.com/mattpocock/skills). Its upstream base is tag `v1.3.1`, commit `24fe0ef7737efae15c87225755e9f6f5965e4888`, at [`skills/engineering/domain-modeling`](https://github.com/mattpocock/skills/tree/24fe0ef7737efae15c87225755e9f6f5965e4888/skills/engineering/domain-modeling). That material is used under its MIT License, whose notice adoption installs beside the skills as `.agents/skills/LICENSE.mattpocock-skills`.
+
+The skill differs from its upstream base as follows. `SKILL.md` states that a prompt or brief naming the skill is its invocation. It also has glossary and ADR edits made on a branch of their own in a checkout the session owns, never in a shared checkout on the default branch, and delivered as the repository's contribution guide directs. It creates `docs/adr/` with its index where the repo indexes its documentation directories, and `ADR-FORMAT.md` adds each new ADR to that index, and keeps a superseded ADR, marking it superseded with a link to the ADR that supersedes it.
