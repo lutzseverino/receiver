@@ -4,5 +4,7 @@ This directory holds the maintained documentation for this repository, the sourc
 
 - [Development](development/README.md): building, testing, architecture, and
   maintenance of the repository, starting with its setup and validation.
+- [Architecture decisions](adr/README.md): consequential decisions about the
+  site and their rationale.
 - [Agents](agents/README.md): agent workflow configuration, the per-repository
   setup files the installed agent skills read.
