@@ -140,16 +140,36 @@ export async function buildDiscovery(
       const body = fromMarkdown(
         source.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, ""),
       );
+      const definitions = new Map<string, string>();
+      visit(body, "definition", (node) => {
+        definitions.set(node.identifier, node.url);
+      });
+      const publishedImages = elements(english.main, "img");
+      const imageUrls = new Map<string, string>();
+      let imageIndex = 0;
+      visit(body, (node) => {
+        const source =
+          node.type === "image"
+            ? node.url
+            : node.type === "imageReference"
+              ? definitions.get(node.identifier)
+              : undefined;
+        if (source)
+          imageUrls.set(
+            source,
+            String(publishedImages[imageIndex++].properties.src),
+          );
+      });
       visit(body, (node) => {
         if (
           node.type === "link" ||
           node.type === "image" ||
           node.type === "definition"
         ) {
-          const url = node.url.startsWith("./images/")
-            ? node.url.replace("./images/", "./")
-            : node.url;
-          node.url = new URL(url, english.url).href;
+          node.url = new URL(
+            imageUrls.get(node.url) ?? node.url,
+            english.url,
+          ).href;
         }
       });
       markdown = `# ${english.title}\n\n${toMarkdown(body)}`;
