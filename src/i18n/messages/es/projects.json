@@ -2,5 +2,37 @@
   "empty": {
     "message": "AÚN NO HAY NADA EN ESTA BANDA",
     "source": "f9262a79"
+  },
+  "on-air": {
+    "message": "EN ANTENA",
+    "source": "c9cdc20f"
+  },
+  "stack": {
+    "message": "Tecnologías",
+    "source": "e5516412"
+  },
+  "since": {
+    "message": "Desde",
+    "source": "98af1ed6"
+  },
+  "release": {
+    "message": "Última versión",
+    "source": "4abf09ee"
+  },
+  "release.none": {
+    "message": "Aún no hay ninguna versión",
+    "source": "10fd38ea"
+  },
+  "updated": {
+    "message": "Actualizado",
+    "source": "3a5ecca1"
+  },
+  "site": {
+    "message": "Visitar el sitio web",
+    "source": "49193e74"
+  },
+  "source": {
+    "message": "Código fuente",
+    "source": "0e570ca6"
   }
 }

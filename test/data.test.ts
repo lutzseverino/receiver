@@ -1,9 +1,9 @@
-// The channels, the empty data the pages read until Drafts 2 and 3 fill it,
-// the posts each wire lists, and the analytics beacon.
+// The channels, the empty post data the pages read until Draft 3 fills it,
+// the posts each wire lists, and the analytics beacon. The projects are
+// projects.test.ts's.
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { loadPosts, wirePosts, type Post } from "../src/data/posts.ts";
-import { loadProjects } from "../src/data/projects.ts";
 import { analyticsBeacon } from "../src/lib/analytics.ts";
 import { channelOf } from "../src/lib/channels.ts";
 
@@ -15,8 +15,7 @@ test("a path belongs to its channel", () => {
   assert.equal(channelOf("/404.html"), undefined);
 });
 
-test("there are no projects or posts yet", async () => {
-  assert.deepEqual(await loadProjects(), []);
+test("there are no posts yet", async () => {
   assert.deepEqual(await loadPosts(), []);
 });
 

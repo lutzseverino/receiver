@@ -1,12 +1,13 @@
 // The built site, for the tests that read or serve it: one production build
-// per test file, into a temporary folder under `node_modules/`, removed when
-// the file's process exits.
+// per test file, from the projects fixture, into a temporary folder under
+// `node_modules/`, removed when the file's process exits.
 import { mkdtempSync, readFileSync, readdirSync, rmSync } from "node:fs";
 import { createServer, type Server } from "node:http";
 import type { AddressInfo } from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { build } from "astro";
+import "./fixture.ts";
 
 const root = fileURLToPath(new URL("../../", import.meta.url));
 

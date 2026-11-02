@@ -209,6 +209,40 @@ footer {
   font-family: var(--font-mono);
 }
 
+/* Projects: the ON AIR mark, a project's facts and its links. */
+.on-air {
+  color: var(--phosphor);
+  font-family: var(--font-mono);
+  letter-spacing: 0.1em;
+}
+.entries .on-air {
+  margin-inline-start: 0.75rem;
+}
+.facts div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  padding: 0.25rem 0;
+}
+.facts dt {
+  min-width: 9rem;
+  color: var(--dim);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+}
+.facts dd {
+  margin: 0;
+}
+.project-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+}
+
 .log p {
   font-family: var(--font-mono);
   margin-bottom: 0.75em;

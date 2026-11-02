@@ -36,6 +36,9 @@ const projects = await loadProjects();
           >
             {project.name}
           </a>
+          {project.featured && (
+            <span class="on-air">{format(locale, "projects.on-air")}</span>
+          )}
           <p lang="en">{project.tagline}</p>
         </li>
       ))}

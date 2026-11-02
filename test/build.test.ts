@@ -1,7 +1,7 @@
 // The built site's HTML layer: its routes in every locale, their language,
 // headings, landmarks and navigation, their canonical and `hreflang` links,
-// and what it must never contain, the channel frequencies and the email
-// address.
+// the projects from the fixture, and what it must never contain, the channel
+// frequencies, the email address and any repository outside the allowlist.
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
@@ -32,17 +32,27 @@ const localeOf = (file: string): SiteLocale =>
     "en") as SiteLocale;
 const isNoSignal = (file: string) => file.endsWith("404.html");
 
-test("the build has every channel page in every locale, and NO SIGNAL in each", () => {
+/** The fixture's projects, in the allowlist's order. */
+const PROJECTS = [
+  ["repo-standards", "Repo Standards"],
+  ["repo-canon", "Repo Canon"],
+  ["scriptorium", "Scriptorium"],
+  ["postern", "Postern"],
+  ["hemiciclo", "Hemiciclo"],
+] as const;
+
+test("the build has every channel page and every project's page in every locale, and NO SIGNAL in each", () => {
   const expected = LOCALES.flatMap((locale) =>
     [
       "index.html",
       "projects/index.html",
+      ...PROJECTS.map(([id]) => `projects/${id}/index.html`),
       "blog/index.html",
       "contact/index.html",
       "404.html",
     ].map((file) => PREFIXES[locale] + file),
   ).sort();
-  // no project or post pages without data, and no pseudo-locale
+  // no post pages without posts, and no pseudo-locale
   assert.deepEqual(site.pages, expected);
 });
 
@@ -96,6 +106,8 @@ test("each page's h1 names its channel, or the owner on home", () => {
       format(locale, "common.channel.reply"),
     );
     assert.equal(h1("404.html"), format(locale, "signal.heading"));
+    for (const [id, name] of PROJECTS)
+      assert.equal(h1(`projects/${id}/index.html`), name);
   }
 });
 
@@ -132,25 +144,132 @@ test("each fixed page takes its own title and description from the launch copy",
   }
 });
 
-test("without projects or posts, projects and the wire show their empty states", () => {
-  for (const locale of LOCALES) {
-    const main = (file: string) =>
+test("without posts, the wire shows its empty state", () => {
+  for (const locale of LOCALES)
+    assert.match(
       text(
         findAll(
-          parseHtml(site.read(PREFIXES[locale] + file)),
+          parseHtml(site.read(`${PREFIXES[locale]}blog/index.html`)),
           byTag("main"),
         )[0],
-      );
-    assert.match(
-      main("projects/index.html"),
-      new RegExp(format(locale, "projects.empty")),
-    );
-    assert.match(
-      main("blog/index.html"),
+      ),
       new RegExp(format(locale, "wire.empty")),
     );
-  }
   assert.match(site.read("blog/index.html"), /NO TRAFFIC/);
+});
+
+test("projects lists the projects in the allowlist's order, each linking its page, with ON AIR on the featured one", () => {
+  for (const locale of LOCALES) {
+    const items = findAll(
+      parseHtml(site.read(`${PREFIXES[locale]}projects/index.html`)),
+      byTag("li"),
+    ).filter((li) => findAll(li, byTag("p")).length > 0);
+    assert.deepEqual(
+      items.map((li) => {
+        const [a] = findAll(li, byTag("a"));
+        return [attr(a!, "href"), text(a!)];
+      }),
+      PROJECTS.map(([id, name]) => [
+        localePath(locale, `/projects/${id}/`),
+        name,
+      ]),
+      locale,
+    );
+    const onAir = format(locale, "projects.on-air");
+    assert.deepEqual(
+      items.map((li) => text(li).includes(onAir)),
+      [true, false, false, false, false],
+      locale,
+    );
+    for (const li of items)
+      assert.equal(attr(findAll(li, byTag("p"))[0]!, "lang"), "en", locale);
+  }
+});
+
+test("a project's page carries its README's text in English and its labels in the page's language", () => {
+  for (const locale of LOCALES) {
+    const page = (id: string) =>
+      findAll(
+        parseHtml(site.read(`${PREFIXES[locale]}projects/${id}/index.html`)),
+        byTag("main"),
+      )[0]!;
+    const facts = (main: Element) =>
+      Object.fromEntries(
+        findAll(main, byTag("div"))
+          .filter((div) => findAll(div, byTag("dt")).length === 1)
+          .map((div) => [
+            text(findAll(div, byTag("dt"))[0]!),
+            text(findAll(div, byTag("dd"))[0]!),
+          ]),
+      );
+    const label = (id: Parameters<typeof format>[1]) => format(locale, id);
+
+    const head = parseHtml(
+      site.read(`${PREFIXES[locale]}projects/repo-standards/index.html`),
+    );
+    assert.equal(
+      text(findAll(head, byTag("title"))[0]),
+      format(locale, "copy.project.title", { name: "Repo Standards" }),
+    );
+    const description = findAll(head, byTag("meta")).find(
+      (meta) => attr(meta, "name") === "description",
+    );
+    assert.equal(
+      description && attr(description, "content"),
+      format(locale, "copy.project.description", {
+        name: "Repo Standards",
+        tagline:
+          "A CLI and agent skills for maintainers who publish and apply versioned repository standards.",
+      }),
+    );
+
+    const repoStandards = page("repo-standards");
+    assert.deepEqual(facts(repoStandards), {
+      [label("projects.stack")]: "TypeScript · Node.js 24 or 26 · Python 3",
+      [label("projects.since")]: "2026",
+      [label("projects.release")]: "v10.0.0 · 2026-10-22",
+      [label("projects.updated")]: "2026-11-02",
+    });
+    assert.deepEqual(
+      findAll(repoStandards, byTag("a")).map((a) => [attr(a, "href"), text(a)]),
+      [
+        ["https://repo-standards.com/", label("projects.site")],
+        [
+          "https://github.com/lutzseverino/repo-standards",
+          label("projects.source"),
+        ],
+        ["https://github.com/lutzseverino/repo-canon", "Repo Canon"],
+      ],
+    );
+    assert.match(text(repoStandards), new RegExp(label("projects.on-air")));
+    const english = findAll(repoStandards, (element) =>
+      element.attrs.some((a) => a.name === "lang" && a.value === "en"),
+    ).map(text);
+    assert.ok(
+      english.some((value) =>
+        value.startsWith("A CLI and agent skills for maintainers"),
+      ),
+      `${locale}: the tagline is marked English`,
+    );
+    assert.ok(
+      english.some((value) =>
+        value.includes("Repo Standards gives a repository"),
+      ),
+      `${locale}: the lead is marked English`,
+    );
+
+    const hemiciclo = page("hemiciclo");
+    assert.equal(
+      facts(hemiciclo)[label("projects.release")],
+      label("projects.release.none"),
+    );
+    assert.deepEqual(
+      findAll(hemiciclo, byTag("a")).map((a) => text(a)),
+      [label("projects.source")],
+      `${locale}: hemiciclo has no site and no lead`,
+    );
+    assert.doesNotMatch(text(hemiciclo), new RegExp(label("projects.on-air")));
+  }
 });
 
 test("no channel frequency appears in the built HTML", () => {
@@ -292,6 +411,11 @@ test("reply's transmit box caps the message at 2000 characters", () => {
     ) as [Element];
     assert.equal(attr(textarea, "maxlength"), "2000");
   }
+});
+
+test("no repository outside the allowlist appears, such as the private zarcerog/odonta or lutzseverino/homelab", () => {
+  for (const [file, content] of builtFiles(site.dir))
+    assert.doesNotMatch(content, /odonta|homelab/i, file);
 });
 
 test("without a site token, no page carries the analytics beacon", () => {

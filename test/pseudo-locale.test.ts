@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import { after, before, test } from "node:test";
 import { fileURLToPath } from "node:url";
 import { dev } from "astro";
+import "./support/fixture.ts";
 
 let server: Awaited<ReturnType<typeof dev>>;
 before(async () => {

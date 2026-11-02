@@ -1,0 +1,12 @@
+{
+  "archived": false,
+  "created_at": "2026-09-06T19:06:38Z",
+  "default_branch": "main",
+  "description": "Write your setup down once. Your coding agent applies it to every repository: agent instructions, docs, templates and checks, kept in step by versioned updates.",
+  "full_name": "lutzseverino/repo-standards",
+  "homepage": "https://repo-standards.com/",
+  "html_url": "https://github.com/lutzseverino/repo-standards",
+  "name": "repo-standards",
+  "private": false,
+  "pushed_at": "2026-11-02T02:32:58Z"
+}

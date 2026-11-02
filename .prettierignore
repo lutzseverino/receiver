@@ -20,3 +20,5 @@ AGENTS.md
 CONTRIBUTING.md
 LICENSE
 docs/agents/
+# The allowlisted repositories' READMEs, kept verbatim as the test fixture
+test/fixtures/github/*/*/README.md

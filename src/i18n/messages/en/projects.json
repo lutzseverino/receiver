@@ -1,3 +1,11 @@
 {
-  "empty": "NOTHING ON THIS BAND YET"
+  "empty": "NOTHING ON THIS BAND YET",
+  "on-air": "ON AIR",
+  "stack": "Stack",
+  "since": "Since",
+  "release": "Latest release",
+  "release.none": "No release yet",
+  "updated": "Updated",
+  "site": "Visit the site",
+  "source": "Source"
 }
