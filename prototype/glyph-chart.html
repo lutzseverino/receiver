@@ -1,0 +1,60 @@
+<!doctype html>
+<!-- PROTOTYPE — throwaway. Glyph round 1 for lutzseverino/site#8: every proposed bitmap drawn large, variant A beside B,
+     with round 13's plain letters for comparison. Each cell is 5×8: rows 0–6 are the 5×7 body, the line marks the
+     baseline, row 7 below it is the descender row. Bytes are the font's shape: five columns, bit 0 at the top. -->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PROTOTYPE · glyph chart · round 1</title>
+<style>
+  body { margin: 0; padding: 24px; background: #050607; color: #c9d3d8; font: 13px/1.4 ui-monospace, Menlo, Consolas, monospace; }
+  h1 { font-size: 15px; margin: 0 0 4px; color: #e6fbff; } p { margin: 0 0 16px; color: #7c868d; max-width: 80em; }
+  table { border-collapse: collapse; } th, td { padding: 6px 12px; vertical-align: top; text-align: center; }
+  th { color: #7c868d; font-weight: 500; text-align: left; } td.k { text-align: left; color: #e6fbff; white-space: nowrap; }
+  tr + tr td { border-top: 1px solid #12191c; }
+  .g { display: inline-block; margin: 0 6px; } .g .l { color: #9fb2ba; } .g .b { color: #4f5b61; font-size: 10px; }
+  .g.diff .l::after { content: ' ≠'; color: #ff9d5c; } .base .l { color: #5f6b71; }
+  svg { display: block; margin: 0 auto 4px; }
+</style>
+</head>
+<body>
+<h1>Glyph round 1: the proposed bitmaps, large</h1>
+<p>Each cell is 5×8 dots: the 5×7 body, the baseline (line), then the descender row. Grey: round 13's plain letter. A: dot accents. B: stroke accents. ≠ marks a glyph that differs between A and B. Bytes: five columns, bit 0 at the top.</p>
+<table id="t"><tr><th>letter</th><th>plain (round 13)</th><th>A · dot accents</th><th>B · stroke accents</th></tr></table>
+<script src="glyphs.js"></script>
+<script>
+// round 13's plain letters (G, and G8 for descenders), copied from index.html
+const BASE = {"1":[0,66,127,64,0],"2":[66,97,81,73,70],"a":[32,84,84,84,120],"e":[56,84,84,84,24],"i":[0,68,125,64,0],"o":[56,68,68,68,56],"u":[60,64,64,32,124],"n":[124,8,4,4,120],"c":[56,68,68,68,32],"l":[0,65,127,64,0],"A":[124,18,17,18,124],"E":[127,73,73,73,65],"I":[0,65,127,65,0],"O":[62,65,65,65,62],"U":[63,64,64,64,63],"N":[127,4,8,16,127],"C":[62,65,65,65,34],"L":[127,64,64,64,64],"?":[2,1,81,9,6],"!":[0,0,95,0,0],"·":[0,0,8,0,0]};
+const ROWS = [
+  ['a', 'a', 'áà'], ['A', 'A', 'ÁÀ'], ['e', 'e', 'éè'], ['E', 'E', 'ÉÈ'], ['i', 'i', 'íï'], ['I', 'I', 'ÍÏ'],
+  ['o', 'o', 'óò'], ['O', 'O', 'ÓÒ'], ['u', 'u', 'úü'], ['U', 'U', 'ÚÜ'], ['n', 'n', 'ñ'], ['N', 'N', 'Ñ'],
+  ['c', 'c', 'ç'], ['C', 'C', 'Ç'], ['?', '?', '¿'], ['!', '!', '¡'], ['« »', '', '«»'], ['º ª', '', 'ºª'], ['l·l', '·', '·'],
+];
+const D = 14, cellSvg = (bytes, g8, dim) => {   // bytes: 7-row form; g8: descender form when there is one
+  const b = g8 || bytes, rows = 8; let s = `<svg width="${5 * D}" height="${rows * D + 4}" viewBox="0 0 ${5 * D} ${rows * D + 4}">`;
+  for (let c = 0; c < 5; c++) for (let r = 0; r < rows; r++) {
+    const on = (b[c] >> r) & 1, y = r * D + (r === 7 ? 4 : 0);
+    s += `<circle cx="${c * D + D / 2}" cy="${y + D / 2}" r="${D * .38}" fill="${on ? (dim ? '#6d8a96' : '#e6fbff') : '#152024'}"/>`;
+  }
+  return s + `<line x1="0" x2="${5 * D}" y1="${7 * D + 2}" y2="${7 * D + 2}" stroke="#2e3d43" stroke-width="1"/></svg>`;
+};
+const hex = a => a.map(x => '0x' + x.toString(16).toUpperCase().padStart(2, '0')).join(',');
+const cell = (ch, v, cls = '') => {
+  const g = v.g7[ch], g8 = v.g8[ch], other = (v === GLYPHS.A ? GLYPHS.B : GLYPHS.A), diff = hex(g) !== hex(other.g7[ch]) || hex(g8 || []) !== hex(other.g8[ch] || []);
+  const name = `${ch} U+${ch.codePointAt(0).toString(16).toUpperCase().padStart(4, '0')}`;
+  if (!g8) return `<span class="g ${cls} ${diff ? 'diff' : ''}">${cellSvg(g)}<span class="l">${name}</span><br><span class="b">${hex(g)}</span></span>`;
+  // a descender glyph has two forms: G8 for text in 5×8 cells, and a 7-row form for big text and 5×7 places
+  return `<span class="g ${cls} ${diff ? 'diff' : ''}">${cellSvg(g, g8)}<span class="l">${name}</span><br><span class="b">G8 ${hex(g8)}<br>text</span></span>` +
+    `<span class="g ${cls}">${cellSvg(g)}<span class="l">${ch} 7-row</span><br><span class="b">${hex(g)}<br>big text</span></span>`;
+};
+const t = document.getElementById('t');
+for (const [label, base, chars] of ROWS) {
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td class="k">${label}</td><td>${base ? `<span class="g base">${cellSvg(BASE[base], null, true)}<span class="l">${base}</span></span>` : ''}</td>` +
+    ['A', 'B'].map(v => `<td>${[...chars].map(ch => cell(ch, GLYPHS[v])).join('')}</td>`).join('');
+  t.appendChild(tr);
+}
+</script>
+</body>
+</html>
