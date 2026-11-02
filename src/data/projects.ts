@@ -91,13 +91,17 @@ export function readAllowlist(): AllowlistEntry[] {
   return parseAllowlist(allowlistText);
 }
 
-let loaded: Promise<readonly Project[]> | undefined;
+// held on the global object: a build reads the projects both from Node, in
+// its glyph coverage check (`lib/glyph-coverage.ts`), and from the pages Vite
+// bundles, two copies of this module that must share one read of GitHub
+const LOADED = Symbol.for("site.projects");
+const cache = globalThis as { [LOADED]?: Promise<readonly Project[]> };
 
 /** The projects, in the allowlist's order, read once per build. They come
  * from GitHub, with the `GITHUB_TOKEN` the environment provides, if any, or
  * with `SITE_PROJECTS=fixture` from the committed fixture. */
 export function loadProjects(): Promise<readonly Project[]> {
-  return (loaded ??= (async () => {
+  return (cache[LOADED] ??= (async () => {
     const mode = process.env.SITE_PROJECTS;
     if (mode !== undefined && mode !== "" && mode !== "fixture")
       throw new Error(

@@ -5,8 +5,11 @@
 // description, canonical URL and its `hreflang` alternates, with `x-default`
 // at the English page, as repo-standards.com's base layout does, and the
 // language's wire feed. The body holds the channels' navigation, the page's
-// `main` and its language links.
+// `main`, its language links and the receiver's controls, which only the
+// receiver's script shows: SOUND and PLAIN while the display runs, and the
+// way back to it on the plain page.
 import ChannelNav from "@/components/ChannelNav.astro";
+import { Button } from "@/components/app/button";
 import LanguageLinks from "@/components/LanguageLinks.astro";
 import LocaleScript from "@/components/LocaleScript.astro";
 import { ANALYTICS_TOKEN } from "@/config";
@@ -37,6 +40,8 @@ type Props = {
   /** The page's path in the default locale, when its address doesn't say,
    * as for NO SIGNAL. */
   path?: string;
+  /** Whether a channel broadcasts the page; NO SIGNAL's has none. */
+  signal?: boolean;
 };
 
 const {
@@ -48,6 +53,7 @@ const {
   redirect = true,
   // the page's path in the default locale, as in `/projects/`
   path = defaultPath(Astro.url.pathname),
+  signal = true,
 } = Astro.props;
 const canonical = new URL(localePath(locale, path), Astro.site);
 const beacon = analyticsBeacon(ANALYTICS_TOKEN);
@@ -88,11 +94,46 @@ const beacon = analyticsBeacon(ANALYTICS_TOKEN);
     <header>
       <ChannelNav locale={locale} path={path} />
     </header>
-    <main>
+    <main data-signal={signal ? undefined : "none"}>
       <slot />
     </main>
     <footer>
       <LanguageLinks locale={locale} path={path} locales={locales} />
+      <div class="receiver-controls">
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          data-control="sound"
+          data-on={format(locale, "receiver.sound.on")}
+          data-off={format(locale, "receiver.sound.off")}
+          aria-pressed="false"
+          hidden
+        >
+          {format(locale, "receiver.sound")}
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          data-control="plain"
+          hidden
+        >
+          {format(locale, "receiver.plain")}
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          data-control="display"
+          hidden
+        >
+          {format(locale, "receiver.display")}
+        </Button>
+      </div>
     </footer>
+    <script>
+      import "@/receiver/loader";
+    </script>
   </body>
 </html>

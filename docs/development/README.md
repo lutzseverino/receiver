@@ -110,6 +110,15 @@ parsing each feed as XML in the browser, and that the production build holds
 none of them. `posts.test.ts` checks each construct a post may and may not use,
 the front matter, translations, reading time and the dithering itself.
 
+`receiver.test.ts` drives the receiver on the display, which the headless
+browser draws with software WebGL: the intro and its skipping, tuning and
+history, the keyboard and the pointer, NO SIGNAL, reduced motion, the plain
+page without WebGL, the remembered settings in every storage state, the
+loop's sleep, the 80 KB gzipped budget for the site's JavaScript, and the
+audit with the display running. It reads what the display draws through the
+display element's `inspect()`. `glyphs.test.ts` covers the font's
+punctuation mapping and the build's glyph coverage check.
+
 ## Translations
 
 The site follows repo-standards.com's model, its
@@ -129,6 +138,11 @@ three languages in the same pull request, then record each translation you
 updated with `pnpm i18n:source <locale> <area.key | prose/name>...`.
 `translations.test.ts` fails on a missing, extra or stale translation. The
 owner reviews the three languages of every interface string before merge.
+
+The display draws every message, prose file, project and post with its own
+dot font (`src/receiver/font.ts`), which maps typographic dashes, quotes and
+ellipses to ASCII. `pnpm build` fails on any other character the font lacks,
+naming where it is and the character (`src/lib/glyph-coverage.ts`).
 
 The development server also serves a pseudo-locale, `en-XA`, under `/en-xa/`:
 every text wrapped in `⟦ ⟧` and padded by about 30%, so text that skipped the

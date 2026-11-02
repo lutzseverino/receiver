@@ -3,6 +3,7 @@
 import type common from "./messages/en/common.json";
 import type copy from "./messages/en/copy.json";
 import type projects from "./messages/en/projects.json";
+import type receiver from "./messages/en/receiver.json";
 import type reply from "./messages/en/reply.json";
 import type signal from "./messages/en/signal.json";
 import type wire from "./messages/en/wire.json";
@@ -19,6 +20,7 @@ export type MessageId =
   | Ids<"common", typeof common>
   | Ids<"copy", typeof copy>
   | Ids<"projects", typeof projects>
+  | Ids<"receiver", typeof receiver>
   | Ids<"reply", typeof reply>
   | Ids<"signal", typeof signal>
   | Ids<"wire", typeof wire>;

@@ -1,6 +1,8 @@
 // The visitor's language in a browser: a first visit follows the browser's
 // languages from English pages only, and a language chosen through a page's
-// language links persists.
+// language links persists. The links are followed on the plain page, where
+// each loads its page and the head script saves the choice; the receiver's
+// own language label is `receiver.test.ts`'s.
 import assert from "node:assert/strict";
 import { after, before, test } from "node:test";
 import { Browser, type Tab } from "./support/browser.ts";
@@ -13,6 +15,9 @@ before(async () => {
   browser = await Browser.launch();
 });
 after(() => browser?.close());
+
+/** What a visitor who chose PLAIN has saved. */
+const PLAIN = { "receiver.plain": "on" };
 
 const where = (tab: Tab) =>
   tab.evaluate(() => ({
@@ -58,7 +63,7 @@ test("a visit to /ca/ with an English browser stays", async () => {
 });
 
 test("a language chosen through a page's links persists", async () => {
-  const tab = await visit("/contact/", ["en-US"]);
+  const tab = await visit("/contact/", ["en-US"], PLAIN);
   const chosen = tab.event("Page.loadEventFired");
   await tab.evaluate(() =>
     document.querySelector<HTMLAnchorElement>('a[hreflang="ca"]')!.click(),
@@ -93,7 +98,10 @@ test("NO SIGNAL never sends a visit on to another language", async () => {
 });
 
 test("a language chosen on NO SIGNAL persists, and the dial it links to stays in it", async () => {
-  const tab = await visit("/no-such-page/", ["en-US"], { locale: "en" });
+  const tab = await visit("/no-such-page/", ["en-US"], {
+    ...PLAIN,
+    locale: "en",
+  });
   const chosen = tab.event("Page.loadEventFired");
   await tab.evaluate(() =>
     document.querySelector<HTMLAnchorElement>('a[hreflang="ca"]')!.click(),
