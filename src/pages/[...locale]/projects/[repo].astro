@@ -1,0 +1,38 @@
+---
+// A project's own page: its name, tagline and README lead. Draft 2 adds its
+// facts and links.
+import { loadProjects, type Project } from "@/data/projects";
+import { format } from "@/i18n/format";
+import { localeRoutes, type Locale } from "@/i18n/locales";
+import Base from "@/layouts/Base.astro";
+import { renderMarkdown } from "@/lib/markdown";
+
+export async function getStaticPaths() {
+  const projects = await loadProjects();
+  return localeRoutes().flatMap(({ params, props }) =>
+    projects.map((project) => ({
+      params: { ...params, repo: project.id },
+      props: { ...props, project },
+    })),
+  );
+}
+
+type Props = { locale: Locale; project: Project };
+
+const { locale, project } = Astro.props;
+const lead = await Promise.all(project.lead.map(renderMarkdown));
+---
+
+<Base
+  locale={locale}
+  title={format(locale, "copy.project.title", { project: project.name })}
+  description={project.tagline}
+>
+  <h1>{project.name}</h1>
+  <div lang="en">
+    <p>{project.tagline}</p>
+    {lead.map((paragraph) => (
+      <Fragment set:html={paragraph} />
+    ))}
+  </div>
+</Base>

@@ -1,0 +1,88 @@
+---
+// The document for every page: the HTML layer the receiver draws (ADR 0001),
+// readable on its own in the plain style. The head opens the page in the
+// visitor's language before anything is drawn, and carries the page's title,
+// description, canonical URL and its `hreflang` alternates, with `x-default`
+// at the English page, as repo-standards.com's base layout does. The body
+// holds the channels' navigation, the page's `main` and its language links.
+import ChannelNav from "@/components/ChannelNav.astro";
+import LanguageLinks from "@/components/LanguageLinks.astro";
+import LocaleScript from "@/components/LocaleScript.astro";
+import { ANALYTICS_TOKEN } from "@/config";
+import {
+  DEFAULT_LOCALE,
+  LOCALES,
+  defaultPath,
+  localePath,
+  type Locale,
+  type SiteLocale,
+} from "@/i18n/locales";
+import { analyticsBeacon } from "@/lib/analytics";
+import "@/styles/global.css";
+
+type Props = {
+  locale: Locale;
+  title: string;
+  description: string;
+  /** The languages the page exists in, English first; all by default. */
+  locales?: readonly SiteLocale[];
+  /** Whether search engines should leave the page out, as for NO SIGNAL. */
+  noindex?: boolean;
+  /** Whether the head may send a visit on to the visitor's language. */
+  redirect?: boolean;
+  /** The page's path in the default locale, when its address doesn't say,
+   * as for NO SIGNAL. */
+  path?: string;
+};
+
+const {
+  locale,
+  title,
+  description,
+  locales = LOCALES,
+  noindex = false,
+  redirect = true,
+  // the page's path in the default locale, as in `/projects/`
+  path = defaultPath(Astro.url.pathname),
+} = Astro.props;
+const canonical = new URL(localePath(locale, path), Astro.site);
+const beacon = analyticsBeacon(ANALYTICS_TOKEN);
+---
+
+<!doctype html>
+<html lang={locale} class="dark">
+  <head>
+    <meta charset="utf-8" />
+    {redirect && <LocaleScript locale={locale} />}
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <title>{title}</title>
+    <link rel="canonical" href={canonical} />
+    {locales.map((other) => (
+      <link
+        rel="alternate"
+        hreflang={other}
+        href={new URL(localePath(other, path), Astro.site)}
+      />
+    ))}
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href={new URL(localePath(DEFAULT_LOCALE, path), Astro.site)}
+    />
+    <slot name="head" />
+    {beacon && <script is:inline defer {...beacon} />}
+  </head>
+  <body>
+    <header>
+      <ChannelNav locale={locale} path={path} />
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer>
+      <LanguageLinks locale={locale} path={path} locales={locales} />
+    </footer>
+  </body>
+</html>

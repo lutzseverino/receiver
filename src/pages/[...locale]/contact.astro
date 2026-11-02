@@ -1,0 +1,88 @@
+---
+// Reply: the owner's name, two lines, the addresses and the transmit box.
+import { EMAIL, GITHUB_URL, OWNER_NAME } from "@/config";
+import { Button } from "@/components/app/button";
+import { Label } from "@/components/app/label";
+import { Textarea } from "@/components/app/textarea";
+import { format } from "@/i18n/format";
+import { localeRoutes, type Locale } from "@/i18n/locales";
+import Base from "@/layouts/Base.astro";
+import { channel } from "@/lib/channels";
+import { addressParts, encodeMailTarget } from "@/lib/email";
+
+export function getStaticPaths() {
+  return localeRoutes();
+}
+
+type Props = { locale: Locale };
+
+const { locale } = Astro.props;
+const mail = encodeMailTarget({
+  to: EMAIL,
+  subject: format(locale, "reply.subject", {
+    frequency: channel("reply").frequency,
+  }),
+});
+const github = new URL(GITHUB_URL);
+---
+
+<Base
+  locale={locale}
+  title={format(locale, "copy.reply.title")}
+  description={format(locale, "copy.reply.description")}
+>
+  <h1>{format(locale, "common.channel.reply")}</h1>
+  <p class="name">{OWNER_NAME}</p>
+  <p>{format(locale, "copy.reply.line-1")}</p>
+  <p>{format(locale, "copy.reply.line-2")}</p>
+  <dl class="addresses">
+    <div>
+      <dt>{format(locale, "reply.email")}</dt>
+      <dd>
+        <span data-email>
+          {format(locale, "reply.email.spelled", addressParts(EMAIL))}
+        </span>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          data-copy
+          data-copied={format(locale, "reply.copied")}
+          hidden
+        >
+          {format(locale, "reply.copy")}
+        </Button>
+      </dd>
+    </div>
+    <div>
+      <dt>{format(locale, "reply.github")}</dt>
+      <dd>
+        <a href={GITHUB_URL}>{github.host + github.pathname}</a>
+      </dd>
+    </div>
+  </dl>
+  <form
+    class="transmit"
+    data-mail={mail}
+    data-sent={format(locale, "reply.sent")}
+  >
+    <Label htmlFor="message">{format(locale, "reply.message")}</Label>
+    <Textarea
+      id="message"
+      name="message"
+      rows={6}
+      maxLength={2000}
+      aria-describedby="message-hint"
+    />
+    <p id="message-hint" class="hint" hidden>
+      {format(locale, "reply.message.hint")}
+    </p>
+    <Button type="submit" disabled>
+      {format(locale, "reply.send")}
+    </Button>
+  </form>
+  <p class="status" role="status" data-status></p>
+  <script>
+    import "@/scripts/reply";
+  </script>
+</Base>

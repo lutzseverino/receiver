@@ -1,0 +1,14 @@
+{
+  "heading": {
+    "message": "SIN SEÑAL",
+    "source": "100c8b92"
+  },
+  "body": {
+    "message": "No hay nada emitiendo en esta dirección.",
+    "source": "11cec6d4"
+  },
+  "back": {
+    "message": "Volver al dial",
+    "source": "f0a99ee8"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "ignorePatterns": [
+    ".agents/**",
+    ".claude/**",
+    ".github/scripts/**",
+    ".repo-standards/**",
+    "operations/**",
+    "scripts/validate.mjs",
+    "scripts/validate-issue-contract.mjs",
+    "vendor/**"
+  ]
+}

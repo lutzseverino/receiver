@@ -1,0 +1,42 @@
+{
+  "email": {
+    "message": "Correu",
+    "source": "969ccbd3"
+  },
+  "email.spelled": {
+    "message": "{$user} arrova {$domain} punt {$suffix}",
+    "source": "ab7a4518"
+  },
+  "github": {
+    "message": "GitHub",
+    "source": "f911e414"
+  },
+  "copy": {
+    "message": "Copia",
+    "source": "e21f935f"
+  },
+  "copied": {
+    "message": "Copiat",
+    "source": "8d525e5f"
+  },
+  "message": {
+    "message": "Missatge",
+    "source": "2f77668a"
+  },
+  "message.hint": {
+    "message": "Ctrl o Cmd + Retorn l'envia.",
+    "source": "b05c5fcc"
+  },
+  "send": {
+    "message": "Envia",
+    "source": "f6f4688f"
+  },
+  "sent": {
+    "message": "Lliurat a la teva aplicació de correu.",
+    "source": "9a18a162"
+  },
+  "subject": {
+    "message": "T'he sentit al {$frequency}",
+    "source": "3442f937"
+  }
+}

@@ -1,0 +1,5 @@
+# Settings only: the repository root is the site's one package.
+allowBuilds:
+  # Both ship prebuilt platform packages on the supported platforms.
+  esbuild: false
+  sharp: false

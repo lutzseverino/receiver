@@ -14,10 +14,11 @@ blog, and contact, shown on a custom dot-matrix display.
 
 ## Status
 
-No website code exists yet. The repository currently holds its contribution
-guide, documentation, agent workflow setup, and the Repository Standards
-tooling, whose commands the [development guide](docs/development/README.md)
-lists.
+The site is an Astro project that builds every channel as a plain HTML page
+in English, Spanish and Catalan, with placeholder copy. The receiver's
+display, the project data, the posts and the launch copy are still to come,
+and the site is not yet deployed. The
+[development guide](docs/development/README.md) lists the commands.
 
 ## Documentation
 

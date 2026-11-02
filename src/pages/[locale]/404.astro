@@ -1,0 +1,14 @@
+---
+// NO SIGNAL in every language but the default, which `pages/404.astro`
+// serves at the site's root.
+import NoSignal from "@/components/pages/NoSignal.astro";
+import { DEFAULT_LOCALE, localeRoutes, type Locale } from "@/i18n/locales";
+
+export function getStaticPaths() {
+  return localeRoutes().filter(({ props }) => props.locale !== DEFAULT_LOCALE);
+}
+
+type Props = { locale: Locale };
+---
+
+<NoSignal locale={Astro.props.locale} />

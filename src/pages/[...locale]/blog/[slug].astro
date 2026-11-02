@@ -1,0 +1,36 @@
+---
+// A post in one of the languages it exists in. Draft 3 adds its date and
+// reading time.
+import { loadPosts, type Post } from "@/data/posts";
+import { format } from "@/i18n/format";
+import { localeRoutes, type Locale } from "@/i18n/locales";
+import Base from "@/layouts/Base.astro";
+
+export async function getStaticPaths() {
+  const posts = await loadPosts();
+  return localeRoutes().flatMap(({ params, props }) =>
+    posts
+      .filter((post) => post.locale === props.locale)
+      .map((post) => ({
+        params: { ...params, slug: post.slug },
+        props: { ...props, post },
+      })),
+  );
+}
+
+type Props = { locale: Locale; post: Post };
+
+const { locale, post } = Astro.props;
+---
+
+<Base
+  locale={locale}
+  title={format(locale, "copy.post.title", { post: post.title })}
+  description={post.summary}
+  locales={post.locales}
+>
+  <article>
+    <h1>{post.title}</h1>
+    <Fragment set:html={post.body} />
+  </article>
+</Base>

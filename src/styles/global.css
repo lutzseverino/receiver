@@ -1,0 +1,279 @@
+/* The plain style: the HTML layer as a readable page on its own, in the
+   display's colours, blue on near-black (ADR 0001). Visitors see it until the
+   receiver draws the page, and without JavaScript, without WebGL or in PLAIN
+   mode. Tailwind and the theme tokens serve the shadcn components; the rest
+   styles the semantic HTML directly. */
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans:
+    system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --font-mono:
+    ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  --font-heading: var(--font-mono);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+}
+
+/* The receiver has one theme, the display's: the light tokens are the same
+   as the dark ones, and every page carries the `.dark` class. */
+:root,
+.dark {
+  color-scheme: dark;
+  /* the display's phosphor, its blue glow and its near-black glass */
+  --phosphor: #e6fbff;
+  --glow: #78dcff;
+  --dim: #8fa3ad;
+  --glass: #050607;
+  --background: var(--glass);
+  --foreground: var(--glow);
+  --card: #0b1417;
+  --card-foreground: var(--glow);
+  --popover: #0b1417;
+  --popover-foreground: var(--glow);
+  --primary: var(--glow);
+  --primary-foreground: var(--glass);
+  --secondary: #11202a;
+  --secondary-foreground: var(--phosphor);
+  --muted: #11202a;
+  --muted-foreground: var(--dim);
+  --accent: #11202a;
+  --accent-foreground: var(--phosphor);
+  --destructive: #ff8a7a;
+  --border: #2c4a57;
+  --input: #3d6474;
+  --ring: var(--phosphor);
+  --radius: 0;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply bg-background font-sans text-foreground;
+    font-size: 100%;
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-background text-foreground;
+    margin: 0 auto;
+    max-width: 42rem;
+    padding: 1.5rem 1rem 3rem;
+    overflow-wrap: anywhere;
+  }
+  h1,
+  h2,
+  h3 {
+    color: var(--phosphor);
+    font-family: var(--font-mono);
+    font-weight: 600;
+    line-height: 1.2;
+    margin: 1.5em 0 0.5em;
+  }
+  h1 {
+    font-size: 1.75rem;
+    margin-top: 0.75em;
+  }
+  h2 {
+    font-size: 1.375rem;
+  }
+  h3 {
+    font-size: 1.125rem;
+  }
+  p,
+  ul,
+  ol,
+  dl,
+  blockquote,
+  pre {
+    margin: 0 0 1em;
+  }
+  ul,
+  ol {
+    padding-inline-start: 1.5em;
+  }
+  ul {
+    list-style: square;
+  }
+  ol {
+    list-style: decimal;
+  }
+  a {
+    color: var(--phosphor);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  a:hover {
+    color: var(--glow);
+  }
+  :focus-visible {
+    outline: 2px solid var(--phosphor);
+    outline-offset: 2px;
+  }
+  code,
+  pre,
+  kbd {
+    font-family: var(--font-mono);
+  }
+  pre {
+    overflow-x: auto;
+    padding: 0.75rem;
+    background: var(--card);
+  }
+  blockquote {
+    border-inline-start: 2px solid var(--border);
+    padding-inline-start: 1em;
+  }
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+  [hidden] {
+    display: none !important;
+  }
+}
+
+/* The channels and the languages: one row of links that wraps. */
+.channels ul,
+.languages ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+}
+.channels a,
+.languages a {
+  display: inline-block;
+  padding: 0.25rem 0;
+}
+.channels a[aria-current],
+.languages a[aria-current] {
+  color: var(--glow);
+  text-decoration-thickness: 2px;
+}
+footer {
+  margin-top: 3rem;
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+}
+
+.empty {
+  font-family: var(--font-mono);
+  letter-spacing: 0.1em;
+  color: var(--phosphor);
+}
+.entries {
+  list-style: none;
+  padding: 0;
+}
+.entries li {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.entries li p {
+  margin: 0.25rem 0 0;
+}
+.entries time {
+  display: block;
+  color: var(--dim);
+  font-family: var(--font-mono);
+}
+
+.log p {
+  font-family: var(--font-mono);
+  margin-bottom: 0.75em;
+}
+
+/* Reply: the name, the addresses and the transmit box. */
+.name {
+  color: var(--phosphor);
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+}
+.addresses div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 1rem;
+  padding: 0.5rem 0;
+}
+.addresses dt {
+  min-width: 5rem;
+  color: var(--dim);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+}
+.addresses dd {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1rem;
+  margin: 0;
+}
+.transmit {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+.transmit .hint,
+.status {
+  margin: 0;
+  color: var(--dim);
+  font-size: 0.875rem;
+}
+.status:empty {
+  display: none;
+}
+
+/* The shadcn components, in the page's type: the registry's sizes are made
+   for dense interfaces. */
+[data-slot="button"] {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+[data-slot="button"][type="submit"] {
+  justify-self: start;
+  min-width: 6rem;
+}
+[data-slot="textarea"] {
+  font-size: 1rem;
+  color: var(--phosphor);
+}
+[data-slot="label"] {
+  color: var(--dim);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+}

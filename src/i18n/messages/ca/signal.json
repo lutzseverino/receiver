@@ -1,0 +1,14 @@
+{
+  "heading": {
+    "message": "SENSE SENYAL",
+    "source": "100c8b92"
+  },
+  "body": {
+    "message": "No hi ha res emetent en aquesta adreça.",
+    "source": "11cec6d4"
+  },
+  "back": {
+    "message": "Torna al dial",
+    "source": "f0a99ee8"
+  }
+}

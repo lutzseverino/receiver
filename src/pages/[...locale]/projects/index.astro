@@ -1,0 +1,38 @@
+---
+// Projects: every project in the allowlist's order, or the empty band.
+import { loadProjects } from "@/data/projects";
+import { format } from "@/i18n/format";
+import { localePath, localeRoutes, type Locale } from "@/i18n/locales";
+import Base from "@/layouts/Base.astro";
+
+export function getStaticPaths() {
+  return localeRoutes();
+}
+
+type Props = { locale: Locale };
+
+const { locale } = Astro.props;
+const projects = await loadProjects();
+---
+
+<Base
+  locale={locale}
+  title={format(locale, "copy.projects.title")}
+  description={format(locale, "copy.projects.description")}
+>
+  <h1>{format(locale, "common.channel.projects")}</h1>
+  {projects.length === 0 ? (
+    <p class="empty">{format(locale, "projects.empty")}</p>
+  ) : (
+    <ul class="entries">
+      {projects.map((project) => (
+        <li>
+          <a href={localePath(locale, `/projects/${project.id}/`)}>
+            {project.name}
+          </a>
+          <p lang="en">{project.tagline}</p>
+        </li>
+      ))}
+    </ul>
+  )}
+</Base>

@@ -1,0 +1,36 @@
+---
+// A real link to the page in each language it exists in. Each names its
+// language as the visitor's choice (`?locale=`), which the next page's head
+// script saves, so the choice persists.
+import { localeChoice } from "@/i18n/choice";
+import { format } from "@/i18n/format";
+import {
+  LOCALES,
+  LOCALE_NAMES,
+  localePath,
+  type Locale,
+  type SiteLocale,
+} from "@/i18n/locales";
+
+type Props = { locale: Locale; path: string; locales: readonly SiteLocale[] };
+
+const { locale, path, locales } = Astro.props;
+const { choosing } = localeChoice(LOCALES);
+---
+
+<nav class="languages" aria-label={format(locale, "common.language.label")}>
+  <ul>
+    {locales.map((other) => (
+      <li>
+        <a
+          href={choosing(localePath(other, path), other)}
+          hreflang={other}
+          lang={other}
+          aria-current={other === locale ? "page" : undefined}
+        >
+          {LOCALE_NAMES[other]}
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>

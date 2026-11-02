@@ -1,0 +1,26 @@
+---
+// Home: the owner's name and the log.
+import { OWNER_NAME } from "@/config";
+import { format, prose } from "@/i18n/format";
+import { localeRoutes, type Locale } from "@/i18n/locales";
+import Base from "@/layouts/Base.astro";
+import { renderMarkdown } from "@/lib/markdown";
+
+export function getStaticPaths() {
+  return localeRoutes();
+}
+
+type Props = { locale: Locale };
+
+const { locale } = Astro.props;
+const log = await renderMarkdown(prose(locale, "log"));
+---
+
+<Base
+  locale={locale}
+  title={format(locale, "copy.home.title")}
+  description={format(locale, "copy.home.description")}
+>
+  <h1>{OWNER_NAME}</h1>
+  <div class="log" set:html={log} />
+</Base>
