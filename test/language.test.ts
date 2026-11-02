@@ -20,6 +20,10 @@ const where = (tab: Tab) =>
     lang: document.documentElement.lang,
   }));
 
+/** Waits until the head's script has settled the page. */
+const settle = (tab: Tab) =>
+  tab.evaluate(() => new Promise((resolve) => setTimeout(resolve, 200)));
+
 /** Opens `path` and waits until the head's script has settled the page. */
 async function visit(
   path: string,
@@ -31,7 +35,7 @@ async function visit(
     languages,
     storage,
   });
-  await tab.evaluate(() => new Promise((resolve) => setTimeout(resolve, 200)));
+  await settle(tab);
   return tab;
 }
 
@@ -67,7 +71,7 @@ test("a language chosen through a page's links persists", async () => {
   const back = tab.event("Page.loadEventFired");
   await tab.goto(`${origin}/blog/`);
   await back.next.catch(() => {});
-  await tab.evaluate(() => new Promise((resolve) => setTimeout(resolve, 200)));
+  await settle(tab);
   assert.deepEqual(await where(tab), { path: "/ca/blog/", lang: "ca" });
   await tab.close();
 });
@@ -102,7 +106,7 @@ test("a language chosen on NO SIGNAL persists, and the dial it links to stays in
     document.querySelector<HTMLAnchorElement>('main a[href="/ca/"]')!.click(),
   );
   await dial.next;
-  await tab.evaluate(() => new Promise((resolve) => setTimeout(resolve, 200)));
+  await settle(tab);
   assert.deepEqual(await where(tab), { path: "/ca/", lang: "ca" });
   await tab.close();
 });

@@ -2,7 +2,7 @@
 // NO SIGNAL: what the receiver shows for an address that matches no page.
 // GitHub Pages serves `/404.html` for every such address; each language has
 // its own at `/<locale>/404.html` (`astro.config.mjs`), and the language
-// links lead to them, and the language a link chooses is saved. The page
+// links lead to them. The language a link chooses is saved, but the page
 // never sends a visit on to another language, since that page would be
 // missing too.
 import { format } from "@/i18n/format";
