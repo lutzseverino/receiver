@@ -9,10 +9,11 @@
 // static for a moment.
 import { channel } from "../../lib/channels.ts";
 import { portraitPath } from "../../lib/portrait-files.ts";
-import { displayLabel, displayText } from "../font.ts";
+import { displayLabel } from "../font.ts";
 import { fit, frame, step, wrapText } from "../draw.ts";
 import type { ChannelLayout, Grid, LayoutContext } from "../layout.ts";
 import { hash01 } from "../tube.ts";
+import { BLINK_MS, textOf } from "./common.ts";
 
 /** The portrait's arrival, its outline alone at first; the signal's dips. */
 export const ARRIVAL_MS = 1300;
@@ -22,7 +23,6 @@ const DIP_MS = 200;
 /** How long COPIED and the page's status show. */
 const COPIED_MS = 1600;
 const STATUS_MS = 5000;
-const BLINK_MS = 480;
 
 type Way = {
   label: string;
@@ -35,8 +35,7 @@ type Portrait = { lit: Uint8Array; inside: Uint8Array; edge: Uint8Array };
 
 /** What the reply page's HTML carries. */
 function readReply(main: HTMLElement) {
-  const text = (element: Element | null) =>
-    displayText(element?.textContent ?? "").trim();
+  const text = textOf;
   const ways: Way[] = [...main.querySelectorAll(".addresses > div")].map(
     (way) => {
       const dd = way.querySelector("dd");

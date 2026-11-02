@@ -143,7 +143,6 @@ function badges(nodes: readonly PhrasingContent[]): string[] {
   );
 }
 
-/** A heading's or link's text, without images or HTML. */
 /** The text of `markdown`, such as a lead paragraph, without its marks:
  * what the display's preview of a project draws. */
 export function markdownText(markdown: string): string {
@@ -160,6 +159,7 @@ export function markdownText(markdown: string): string {
   );
 }
 
+/** A heading's or link's text, without images or HTML. */
 function plainText(nodes: readonly PhrasingContent[]): string {
   return nodes
     .map((node) =>

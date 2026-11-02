@@ -113,6 +113,12 @@ test("home types its log about 2.5 s after the name lands, and its reception eff
 });
 
 test("with reduced motion, home shows the log whole, and no layout shows a wipe, the print, the portrait's arrival or a dip", async () => {
+  for (const height of [800, 568])
+    await on("/", { width: 320, height, reducedMotion: true }, async (tab) => {
+      const home = await idle(tab);
+      assert.match(text(home), /IF YOU CAN HEAR/, `at 320 × ${height}`);
+      assert.match(text(home), /TUNING\./, `at 320 × ${height}`);
+    });
   await on("/", { width: 1280, reducedMotion: true }, async (tab) => {
     const home = await idle(tab);
     assert.match(text(home), /IF YOU CAN HEAR THIS/);

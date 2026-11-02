@@ -6,31 +6,35 @@
 // 66 ms, and every 264 ms once the visitor has given no input for 30 s.
 // Under reduced motion the log shows whole and nothing moves.
 import { CHANNELS } from "../../lib/channels.ts";
-import { bigWidth, clip } from "../draw.ts";
+import { bigWidth, clip, wrapText } from "../draw.ts";
 import { displayText, signal } from "../font.ts";
-import type { ChannelLayout, Grid, LayoutContext, Page } from "../layout.ts";
+import type {
+  ChannelLayout,
+  Grid,
+  LayoutContext,
+  Page,
+  Segment,
+} from "../layout.ts";
 import { hash01, rng } from "../tube.ts";
 
 /** The reception effect's step while the visitor is around, and after
- * `IDLE` milliseconds without input. */
-export const STEP = 66;
-export const IDLE_STEP = STEP * 4;
-export const IDLE = 30_000;
+ * `IDLE_MS` milliseconds without input. */
+export const STEP_MS = 66;
+export const IDLE_STEP_MS = STEP_MS * 4;
+export const IDLE_MS = 30_000;
 
-/** The log: the name fades out over `TX_IN` before the typing starts,
- * `AUTO` after the name lands; once typed it holds `HOLD`, breaks up over
- * `BREAK` and the name returns over `TX_OUT`. */
-const TX_IN = 450;
-const TX_OUT = 500;
-const AUTO = 2500;
-const HOLD = 2500;
-const BREAK = 700;
+/** The log: the name fades out over `TX_IN_MS` before the typing starts,
+ * `AUTO_MS` after the name lands; once typed it holds `HOLD_MS`, breaks up over
+ * `BREAK_MS` and the name returns over `TX_OUT_MS`. */
+const TX_IN_MS = 450;
+const TX_OUT_MS = 500;
+const AUTO_MS = 2500;
+const HOLD_MS = 2500;
+const BREAK_MS = 700;
 /** How long each page of the name shows, and its dissolve into the next. */
 const PAGE_MS = [2800, 1300, 1900];
-const PAGE_FADE = 300;
+const PAGE_FADE_MS = 300;
 const JUNK = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-type Segment = { text: string; brightness: number; target?: HTMLElement };
 
 /** Where the poster sits: its name's scale `s`, the rows it takes from
  * `r0`, its middle, the channel rows from `rLinks`, and the effect's band. */
@@ -77,20 +81,6 @@ type Run = {
 
 type Fade = { n: number; t0: number; dur: number; depth: number };
 
-/** The words of `text` in capitals, in lines of at most `width`. */
-function wrapWords(text: string, width: number): string[] {
-  const lines: string[] = [];
-  let current = "";
-  for (const word of text.toUpperCase().split(" ").filter(Boolean)) {
-    if (current && `${current} ${word}`.length > width) {
-      lines.push(current);
-      current = word;
-    } else current = current ? `${current} ${word}` : word;
-  }
-  if (current) lines.push(current);
-  return lines;
-}
-
 /** When each key of `typed` lands: a quick typist, the odd pause, the rare
  * wrong key taken back, and `between` more before each new paragraph. */
 function typeOps(typed: Typed, seed: number, between: number) {
@@ -122,7 +112,7 @@ function typeOps(typed: Typed, seed: number, between: number) {
 export function homeLayout(context: LayoutContext): ChannelLayout {
   /** When the name landed, and when the log next comes on its own. */
   let landed: number | null = null;
-  let nextLog = 0;
+  let nextLog: number | null = null;
   let run: Run | null = null;
   let fades: Fade[] = [];
   let nextFade = 0;
@@ -220,8 +210,8 @@ export function homeLayout(context: LayoutContext): ChannelLayout {
       );
     };
     const current = pages[i]!;
-    if (pages.length > 1 && t > PAGE_FADE && tt < PAGE_FADE) {
-      const q = tt / PAGE_FADE;
+    if (pages.length > 1 && t > PAGE_FADE_MS && tt < PAGE_FADE_MS) {
+      const q = tt / PAGE_FADE_MS;
       draw(pages[(i + pages.length - 1) % pages.length]!, {
         p: 1 - q,
         seed: 3 + i,
@@ -309,18 +299,27 @@ export function homeLayout(context: LayoutContext): ChannelLayout {
 
   /** The log laid out as a block where the name is: every paragraph, small,
    * in capitals, as many lines as fit at `most`. */
-  function typedLog(grid: Grid, page: Page, P: Poster, most: number): Typed {
+  function typedLog(grid: Grid, page: Page, P: Poster, whole = false): Typed {
     const width = Math.min(grid.cols - 6, 46);
     const lines: { text: string; k: number }[] = [];
     logTexts(page).forEach((text, k) =>
-      wrapWords(text, width).forEach((line) => lines.push({ text: line, k })),
+      wrapText(text.toUpperCase(), width).forEach((line) =>
+        lines.push({ text: line, k }),
+      ),
     );
     const blockWidth = Math.max(0, ...lines.map((line) => line.text.length));
     const x0 = Math.floor((grid.cols - blockWidth) / 2);
     const top = grid.body.top + 1;
-    const maxL = Math.max(3, Math.min(most, P.rLinks - 2 - top));
+    // the typed log keeps a row clear above the channels; the whole log may
+    // take every row above them
+    const maxL = whole
+      ? Math.max(3, P.rLinks - 1 - grid.body.top)
+      : Math.max(3, P.rLinks - 2 - top);
     const shown = Math.min(lines.length, maxL);
-    const r0 = Math.max(top, Math.round(P.Yc / 8 - shown / 2));
+    const r0 = Math.max(
+      whole ? grid.body.top : top,
+      Math.min(Math.round(P.Yc / 8 - shown / 2), P.rLinks - 1 - shown),
+    );
     const chars: Char[] = [];
     lines.forEach((line, li) =>
       [...line.text].forEach((ch, j) =>
@@ -403,31 +402,31 @@ export function homeLayout(context: LayoutContext): ChannelLayout {
   function paintRun(grid: Grid, page: Page, P: Poster, now: number) {
     if (!run) return null;
     if (!run.typed || run.cols !== grid.cols) {
-      run.typed = typedLog(grid, page, P, Infinity);
+      run.typed = typedLog(grid, page, P);
       const { ops, end } = typeOps(run.typed, 11, 380);
       run.ops = ops;
       run.end = end;
-      run.span = end + HOLD + BREAK;
+      run.span = end + HOLD_MS + BREAK_MS;
       run.cols = grid.cols;
     }
-    const t = now - run.t0 - TX_IN;
+    const t = now - run.t0 - TX_IN_MS;
     const span = run.span!;
     if (t >= span) {
-      const u = (t - span) / TX_OUT;
+      const u = (t - span) / TX_OUT_MS;
       if (u < 1) return u;
       run = null;
       nextLog = now + 90_000 + Math.random() * 60_000;
       return null;
     }
-    if (t < 0) return 1 - (t + TX_IN) / TX_IN;
+    if (t < 0) return 1 - (t + TX_IN_MS) / TX_IN_MS;
     grid.saw("log");
-    const breaking = span - BREAK;
+    const breaking = span - BREAK_MS;
     paintTyped(
       grid,
       run.typed,
       run.ops!,
       t,
-      t > breaking ? { p: 1 - (t - breaking) / BREAK, seed: 3 } : undefined,
+      t > breaking ? { p: 1 - (t - breaking) / BREAK_MS, seed: 3 } : undefined,
       t < breaking,
     );
     return 0;
@@ -454,7 +453,9 @@ export function homeLayout(context: LayoutContext): ChannelLayout {
     claims: (page) => page.signal && page.channel?.id === "home",
     enter(_page, _from, now) {
       landed = now;
-      nextLog = now + AUTO;
+      // the log first comes 2.5 s after the name lands; later visits wait
+      // for its next turn
+      nextLog ??= now + AUTO_MS;
       run = null;
       fades = [];
       nextFade = 9000 + Math.random() * 9000;
@@ -462,18 +463,19 @@ export function homeLayout(context: LayoutContext): ChannelLayout {
     },
     draw(grid, page, now) {
       landed ??= now;
-      idle = grid.quiet > IDLE;
+      idle = grid.quiet > IDLE_MS;
       still = grid.still;
       const P = poster(grid, page);
       const body = clip(grid, grid.body.top, grid.body.bottom);
       if (still) {
         // the log whole, where the name would be
-        const typed = typedLog(grid, page, P, Infinity);
+        const typed = typedLog(grid, page, P, true);
         for (const c of typed.chars) drawChar(body, c, c.ch, 0.95);
         paintLinks(grid, P);
         return;
       }
       const t = now - landed;
+      nextLog ??= now + AUTO_MS;
       if (!run && now > nextLog) run = { t0: now };
       const k = Math.min(1, t / 1600);
       if (k > 0) {
@@ -490,12 +492,12 @@ export function homeLayout(context: LayoutContext): ChannelLayout {
       }
       paintLinks(grid, P);
     },
-    next: () => (still ? null : idle ? IDLE_STEP : STEP),
+    next: () => (still ? null : idle ? IDLE_STEP_MS : STEP_MS),
     // a press starts the log, or hurries the typist along
     press(now) {
       if (!run) run = { t0: now };
-      else if (run.end !== undefined && now - run.t0 - TX_IN < run.end)
-        run.t0 = now - TX_IN - run.end - 1;
+      else if (run.end !== undefined && now - run.t0 - TX_IN_MS < run.end)
+        run.t0 = now - TX_IN_MS - run.end - 1;
       context.refresh();
     },
   };

@@ -25,7 +25,7 @@ import {
   type Line,
   type Page,
 } from "../layout.ts";
-import { backLine } from "./common.ts";
+import { backLine, textOf } from "./common.ts";
 
 /** How long the row wipe takes, and the selection's arrival in blocks. */
 export const WIPE_MS = 560;
@@ -45,8 +45,7 @@ type Project = {
   lead: string;
 };
 
-const text = (element: Element | null | undefined) =>
-  displayText(element?.textContent ?? "").trim();
+const text = textOf;
 
 function readProject(element: Element): Project {
   return {
@@ -173,6 +172,8 @@ export function projectsLayout(context: LayoutContext): ChannelLayout {
   let lastHover: HTMLElement | null = null;
   let lastFocus: Element | null = null;
   let wipeAt: number | null = null;
+  /** While the write head draws itself on the row it hides. */
+  let heading = false;
   let body = { top: 0, bottom: 0 };
   let still = false;
   /** The project page's hero, as its lines laid it out. */
@@ -314,8 +315,7 @@ export function projectsLayout(context: LayoutContext): ChannelLayout {
           sel * 11 + 1,
         );
     const iw = w - 6;
-    const tw = iw;
-    const nameLines = wrapText(project.name.toUpperCase(), tw);
+    const nameLines = wrapText(project.name.toUpperCase(), iw);
     const metaLines = wrapItems(metaItems(project), iw);
     const factLines = wrapItems(factItems(project), w - 1);
     const links = linkRows(linkItems(project, openLabel), w - 1);
@@ -329,13 +329,13 @@ export function projectsLayout(context: LayoutContext): ChannelLayout {
       factLines.length +
       1 +
       links.length;
-    const allTags = wrapText(project.tagline, tw);
+    const allTags = wrapText(project.tagline, iw);
     const tagMost = Math.max(1, Math.min(4, view - fixed));
     const tagLines =
       allTags.length > tagMost
         ? [
             ...allTags.slice(0, tagMost - 1),
-            ellipsis(allTags[tagMost - 1]!, tw),
+            ellipsis(allTags[tagMost - 1]!, iw),
           ]
         : allTags;
     const inner = nameLines.length + 1 + tagLines.length + 1 + metaLines.length;
@@ -477,7 +477,12 @@ export function projectsLayout(context: LayoutContext): ChannelLayout {
       body = grid.body;
       if (!wiping(now)) return null;
       const h = head(now);
-      return (_col, row) => row < body.top || row > body.bottom || row <= h;
+      // the head's own row shows only the head
+      return (_col, row) =>
+        row < body.top ||
+        row > body.bottom ||
+        row < h ||
+        (heading && row === h);
     },
     draw(grid, page, now) {
       body = grid.body;
@@ -487,7 +492,9 @@ export function projectsLayout(context: LayoutContext): ChannelLayout {
       if (wiping(now)) {
         grid.saw("wipe");
         const h = head(now);
+        heading = true;
         if (h <= body.bottom) grid.put(0, h, "█".repeat(grid.cols), 0.16);
+        heading = false;
       }
     },
     enter(page, from, now) {

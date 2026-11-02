@@ -15,11 +15,10 @@ import {
   type Line,
   type Page,
 } from "../layout.ts";
-import { backLine } from "./common.ts";
+import { BLINK_MS, backLine } from "./common.ts";
 
 /** How long the teleprinter takes to print a row. */
 export const PRINT_ROW_MS = 38;
-const BLINK_MS = 480;
 
 const isList = (page: Page) => page.path === "/blog/";
 
@@ -70,6 +69,8 @@ export function wireLayout(context: LayoutContext): ChannelLayout {
   let printAt: number | null = null;
   let printEnd = 0;
   let printedRow = -1;
+  /** While the print head draws itself in the cell it hides. */
+  let heading = false;
   let still = false;
   let list = false;
   /** Where the print head waits: the line after the last dispatch. */
@@ -110,11 +111,12 @@ export function wireLayout(context: LayoutContext): ChannelLayout {
       if (!printing(grid, now)) return null;
       const { done, col } = printHead(grid, now);
       const { top, bottom } = grid.body;
+      // the head's own cell shows only the head
       return (c, r) =>
         r < top ||
         r > bottom ||
         r - top < done ||
-        (r - top === done && c < col);
+        (r - top === done && (c < col || (heading && c === col)));
     },
     draw(grid, page, now) {
       still = grid.still;
@@ -141,7 +143,9 @@ export function wireLayout(context: LayoutContext): ChannelLayout {
       if (printing(grid, now)) {
         grid.saw("print");
         const { row, col } = printHead(grid, now);
+        heading = true;
         grid.put(col, row, "█", 0.7);
+        heading = false;
         if (row !== printedRow) {
           printedRow = row;
           context.sound.click(0.12);

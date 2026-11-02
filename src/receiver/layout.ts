@@ -7,6 +7,7 @@
 // activates and whose focus the display marks with ►.
 import type { Channel } from "../lib/channels.ts";
 import { displayLabel, displayText } from "./font.ts";
+import type { Sound } from "./sound.ts";
 
 /** The page the display shows: its HTML layer's `main`, its path in the
  * default locale, its channel, and whether it is NO SIGNAL. */
@@ -67,11 +68,7 @@ export type LayoutContext = {
   /** Draws a new frame, as when a picture the layout loads arrives. */
   refresh(): void;
   /** The receiver's sound, which stays quiet while it is off. */
-  sound: {
-    click(volume?: number): void;
-    tune(distance: number): void;
-    quiet(): void;
-  };
+  sound: Pick<Sound, "click" | "tune" | "quiet">;
 };
 
 /** A channel's own drawing (lutzseverino/receiver#10): it claims the pages it

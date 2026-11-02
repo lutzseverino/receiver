@@ -68,7 +68,10 @@ export type Inspection = {
     x: number;
     y: number;
   }[];
-  /** The effects any frame has shown: flash, sweep, static, typing. */
+  /** The effects any frame has shown: the intro's flash and sweep, the
+   * seek's static, the lines' typing, and each channel layout's own, such
+   * as home's reception and log, the projects' wipe, the wire's print, and
+   * the portrait's contour and dips. */
   seen: string[];
   sound: boolean;
   /** The first line of the page's body the display shows. */
@@ -180,14 +183,7 @@ export function startReceiver({
   const still = () => motion.matches;
   const sound = new Sound();
   sound.enable(settings.sound(), false);
-  const layouts = makeLayouts({
-    refresh: () => compose(),
-    sound: {
-      click: (volume) => sound.click(volume),
-      tune: (distance) => sound.tune(distance),
-      quiet: () => sound.quiet(),
-    },
-  });
+  const layouts = makeLayouts({ refresh: () => compose(), sound });
 
   const ghost = document.createElement("canvas");
   const lit = document.createElement("canvas");
@@ -439,7 +435,7 @@ export function startReceiver({
     let all = false;
     const now = performance.now();
     /** The cells a channel layout's transition shows, while it hides some. */
-    let shown: ((c: number, r: number) => boolean) | null = null;
+    let visible: ((c: number, r: number) => boolean) | null = null;
 
     const put = (
       c: number,
@@ -455,7 +451,7 @@ export function startReceiver({
       for (let i = 0; i < text.length; i++) {
         const cc = c + i;
         if (cc < 0 || cc >= cols || r < 0 || r >= rows) continue;
-        if (shown && !shown(cc, r)) continue;
+        if (visible && !visible(cc, r)) continue;
         const k = r * cols + cc;
         chars[k] = text[i]!;
         bright[k] = b;
@@ -476,7 +472,7 @@ export function startReceiver({
       const c = Math.floor(X / 5);
       const r = Math.floor(Y / 8);
       if (X < 0 || c >= cols || Y < 0 || r >= rows) return;
-      if (shown && !shown(c, r)) return;
+      if (visible && !visible(c, r)) return;
       const k = r * cols + c;
       let dots = big.get(k);
       if (!dots) big.set(k, (dots = new Uint8Array(40)));
@@ -661,7 +657,7 @@ export function startReceiver({
         seen.add("static");
         staticNoise(top, bottom);
       } else {
-        shown = layout?.mask?.(grid, now) ?? null;
+        visible = layout?.mask?.(grid, now) ?? null;
         if (layout && !layout.lines) layout.draw(grid, page, now);
         else {
           if (reveal < lines.length) seen.add("typing");
@@ -693,7 +689,7 @@ export function startReceiver({
           });
           layout?.draw(grid, page, now);
         }
-        shown = null;
+        visible = null;
       }
       paintBar();
     };
