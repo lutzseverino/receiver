@@ -1,5 +1,6 @@
-// The post data the wire shows. Draft 3 (lutzseverino/site#7) fills it from
-// the Markdown posts; the site launches with none (D12).
+// The post data the wire shows. lutzseverino/site#7 fills it from the
+// Markdown posts; the site launches with none (specification
+// lutzseverino/site#4).
 import type { SiteLocale } from "../i18n/locales.ts";
 
 export type Post = {

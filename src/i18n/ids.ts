@@ -1,4 +1,5 @@
-// The message IDs, from the default locale's catalogs. Types only.
+// The IDs `format()` takes: the messages, from the default locale's catalogs,
+// and the prose files. Types only.
 import type common from "./messages/en/common.json";
 import type copy from "./messages/en/copy.json";
 import type projects from "./messages/en/projects.json";
@@ -8,8 +9,13 @@ import type wire from "./messages/en/wire.json";
 
 type Ids<Area extends string, Catalog> = `${Area}.${keyof Catalog & string}`;
 
-/** `<area>.<key>`: the catalog file and the key within it. */
+/** The prose files in `prose/<locale>/`, by name. */
+type ProseName = "log";
+
+/** `<area>.<key>`, the catalog file and the key within it, or
+ * `prose.<name>`, a prose file. */
 export type MessageId =
+  | `prose.${ProseName}`
   | Ids<"common", typeof common>
   | Ids<"copy", typeof copy>
   | Ids<"projects", typeof projects>

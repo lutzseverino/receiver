@@ -1,4 +1,4 @@
-// Cloudflare Web Analytics (D8): the beacon's head tag for the site token,
+// Cloudflare Web Analytics (specification lutzseverino/site#4): the beacon's head tag for the site token,
 // or none until the token is configured.
 export type Beacon = { src: string; "data-cf-beacon": string };
 

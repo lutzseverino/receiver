@@ -82,8 +82,8 @@ English at the root, Spanish and Catalan under `/es/` and `/ca/` with the
 English paths. Every interface string is a MessageFormat 2 message in
 `src/i18n/messages/<locale>/<area>.json`, and longer text is a Markdown file
 in `src/i18n/prose/<locale>/`. Pages reach both only through
-`format(locale, id, values)` and `prose(locale, name)` in
-`src/i18n/format.ts`, which throw on any gap instead of falling back.
+`format(locale, id, values)` in `src/i18n/format.ts`, where a prose file's ID
+is `prose.<name>`; it throws on any gap instead of falling back.
 
 An English message is a plain string; a Spanish or Catalan one is
 `{ "message": ..., "source": ... }`, where `source` is the hash of the English

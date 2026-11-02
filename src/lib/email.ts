@@ -1,4 +1,5 @@
-// The email address stays out of the built HTML (D9). A page carries the mail
+// The email address stays out of the built HTML (specification
+// lutzseverino/site#4, Email). A page carries the mail
 // target, the address and the subject, encoded in an attribute: the UTF-8
 // bytes of its JSON, reversed, in base64. The reply page's script decodes it
 // to show the address, link it and open the visitor's mail app; without

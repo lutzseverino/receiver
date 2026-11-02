@@ -4,11 +4,13 @@ import { loadPosts, wirePosts } from "@/data/posts";
 import { format } from "@/i18n/format";
 import {
   DEFAULT_LOCALE,
+  PSEUDO_LOCALE,
   localePath,
   localeRoutes,
   type Locale,
 } from "@/i18n/locales";
 import Base from "@/layouts/Base.astro";
+import { channel } from "@/lib/channels";
 
 export function getStaticPaths() {
   return localeRoutes();
@@ -17,7 +19,8 @@ export function getStaticPaths() {
 type Props = { locale: Locale };
 
 const { locale } = Astro.props;
-const siteLocale = locale === "en-XA" ? DEFAULT_LOCALE : locale;
+// the pseudo-locale lists what English lists
+const siteLocale = locale === PSEUDO_LOCALE ? DEFAULT_LOCALE : locale;
 const posts = wirePosts(await loadPosts(), siteLocale);
 ---
 
@@ -34,7 +37,10 @@ const posts = wirePosts(await loadPosts(), siteLocale);
       {posts.map((post) => (
         <li lang={post.locale === siteLocale ? undefined : post.locale}>
           <a
-            href={localePath(post.locale, `/blog/${post.slug}/`)}
+            href={localePath(
+              post.locale,
+              `${channel("wire").path}${post.slug}/`,
+            )}
             hreflang={post.locale === siteLocale ? undefined : post.locale}
           >
             {post.title}

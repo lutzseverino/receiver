@@ -2,12 +2,7 @@
 // and throws on every kind of gap instead of falling back.
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import {
-  format,
-  messageSource,
-  prose,
-  siteMessages,
-} from "../src/i18n/format.ts";
+import { format, messageSource, siteMessages } from "../src/i18n/format.ts";
 import type { MessageId } from "../src/i18n/ids.ts";
 import type { Locale } from "../src/i18n/locales.ts";
 
@@ -63,11 +58,15 @@ test("format() throws for a malformed translated entry", () => {
   );
 });
 
-test("prose() reads a locale's prose without its front matter, and throws for a missing file", () => {
-  assert.match(prose("ca", "log").trimStart(), /^Registre provisional:/);
+test("format() reads a locale's prose without its front matter, and throws for a missing file or values", () => {
+  assert.match(format("ca", "prose.log").trimStart(), /^Registre provisional:/);
   assert.throws(
-    () => prose("en", "missing"),
+    () => format("en", "prose.missing" as MessageId),
     /There is no prose missing in en\./,
+  );
+  assert.throws(
+    () => format("es", "prose.log", { x: 1 }),
+    /The prose log takes no values\./,
   );
 });
 
@@ -77,5 +76,15 @@ test("the pseudo-locale wraps and pads each message and keeps its placeholders",
     messageSource("en-XA", "reply.subject"),
     /^⟦Heard you on \{\$frequency\}/,
   );
-  assert.match(prose("en-XA", "log"), /^⟦Placeholder log:/);
+  assert.match(format("en-XA", "prose.log"), /^⟦Placeholder log:/);
+});
+
+test("no catalog may take the prose files' IDs", () => {
+  assert.throws(
+    () =>
+      siteMessages({
+        en: { messages: { "prose.log": "Hi" }, prose: {} },
+      }),
+    /The message prose\.log in en takes a prose file's ID/,
+  );
 });

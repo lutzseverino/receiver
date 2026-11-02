@@ -4,6 +4,7 @@ import { loadProjects } from "@/data/projects";
 import { format } from "@/i18n/format";
 import { localePath, localeRoutes, type Locale } from "@/i18n/locales";
 import Base from "@/layouts/Base.astro";
+import { channel } from "@/lib/channels";
 
 export function getStaticPaths() {
   return localeRoutes();
@@ -27,7 +28,12 @@ const projects = await loadProjects();
     <ul class="entries">
       {projects.map((project) => (
         <li>
-          <a href={localePath(locale, `/projects/${project.id}/`)}>
+          <a
+            href={localePath(
+              locale,
+              `${channel("projects").path}${project.id}/`,
+            )}
+          >
             {project.name}
           </a>
           <p lang="en">{project.tagline}</p>

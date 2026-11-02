@@ -1,5 +1,6 @@
-// `format()`, the only way a page turns a message ID into text, over the
-// catalogs and prose in `messages/` and `prose/`. There is no fallback: an
+// `format()`, the only way a page turns an ID into text, over the catalogs in
+// `messages/` and the prose in `prose/`, whose IDs are `prose.<name>`. There
+// is no fallback: an
 // unknown locale or ID, a malformed entry or a formatting error throws, so a
 // gap fails the static build instead of showing the default locale's text.
 // Server-side only. Ported from repo-standards.com's `site/src/i18n/format.ts`
@@ -42,6 +43,12 @@ const files: TranslationFiles = import.meta.env
  * `messages/` and `prose/`, and a test can pass its own. */
 export function siteMessages(translations: Translations) {
   let pseudo: LocaleTranslations | undefined;
+  for (const [locale, { messages }] of Object.entries(translations))
+    for (const id of Object.keys(messages))
+      if (id.startsWith(PROSE))
+        throw new Error(
+          `The message ${id} in ${locale} takes a prose file's ID: no catalog is named prose.`,
+        );
 
   function translationsOf(locale: Locale): LocaleTranslations {
     if (locale === PSEUDO_LOCALE)
@@ -64,27 +71,30 @@ export function siteMessages(translations: Translations) {
     throw new Error(`The message ${id} in ${locale} is malformed.`);
   }
 
-  /** Message `id` in `locale`, with its variables' `values`. Format dates
-   * and numbers through `Intl` before passing them. */
+  /** Message `id` in `locale`, with its variables' `values`, or, for a
+   * `prose.<name>` ID, that prose file's Markdown body without its front
+   * matter. Format dates and numbers through `Intl` before passing them. */
   function format(
     locale: Locale,
     id: MessageId,
     values?: MessageValues,
   ): string {
+    if (id.startsWith(PROSE)) {
+      const name = id.slice(PROSE.length);
+      const text = translationsOf(locale).prose[name];
+      if (text === undefined)
+        throw new Error(`There is no prose ${name} in ${locale}.`);
+      if (values && Object.keys(values).length > 0)
+        throw new Error(`The prose ${name} takes no values.`);
+      return proseParts(text).body;
+    }
     return formatMessage(locale, id, messageSource(locale, id), values);
   }
 
-  /** The body of prose file `name` in `locale`, without its front matter. */
-  function prose(locale: Locale, name: string): string {
-    const text = translationsOf(locale).prose[name];
-    if (text === undefined)
-      throw new Error(`There is no prose ${name} in ${locale}.`);
-    return proseParts(text).body;
-  }
-
-  return { messageSource, format, prose };
+  return { messageSource, format };
 }
 
-export const { messageSource, format, prose } = siteMessages(
-  parseTranslations(files),
-);
+// the ID prefix of the prose files
+const PROSE = "prose.";
+
+export const { messageSource, format } = siteMessages(parseTranslations(files));

@@ -1,5 +1,5 @@
-// The project data the projects channel shows. Draft 2 (lutzseverino/site#6)
-// fills it from each allowlisted repository's README and GitHub metadata at
+// The project data the projects channel shows. lutzseverino/site#6 fills it
+// from each allowlisted repository's README and GitHub metadata at
 // build time; until then there are no projects.
 
 export type Release = {
