@@ -143,6 +143,22 @@ function badges(nodes: readonly PhrasingContent[]): string[] {
   );
 }
 
+/** The text of `markdown`, such as a lead paragraph, without its marks:
+ * what the display's preview of a project draws. */
+export function markdownText(markdown: string): string {
+  const tree = fromMarkdown(markdown, {
+    extensions: [gfm()],
+    mdastExtensions: [gfmFromMarkdown()],
+  });
+  return collapse(
+    tree.children
+      .map((node) =>
+        node.type === "paragraph" ? plainText(node.children) : "",
+      )
+      .join(" "),
+  );
+}
+
 /** A heading's or link's text, without images or HTML. */
 function plainText(nodes: readonly PhrasingContent[]): string {
   return nodes

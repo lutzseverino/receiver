@@ -268,7 +268,12 @@ article img {
   margin-bottom: 0.75em;
 }
 
-/* Reply: the name, the addresses and the transmit box. */
+/* Reply: the portrait, dithered to the display's dots, which scales without
+   smoothing, the name, the addresses and the transmit box. */
+.portrait {
+  display: block;
+  image-rendering: pixelated;
+}
 .name {
   color: var(--phosphor);
   font-family: var(--font-mono);
@@ -348,6 +353,11 @@ article img {
    keyboard focus the display mirrors. */
 .receiving body {
   overflow: hidden;
+}
+/* inside the hidden layer nothing scrolls, so nothing there takes focus as a
+   scrolling region */
+.receiving pre {
+  overflow: visible;
 }
 .receiving body > :not(.display) {
   position: absolute !important;

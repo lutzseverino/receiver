@@ -18,8 +18,22 @@ export const WCAG_22_AA = [
   "wcag22aa",
 ];
 
-/** Each violation on the tab's page: its rule and the elements it found. */
+/** Each violation on the tab's page: its rule and the elements it found,
+ * once its finite animations and transitions have settled, so a colour
+ * caught mid-fade, such as SEND's as the reply script enables it, is not
+ * measured. */
 export async function audit(tab: Tab): Promise<string[]> {
+  await tab.evaluate(() =>
+    Promise.all(
+      document
+        .getAnimations()
+        .filter(
+          (animation) =>
+            animation.effect?.getComputedTiming().endTime !== Infinity,
+        )
+        .map((animation) => animation.finished.catch(() => undefined)),
+    ).then(() => undefined),
+  );
   await tab.run(axe);
   return tab.evaluate(async (tags) => {
     const { violations } = await (

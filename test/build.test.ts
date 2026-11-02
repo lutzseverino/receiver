@@ -181,8 +181,28 @@ test("projects lists the projects in the allowlist's order, each linking its pag
       [true, false, false, false, false],
       locale,
     );
-    for (const li of items)
+    for (const li of items) {
       assert.equal(attr(findAll(li, byTag("p"))[0]!, "lang"), "en", locale);
+      // what the display's preview card shows: the facts and the links
+      assert.deepEqual(
+        findAll(li, (element) => attr(element, "data-fact") !== undefined).map(
+          (element) => attr(element, "data-fact"),
+        ),
+        ["stack", "since", "release", "updated"],
+        locale,
+      );
+      assert.ok(
+        findAll(li, (element) => attr(element, "data-link") === "source")
+          .length === 1,
+        locale,
+      );
+    }
+    // the README lead's first paragraph, as text, where there is one
+    assert.match(
+      attr(items[0]!, "data-lead") ?? "",
+      /^Repo Standards gives a repository/,
+    );
+    assert.equal(attr(items[4]!, "data-lead"), undefined, "Hemiciclo's");
   }
 });
 

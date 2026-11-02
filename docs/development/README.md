@@ -116,8 +116,15 @@ history, the keyboard and the pointer, NO SIGNAL, reduced motion, the plain
 page without WebGL, the remembered settings in every storage state, the
 loop's sleep, the 80 KB gzipped budget for the site's JavaScript, and the
 audit with the display running. It reads what the display draws through the
-display element's `inspect()`. `glyphs.test.ts` covers the font's
-punctuation mapping and the build's glyph coverage check.
+display element's `inspect()`, driven by `test/support/display.ts`.
+`channels.test.ts` builds the site from the test posts and checks each
+channel's layout on the display: home's log and its reception effect's idle
+rate, the projects split, its preview card and the row wipe, the wire's
+columns and its teleprinter, reply filling the display at every width,
+keyboard focus in each layout, reduced motion and the audit of the wire's
+pages. `portrait.test.ts` checks the reply portrait's build-time dithering.
+`glyphs.test.ts` covers the font's punctuation mapping and the build's glyph
+coverage check.
 
 ## Translations
 
@@ -179,6 +186,15 @@ Each language has an RSS 2.0 feed at `/rss.xml`, `/es/rss.xml` and
 `/ca/rss.xml`, with the posts its wire lists in full; every page's head links
 its language's feed. Tests build the site from `test/fixtures/posts/` through
 `builtSite({ posts })` in `test/support/site.ts`; no other build reads them.
+
+## The portrait
+
+Reply's portrait is `src/assets/portrait.png`, the owner's photo with its
+background removed. The build Atkinson-dithers it (`src/lib/portrait.ts`) at
+every size the display draws it, 40 to 152 dots square in steps of a row,
+and serves each at `/portrait/<size>.png`; the reply page shows the largest.
+To change the portrait, replace the file with another cutout on a
+transparent background, square or with the face in its upper part.
 
 ## Generated shadcn source
 

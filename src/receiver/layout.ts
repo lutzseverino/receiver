@@ -7,6 +7,7 @@
 // activates and whose focus the display marks with ►.
 import type { Channel } from "../lib/channels.ts";
 import { displayLabel, displayText } from "./font.ts";
+import type { Sound } from "./sound.ts";
 
 /** The page the display shows: its HTML layer's `main`, its path in the
  * default locale, its channel, and whether it is NO SIGNAL. */
@@ -24,26 +25,84 @@ export type Grid = {
   rows: number;
   /** The cells the page's body takes, between the header and the bar. */
   body: { top: number; bottom: number; left: number; width: number };
+  /** The first of the layout's `lines` the body shows. */
+  scroll: number;
+  /** What the pointer last moved onto, if it is something drawn. */
+  hover: HTMLElement | null;
+  /** How long ago, in milliseconds, the visitor last gave any input. */
+  quiet: number;
+  /** Whether the visitor prefers reduced motion: every effect shows its
+   * final state. */
+  still: boolean;
   /** Draws `text` from cell (`col`, `row`) at `brightness`, 0 to 1; with a
-   * `target`, the cells activate that element and show its focus. */
+   * `target`, the cells activate that element and show its focus, with the
+   * ► in cell `mark`, by default the one before the text. A link's text is
+   * underlined unless `underline` is false. */
   put(
     col: number,
     row: number,
     text: string,
     brightness: number,
     target?: HTMLElement,
+    options?: PutOptions,
   ): void;
+  /** Makes cells `c0` to `c1` of `row` activate `target`, drawn or not. */
+  region(c0: number, c1: number, row: number, target: HTMLElement): void;
   /** Lights dot (`x`, `y`). */
   plot(x: number, y: number, brightness: number): void;
+  /** Draws `text` in the font at `scale` dots a dot, from dot (`x`, `y`);
+   * with `p` below 1, only that share of its dots, chosen by `seed`. */
+  big(
+    text: string,
+    scale: number,
+    x: number,
+    y: number,
+    brightness: number,
+    dissolve?: { p: number; seed: number },
+  ): void;
+  /** Records that the frame shows `effect`, for the browser tests. */
+  saw(effect: string): void;
 };
 
-/** A channel's own drawing (Draft 6, lutzseverino/receiver#10): it claims the
- * pages it draws and paints their body on the grid. */
+/** Where a drawn target's focus marker goes, and whether it is underlined. */
+export type PutOptions = { mark?: number; underline?: boolean };
+
+/** What a channel layout may ask of the receiver. */
+export type LayoutContext = {
+  /** Draws a new frame, as when a picture the layout loads arrives. */
+  refresh(): void;
+  /** The receiver's sound, which stays quiet while it is off. */
+  sound: Pick<Sound, "click" | "tune" | "quiet">;
+};
+
+/** A channel's own drawing (lutzseverino/receiver#10): it claims the pages it
+ * draws and paints their body on the grid. A layout with `lines` leaves
+ * those to the display's text drawing, which scrolls them and follows the
+ * focus, and paints what else the page shows over them. */
 export interface ChannelLayout {
   claims(page: Page): boolean;
+  /** The page's body as lines `width` cells wide, which the display draws
+   * and scrolls; a layout without them draws the whole body itself and the
+   * body never scrolls. */
+  lines?(page: Page, width: number): Line[];
+  /** The cells shown at `now`, while a transition hides some of the body. */
+  mask?(
+    grid: Grid,
+    now: number,
+  ): ((col: number, row: number) => boolean) | null;
   draw(grid: Grid, page: Page, now: number): void;
-  /** Whether it is animating at `now`, so the display keeps drawing. */
-  animating?(now: number): boolean;
+  /** The name the header shows for `page` at `now`, as RDS names what is
+   * on air, when it is not the channel's own. */
+  name?(page: Page, now: number): string | null;
+  /** The display starts showing `page`, after `from`: the page before it,
+   * or `null` when the receiver starts, once its intro has ended. */
+  enter?(page: Page, from: Page | null, now: number): void;
+  /** In how many milliseconds the layout next changes, or `null` while it
+   * holds still; the display draws again then. */
+  next?(now: number): number | null;
+  /** The visitor pressed the display where nothing drawn is, or Enter with
+   * nothing focused. */
+  press?(now: number): void;
 }
 
 /** A run of text at one brightness, and the element it activates. */
@@ -51,6 +110,8 @@ export type Segment = {
   text: string;
   brightness: number;
   target?: HTMLElement;
+  /** Whether the text is underlined; a link's is, by default. */
+  underline?: boolean;
 };
 
 /** A line of the generic layout: its segments, or a band of a picture. */

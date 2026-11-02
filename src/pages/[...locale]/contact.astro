@@ -1,5 +1,7 @@
 ---
-// Reply: the owner's name, two lines, the addresses and the transmit box.
+// Reply: the owner's portrait, dithered at build (`lib/portrait.ts`), name,
+// two lines, the addresses and the transmit box. The portrait sits beside
+// the name, so it carries no text of its own.
 import { EMAIL, GITHUB_URL, OWNER_NAME } from "@/config";
 import { Button } from "@/components/app/button";
 import { Label } from "@/components/app/label";
@@ -9,6 +11,7 @@ import { localeRoutes, type Locale } from "@/i18n/locales";
 import Base from "@/layouts/Base.astro";
 import { channel } from "@/lib/channels";
 import { addressParts, encodeMailTarget } from "@/lib/email";
+import { PORTRAIT_SIZES, portraitPath } from "@/lib/portrait-files";
 
 export function getStaticPaths() {
   return localeRoutes();
@@ -24,6 +27,7 @@ const mail = encodeMailTarget({
   }),
 });
 const github = new URL(GITHUB_URL);
+const portrait = PORTRAIT_SIZES.at(-1)!;
 ---
 
 <Base
@@ -32,6 +36,13 @@ const github = new URL(GITHUB_URL);
   description={format(locale, "copy.reply.description")}
 >
   <h1>{format(locale, "common.channel.reply")}</h1>
+  <img
+    class="portrait"
+    src={portraitPath(portrait)}
+    width={portrait}
+    height={portrait}
+    alt=""
+  />
   <p class="name">{OWNER_NAME}</p>
   <p>{format(locale, "copy.reply.line-1")}</p>
   <p>{format(locale, "copy.reply.line-2")}</p>
