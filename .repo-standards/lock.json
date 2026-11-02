@@ -13,7 +13,7 @@
     "profile": "standard",
     "platform": "github"
   },
-  "inspection": "sha256:c50658619ff790b1d4756bf1c4a58dbc7987299c59ea107c85538c4934440e9d",
+  "inspection": "sha256:27988e8170ee4c9bea5dcbb25f0590403250e35904bb2e99c30bc30c06db29b8",
   "files": {
     "docs/agents/README.md": {
       "sha256": "ec642abe47a6e67e2d7a6d030a7daf762f97e1b39a655b415f5905514d37f8f9",
@@ -1152,7 +1152,7 @@
       "executable": false
     },
     ".repo-standards/inputs/scope-history.json": {
-      "sha256": "fd512656874ac17bc348617073c395df850f09ac47419d18a5a13b5d59dc83be",
+      "sha256": "da7ced7158956212bf9e7aba2006ec0efff539ee6ec3f47f8953445c003963b8",
       "executable": false
     },
     ".repo-standards/rules/documentation.md": {
@@ -1209,7 +1209,7 @@
     }
   },
   "state": {
-    "sha256": "65bbcbe59082ff9fbc8fa8c45a42b11a90d7ec55e84014ba0c42bc906656d491",
+    "sha256": "948a3316829e512d7ace7f1f5b45bfe61962af9955d011ea0839873a973f7d35",
     "executable": false
   }
 }
