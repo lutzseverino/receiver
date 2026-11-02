@@ -336,15 +336,22 @@ export function startReceiver({
 
   function bar() {
     const languages = languageLinks();
-    const sep = " · ";
     const codes = languages.map((link) =>
       (link.getAttribute("hreflang") ?? "").toUpperCase(),
     );
-    const languageWidth = codes.join(sep).length;
     const soundButton = control("sound");
     const soundText = displayLabel(
       sound.on ? soundButton?.dataset.on : soundButton?.dataset.off,
     );
+    // the language label stays beside SOUND: where `EN · ES · CA` and SOUND
+    // can't share the row, as on the narrowest phones, its separators close
+    // up to `EN·ES·CA`
+    const spaced = " · ";
+    const sep =
+      1 + codes.join(spaced).length + 1 + soundText.length <= cells.cols
+        ? spaced
+        : "·";
+    const languageWidth = codes.join(sep).length;
     const plainButton = control("plain");
     const plainText = displayLabel(plainButton?.textContent);
     // the scroll indicator, PLAIN, the language label and SOUND on one row

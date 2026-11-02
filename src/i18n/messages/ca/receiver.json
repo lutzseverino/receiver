@@ -4,11 +4,11 @@
     "source": "46124e02"
   },
   "sound.on": {
-    "message": "So sí",
+    "message": "Amb so",
     "source": "8c477e13"
   },
   "sound.off": {
-    "message": "So no",
+    "message": "Sense so",
     "source": "3f5d7094"
   },
   "plain": {

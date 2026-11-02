@@ -396,12 +396,26 @@ test("a drawn body link, the language label, SOUND and PLAIN each activate their
       "es",
     );
 
+    // each sound label is drawn whole, beside the language label, even on
+    // the narrowest phone
+    const silent = await idle(tab);
+    assert.ok(
+      silent.regions.some(
+        (region) => region.control === "sound" && region.text === "SIN SONIDO",
+      ),
+      `SIN SONIDO at ${width} px`,
+    );
     await activate(tab, width, (region) => region.control === "sound");
     const sounding = await until(async () => {
       const state = await inspect(tab);
       return state?.sound ? state : null;
     }, "the sound to turn on");
-    assert.ok(sounding.regions.some((region) => region.text === "SONIDO SÍ"));
+    assert.ok(
+      sounding.regions.some(
+        (region) => region.control === "sound" && region.text === "CON SONIDO",
+      ),
+      `CON SONIDO at ${width} px`,
+    );
     assert.equal(
       await tab.evaluate(() =>
         document
