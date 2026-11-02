@@ -12,7 +12,7 @@ Long wave travels far and carries little. A few words, a long way.
 ## Why long wave
 
 - A first item, with a [link](https://example.com/).
-- A second item.
+- A [second](../short-note/) item.
 
 1. One.
 2. Two.

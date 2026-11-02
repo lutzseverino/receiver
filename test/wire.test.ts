@@ -381,6 +381,12 @@ test("each feed carries its wire's posts in full; es and ca carry the untranslat
     assert.ok(
       content.includes(`src="${SITE_URL}/blog/long-wave/gradient.png"`),
     );
+    // a relative link resolves against the post's own page
+    assert.ok(
+      content.includes(`<a href="${SITE_URL}/blog/short-note/">second</a>`),
+      content,
+    );
+    assert.ok(content.includes('<a href="https://example.com/">link</a>'));
   }
 });
 

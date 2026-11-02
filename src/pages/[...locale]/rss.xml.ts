@@ -29,7 +29,7 @@ export const GET: APIRoute<{ locale: Locale }> = async ({ props, site }) => {
       link: url(postPath(post)),
       date: post.date,
       summary: post.summary,
-      content: absoluteUrls(post.body, origin),
+      content: absoluteUrls(post.body, url(postPath(post))),
       language: post.locale === siteLocale ? undefined : post.locale,
     })),
   });

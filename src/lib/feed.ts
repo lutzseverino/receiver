@@ -74,11 +74,13 @@ export function rssFeed(feed: Feed): string {
   ].join("\n");
 }
 
-/** `html` with its root-relative `href` and `src` attributes made absolute
- * against `origin`, as a feed reader needs them. */
-export function absoluteUrls(html: string, origin: string | URL): string {
+/** `html`, a post's body, with every relative `href` and `src` made
+ * absolute against `page`, the post's own URL, as a feed reader needs them.
+ * Addresses with a scheme, such as `https:` or `mailto:`, stay as they are. */
+export function absoluteUrls(html: string, page: string): string {
   return html.replace(
-    /\b(href|src)="(\/(?!\/)[^"]*)"/g,
-    (_, name: string, url: string) => `${name}="${new URL(url, origin).href}"`,
+    /\b(href|src)="([^"]*)"/g,
+    (whole, name: string, url: string) =>
+      URL.canParse(url) ? whole : `${name}="${new URL(url, page).href}"`,
   );
 }
