@@ -4,8 +4,8 @@
     "source": "d5184e2d"
   },
   "home.description": {
-    "message": "Jasper Lutz Severino, en antena: proyectos, escritos y un canal que admite respuestas.",
-    "source": "f14bc6c2"
+    "message": "Jasper Lutz Severino, en antena: proyectos de software, un teletipo para escritos y un canal que admite respuestas.",
+    "source": "cd410194"
   },
   "projects.title": {
     "message": "Proyectos · Jasper Lutz Severino",
@@ -44,7 +44,7 @@
     "source": "b106fd79"
   },
   "reply.description": {
-    "message": "Escribe a Jasper Lutz Severino: una dirección de correo, GitHub y un espacio que pasa tu mensaje a tu aplicación de correo.",
+    "message": "Escribe a Jasper Lutz Severino: una dirección de correo, GitHub y un recuadro que pasa tu mensaje a tu aplicación de correo.",
     "source": "0ded456c"
   },
   "reply.line-1": {
@@ -60,7 +60,7 @@
     "source": "f02e2a4c"
   },
   "signal.description": {
-    "message": "Nada emite en esta dirección. El resto del dial sigue en antena.",
+    "message": "No hay nada emitiendo en esta dirección. El resto del dial sigue en antena.",
     "source": "95cdd313"
   }
 }

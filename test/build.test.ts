@@ -109,24 +109,26 @@ test("each fixed page takes its own title and description from the launch copy",
   } as const;
   for (const locale of LOCALES) {
     const titles = new Set<string>();
-    const descriptions = new Set<string>();
+    const descriptions = new Set<string | undefined>();
     for (const [file, page] of Object.entries(pages)) {
       const html = parseHtml(site.read(PREFIXES[locale] + file));
       const title = text(findAll(html, byTag("title"))[0]);
-      const description = findAll(html, byTag("meta")).find(
-        (meta) => attr(meta, "name") === "description",
+      const meta = findAll(html, byTag("meta")).find(
+        (element) => attr(element, "name") === "description",
       );
+      const description = meta && attr(meta, "content");
       assert.equal(title, format(locale, `copy.${page}.title`), file);
       assert.equal(
-        description && attr(description, "content"),
+        description,
         format(locale, `copy.${page}.description`),
         file,
       );
       titles.add(title);
-      descriptions.add(attr(description!, "content")!);
+      descriptions.add(description);
     }
-    assert.equal(titles.size, 5, `${locale}: a title per page`);
-    assert.equal(descriptions.size, 5, `${locale}: a description per page`);
+    const count = Object.keys(pages).length;
+    assert.equal(titles.size, count, `${locale}: a title per page`);
+    assert.equal(descriptions.size, count, `${locale}: a description per page`);
   }
 });
 

@@ -16,7 +16,7 @@ test("format() reads each locale's catalogs", () => {
   );
 });
 
-test("the project and post page templates read the page's own data in every locale", () => {
+test("the project and post copy messages take their data's values in every locale", () => {
   const project = { name: "NAME", tagline: "TAGLINE" };
   const post = { title: "TITLE", summary: "SUMMARY" };
   for (const locale of LOCALES) {

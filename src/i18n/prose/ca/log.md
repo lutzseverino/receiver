@@ -1,13 +1,11 @@
 ---
-source: 36a17473
+source: 35b37c1b
 ---
 
 si sents això, el senyal ha aguantat.
 
-escric les coses perquè només calgui dir-les una vegada.
+faig programari, sobretot del que ajuda els altres a fer el seu.
 
-gairebé tot el que faig posa en sintonia la feina dels altres.
+una part és més endavant al dial.
 
-és més endavant al dial, encara en marxa.
-
-la resta arriba si continues girant.
+la resta arriba si continues sintonitzant.

@@ -1,13 +1,11 @@
 ---
-source: 36a17473
+source: 35b37c1b
 ---
 
 si oyes esto, la señal ha aguantado.
 
-escribo las cosas para que solo haya que decirlas una vez.
+hago software, sobre todo del que ayuda a otros a hacer el suyo.
 
-casi todo lo que hago pone en sintonía el trabajo de otros.
+una parte está más adelante en el dial.
 
-está más adelante en el dial, todavía en marcha.
-
-el resto llega si sigues girando.
+el resto llega si no dejas de sintonizar.

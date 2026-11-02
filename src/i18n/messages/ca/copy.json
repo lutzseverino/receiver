@@ -4,8 +4,8 @@
     "source": "d5184e2d"
   },
   "home.description": {
-    "message": "Jasper Lutz Severino, en antena: projectes, escrits i un canal que accepta respostes.",
-    "source": "f14bc6c2"
+    "message": "Jasper Lutz Severino, en antena: projectes de programari, un teletip per a escrits i un canal que accepta respostes.",
+    "source": "cd410194"
   },
   "projects.title": {
     "message": "Projectes · Jasper Lutz Severino",
@@ -44,7 +44,7 @@
     "source": "b106fd79"
   },
   "reply.description": {
-    "message": "Escriu a Jasper Lutz Severino: una adreça de correu, GitHub i un espai que passa el teu missatge a la teva aplicació de correu.",
+    "message": "Escriu a Jasper Lutz Severino: una adreça de correu, GitHub i un quadre que passa el teu missatge a la teva aplicació de correu.",
     "source": "0ded456c"
   },
   "reply.line-1": {
@@ -60,7 +60,7 @@
     "source": "f02e2a4c"
   },
   "signal.description": {
-    "message": "Res no emet en aquesta adreça. La resta del dial continua en antena.",
+    "message": "No hi ha res emetent en aquesta adreça. La resta del dial continua en antena.",
     "source": "95cdd313"
   }
 }
