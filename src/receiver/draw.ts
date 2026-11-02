@@ -22,11 +22,16 @@ export const wrapText = (text: string, width: number): string[] =>
   );
 
 /** `items` joined with ` · ` into lines `width` cells wide, which break
- * between items, never inside one. */
+ * between items, and inside one only when it is wider than a line. */
 export function wrapItems(items: readonly string[], width: number): string[] {
   const lines = [""];
   for (const item of items) {
     const current = lines.at(-1)!;
+    // an item wider than a line takes lines of its own
+    if (item.length > width) {
+      lines.push(...wrapText(item, width), "");
+      continue;
+    }
     const next = current ? `${current} · ${item}` : item;
     if (next.length > width && current) lines.push(item);
     else lines[lines.length - 1] = next;
