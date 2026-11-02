@@ -1,4 +1,4 @@
-// The build's glyph coverage check (specification lutzseverino/site#4, D17):
+// The build's glyph coverage check (specification lutzseverino/receiver#4, D17):
 // every string the display can draw, from every source in the build, passes
 // through `glyphSources`, and `checkGlyphs` fails the build on any character
 // the display's font lacks after the punctuation mapping, naming the source,

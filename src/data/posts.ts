@@ -4,7 +4,7 @@
 // matter: `title`, `date` (an ISO date), `summary` and `tags` (a list). A
 // merged post is published: there is no draft flag. Images sit beside the
 // posts and are dithered at build (lib/dither.ts). The site launches with no
-// posts (specification lutzseverino/site#4).
+// posts (specification lutzseverino/receiver#4).
 import { readdir, readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
