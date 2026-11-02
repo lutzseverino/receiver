@@ -10,7 +10,7 @@ import { fileURLToPath } from "node:url";
 import { EMAIL, GITHUB_URL, OWNER_NAME } from "../config.ts";
 import { loadPosts, type Post } from "../data/posts.ts";
 import { loadProjects, type Project } from "../data/projects.ts";
-import { LOCALES } from "../i18n/locales.ts";
+import { DEFAULT_LOCALE, LOCALES } from "../i18n/locales.ts";
 import { formatMessage, messageVariables } from "../i18n/message.ts";
 import {
   isTranslated,
@@ -81,7 +81,8 @@ export async function glyphSources({
     });
   for (const post of posts ?? (await loadPosts()))
     sources.push({
-      source: `post ${post.locale}/${post.slug}`,
+      // its file, as `posts/` names a post and its translations
+      source: `posts/${post.slug}${post.locale === DEFAULT_LOCALE ? "" : `.${post.locale}`}.md`,
       text: [post.title, post.summary, ...post.tags, htmlText(post.body)].join(
         " ",
       ),

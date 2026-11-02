@@ -275,6 +275,48 @@ for (const width of WIDTHS) {
   });
 }
 
+test("going back and forward again before a tune ends stays on the page shown", async () => {
+  const tab = await open("/", { width: 1280 });
+  await skipIntro(tab);
+  await tab.evaluate(() =>
+    document
+      .querySelector<HTMLAnchorElement>('header a[href="/projects/"]')!
+      .click(),
+  );
+  await tunedTo(tab, "/projects/");
+  // Back starts a tune to home; Forward returns before its seek ends
+  await tab.evaluate(() => {
+    history.back();
+    setTimeout(() => history.forward(), 150);
+  });
+  await pause(1200);
+  const { where, state } = await tunedTo(tab, "/projects/");
+  assert.equal(where.h1, "Projects");
+  assert.equal(state.frequency, 105);
+  await tab.close();
+});
+
+test("tuning to reply runs its script for the page shown, each time", async () => {
+  const tab = await open("/", { width: 1280 });
+  await skipIntro(tab);
+  for (const pathname of ["/contact/", "/", "/contact/"]) {
+    await tab.evaluate(
+      (href) =>
+        document
+          .querySelector<HTMLAnchorElement>(`header a[href="${href}"]`)!
+          .click(),
+      pathname,
+    );
+    await tunedTo(tab, pathname);
+  }
+  const reply = await tab.evaluate(() => ({
+    address: document.querySelector("[data-email] a") !== null,
+    send: !document.querySelector<HTMLButtonElement>("[type=submit]")!.disabled,
+  }));
+  assert.deepEqual(reply, { address: true, send: true });
+  await tab.close();
+});
+
 test("Tab reaches every real link and control in order, with the display's ► on the focused one", async () => {
   for (const [pathname, width] of [
     ["/", 1280],

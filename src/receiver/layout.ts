@@ -284,8 +284,9 @@ export function textLines(main: HTMLElement, width: number): Line[] {
       element.naturalWidth > 0
         ? [element.naturalWidth, element.naturalHeight]
         : [element.width || 4, element.height || 3];
-    // a picture comes through the dots: as wide as the text, or 15 rows tall
-    const dots = Math.max(5, Math.min(w * 5, Math.round((120 * iw) / ih)));
+    // a picture arrives dithered at build, one pixel a dot, at the widest the
+    // display shows it; a narrower column takes it scaled down
+    const dots = Math.max(1, Math.min(w * 5, iw));
     const height = Math.round((dots * ih) / iw);
     out.push({ segments: [], image: { element, width: dots, height } });
     for (let k = 1; k < Math.ceil(height / 8); k++)
@@ -321,7 +322,12 @@ export function textLines(main: HTMLElement, width: number): Line[] {
       case "P":
       case "FIGCAPTION":
       case "ADDRESS":
-        if (!visible(inline(element, 0.8))) return containers(element, w);
+        // a paragraph holding a picture alone draws the picture
+        if (
+          [...element.childNodes].some(isBlock) ||
+          !visible(inline(element, 0.8))
+        )
+          return containers(element, w);
         paragraph(inline(element, 0.8), w);
         blank();
         return;

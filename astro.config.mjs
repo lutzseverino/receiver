@@ -25,14 +25,23 @@ const noSignalPages = {
 };
 
 /** Fails the build on any character the display's font lacks, in any string
- * the display can draw (`src/lib/glyph-coverage.ts`). */
+ * the display can draw (`src/lib/glyph-coverage.ts`), from the posts the
+ * build publishes. */
+let postsDirectory;
 const glyphCoverage = {
   name: "glyph-coverage",
   hooks: {
+    "astro:config:done": ({ config }) => {
+      const defined = config.vite?.define?.__POSTS_DIRECTORY__;
+      postsDirectory = defined ? JSON.parse(defined) : undefined;
+    },
     "astro:build:start": async () => {
       const { checkGlyphs, glyphSources } =
         await import("./src/lib/glyph-coverage.ts");
-      checkGlyphs(await glyphSources());
+      const { loadPosts } = await import("./src/data/posts.ts");
+      checkGlyphs(
+        await glyphSources({ posts: await loadPosts(postsDirectory) }),
+      );
     },
   },
 };

@@ -748,13 +748,13 @@ export function startReceiver({
     schedule();
   }
 
-  // ---- pictures: ordered-dithered into dots ----
+  // ---- pictures: dithered at build, one pixel a dot; a narrower column
+  // samples every dot it keeps from the nearest pixel ----
 
   const pictures = new WeakMap<
     HTMLImageElement,
     Map<string, Uint8Array | null>
   >();
-  const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
   function imageBits(element: HTMLImageElement, w: number, h: number) {
     if (!element.complete || element.naturalWidth === 0) return null;
     let sizes = pictures.get(element);
@@ -767,6 +767,7 @@ export function startReceiver({
       c.width = w;
       c.height = h;
       const g = c.getContext("2d", { willReadFrequently: true })!;
+      g.imageSmoothingEnabled = false;
       g.drawImage(element, 0, 0, w, h);
       const data = g.getImageData(0, 0, w, h).data;
       bits = new Uint8Array(w * h);
@@ -777,8 +778,7 @@ export function startReceiver({
             ((0.299 * data[i]! + 0.587 * data[i + 1]! + 0.114 * data[i + 2]!) /
               255) *
             (data[i + 3]! / 255);
-          bits[y * w + x] =
-            light > (BAYER[(y % 4) * 4 + (x % 4)]! + 0.5) / 16 ? 1 : 0;
+          bits[y * w + x] = light > 0.5 ? 1 : 0;
         }
     } catch {
       // a picture from elsewhere can't be read: its alternative text stays
@@ -1074,6 +1074,8 @@ export function startReceiver({
       noise = true;
       sound.click();
       await tween(SEEK_MS, (t) => {
+        // a later tune, or a return to the page shown, takes over the dial
+        if (generation !== tunes) return;
         frequency = tenth(from + (to - from) * ease(t));
         sound.tune(Math.abs(frequency - to));
       });
@@ -1339,6 +1341,17 @@ export function startReceiver({
     () => {
       if (location.pathname + location.search !== shown)
         void tune(new URL(location.href), false);
+      else if (tuning) {
+        // history came back to the page shown: the pending tune is dropped
+        tunes++;
+        tuning = false;
+        noise = false;
+        seekLabel = null;
+        frequency = frequencyOf(page.channel);
+        sound.quiet();
+        delete display.dataset.state;
+        compose();
+      }
     },
     listen,
   );

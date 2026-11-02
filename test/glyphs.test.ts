@@ -67,6 +67,8 @@ const post: Post = {
   tags: ["fixture"],
   body: '<p>Fine text, then an arrow → here.</p><p><img src="x.png" alt="ok"></p>',
   locales: ["en"],
+  minutes: 1,
+  images: [],
 };
 
 test("a catalog string with a character the font lacks fails, naming its catalog key and the character", async () => {
@@ -123,7 +125,7 @@ test("a project README's text with a character the font lacks fails, naming the 
   );
 });
 
-test("a post with a character the font lacks fails, naming the post", async () => {
+test("a post with a character the font lacks fails, naming its file", async () => {
   const sources = await glyphSources({
     files: {},
     projects: [],
@@ -132,7 +134,7 @@ test("a post with a character the font lacks fails, naming the post", async () =
   assert.throws(
     () => checkGlyphs(sources),
     (error: Error) =>
-      error.message.includes("post en/fixture-post") &&
+      error.message.includes("posts/fixture-post.md") &&
       error.message.includes('"→" (U+2192)'),
   );
 });
