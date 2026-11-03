@@ -1,0 +1,41 @@
+HTTP/2 301 
+server: GitHub.com
+content-type: text/html
+location: https://lutzseverino.com/
+x-github-request-id: 08C0:611D1:16471:19674:6AE9B684
+x-github-edge-region: switzerlandnorth
+accept-ranges: bytes
+age: 0
+date: Tue, 03 Nov 2026 10:25:08 GMT
+via: 1.1 varnish
+x-served-by: cache-toj-leto2350043-TOJ
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1793701508.218592,VS0,VE136
+vary: Accept-Encoding
+x-fastly-request-id: 82f210815e770d8d7236374dd1bf5364ccc5045b
+content-length: 162
+
+HTTP/2 200 
+server: GitHub.com
+content-type: text/html; charset=utf-8
+last-modified: Tue, 03 Nov 2026 10:24:27 GMT
+access-control-allow-origin: *
+etag: "6ae9b65b-2e84"
+expires: Tue, 03 Nov 2026 10:35:08 GMT
+cache-control: max-age=600
+x-proxy-cache: MISS
+x-github-request-id: 7096:476BF:166FF:198F1:6AE9B684
+x-github-edge-region: switzerlandnorth
+accept-ranges: bytes
+age: 0
+date: Tue, 03 Nov 2026 10:25:08 GMT
+via: 1.1 varnish
+x-served-by: cache-mad22041-MAD
+x-cache: MISS
+x-cache-hits: 0
+x-timer: S1793701508.403337,VS0,VE135
+vary: Accept-Encoding
+x-fastly-request-id: abf57ed3c396e5677d5ce151bca688ac4b123b66
+content-length: 11908
+

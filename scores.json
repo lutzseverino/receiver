@@ -1,0 +1,470 @@
+[
+  {
+    "page": "home",
+    "locale": "en",
+    "url": "https://lutzseverino.com/",
+    "fetchTime": "2026-11-03T10:29:12.400Z",
+    "performance": 100,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 100,
+    "pass": true,
+    "runtimeError": null,
+    "beaconRequests": [
+      {
+        "url": "https://static.cloudflareinsights.com/beacon.min.js",
+        "status": 200
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 200
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 204
+      }
+    ]
+  },
+  {
+    "page": "projects",
+    "locale": "en",
+    "url": "https://lutzseverino.com/projects/",
+    "fetchTime": "2026-11-03T10:29:23.731Z",
+    "performance": 100,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 100,
+    "pass": true,
+    "runtimeError": null,
+    "beaconRequests": [
+      {
+        "url": "https://static.cloudflareinsights.com/beacon.min.js",
+        "status": 200
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 204
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "page": "project",
+    "locale": "en",
+    "url": "https://lutzseverino.com/projects/repo-standards/",
+    "fetchTime": "2026-11-03T10:30:56.394Z",
+    "performance": 100,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 100,
+    "pass": true,
+    "runtimeError": null,
+    "beaconRequests": [
+      {
+        "url": "https://static.cloudflareinsights.com/beacon.min.js",
+        "status": 200
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 204
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "page": "wire",
+    "locale": "en",
+    "url": "https://lutzseverino.com/blog/",
+    "fetchTime": "2026-11-03T10:31:07.782Z",
+    "performance": 100,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 100,
+    "pass": true,
+    "runtimeError": null,
+    "beaconRequests": [
+      {
+        "url": "https://static.cloudflareinsights.com/beacon.min.js",
+        "status": 200
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 200
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 204
+      }
+    ]
+  },
+  {
+    "page": "reply",
+    "locale": "en",
+    "url": "https://lutzseverino.com/contact/",
+    "fetchTime": "2026-11-03T10:31:19.197Z",
+    "performance": 100,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 100,
+    "pass": true,
+    "runtimeError": null,
+    "beaconRequests": [
+      {
+        "url": "https://static.cloudflareinsights.com/beacon.min.js",
+        "status": 200
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 204
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "page": "no-signal",
+    "locale": "en",
+    "url": "https://lutzseverino.com/404.html",
+    "fetchTime": "2026-11-03T10:31:30.598Z",
+    "performance": 100,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 66,
+    "pass": true,
+    "runtimeError": null,
+    "beaconRequests": [
+      {
+        "url": "https://static.cloudflareinsights.com/beacon.min.js",
+        "status": 200
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 204
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "page": "home",
+    "locale": "es",
+    "url": "https://lutzseverino.com/es/",
+    "fetchTime": "2026-11-03T10:31:41.881Z",
+    "performance": 100,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 100,
+    "pass": true,
+    "runtimeError": null,
+    "beaconRequests": [
+      {
+        "url": "https://static.cloudflareinsights.com/beacon.min.js",
+        "status": 200
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 204
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "page": "projects",
+    "locale": "es",
+    "url": "https://lutzseverino.com/es/projects/",
+    "fetchTime": "2026-11-03T10:31:53.126Z",
+    "performance": 100,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 100,
+    "pass": true,
+    "runtimeError": null,
+    "beaconRequests": [
+      {
+        "url": "https://static.cloudflareinsights.com/beacon.min.js",
+        "status": 200
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 204
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "page": "project",
+    "locale": "es",
+    "url": "https://lutzseverino.com/es/projects/repo-standards/",
+    "fetchTime": "2026-11-03T10:32:04.678Z",
+    "performance": 100,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 100,
+    "pass": true,
+    "runtimeError": null,
+    "beaconRequests": [
+      {
+        "url": "https://static.cloudflareinsights.com/beacon.min.js",
+        "status": 200
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 200
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 204
+      }
+    ]
+  },
+  {
+    "page": "wire",
+    "locale": "es",
+    "url": "https://lutzseverino.com/es/blog/",
+    "fetchTime": "2026-11-03T10:32:15.888Z",
+    "performance": 100,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 100,
+    "pass": true,
+    "runtimeError": null,
+    "beaconRequests": [
+      {
+        "url": "https://static.cloudflareinsights.com/beacon.min.js",
+        "status": 200
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 204
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "page": "reply",
+    "locale": "es",
+    "url": "https://lutzseverino.com/es/contact/",
+    "fetchTime": "2026-11-03T10:32:27.209Z",
+    "performance": 100,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 100,
+    "pass": true,
+    "runtimeError": null,
+    "beaconRequests": [
+      {
+        "url": "https://static.cloudflareinsights.com/beacon.min.js",
+        "status": 200
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 204
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "page": "no-signal",
+    "locale": "es",
+    "url": "https://lutzseverino.com/es/404.html",
+    "fetchTime": "2026-11-03T10:32:38.655Z",
+    "performance": 100,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 66,
+    "pass": true,
+    "runtimeError": null,
+    "beaconRequests": [
+      {
+        "url": "https://static.cloudflareinsights.com/beacon.min.js",
+        "status": 200
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 204
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "page": "home",
+    "locale": "ca",
+    "url": "https://lutzseverino.com/ca/",
+    "fetchTime": "2026-11-03T10:32:49.951Z",
+    "performance": 100,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 100,
+    "pass": true,
+    "runtimeError": null,
+    "beaconRequests": [
+      {
+        "url": "https://static.cloudflareinsights.com/beacon.min.js",
+        "status": 200
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 204
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "page": "projects",
+    "locale": "ca",
+    "url": "https://lutzseverino.com/ca/projects/",
+    "fetchTime": "2026-11-03T10:33:01.294Z",
+    "performance": 100,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 100,
+    "pass": true,
+    "runtimeError": null,
+    "beaconRequests": [
+      {
+        "url": "https://static.cloudflareinsights.com/beacon.min.js",
+        "status": 200
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 204
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "page": "project",
+    "locale": "ca",
+    "url": "https://lutzseverino.com/ca/projects/repo-standards/",
+    "fetchTime": "2026-11-03T10:33:12.816Z",
+    "performance": 100,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 100,
+    "pass": true,
+    "runtimeError": null,
+    "beaconRequests": [
+      {
+        "url": "https://static.cloudflareinsights.com/beacon.min.js",
+        "status": 200
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 204
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "page": "wire",
+    "locale": "ca",
+    "url": "https://lutzseverino.com/ca/blog/",
+    "fetchTime": "2026-11-03T10:33:24.205Z",
+    "performance": 100,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 100,
+    "pass": true,
+    "runtimeError": null,
+    "beaconRequests": [
+      {
+        "url": "https://static.cloudflareinsights.com/beacon.min.js",
+        "status": 200
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 204
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "page": "reply",
+    "locale": "ca",
+    "url": "https://lutzseverino.com/ca/contact/",
+    "fetchTime": "2026-11-03T10:33:35.475Z",
+    "performance": 100,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 100,
+    "pass": true,
+    "runtimeError": null,
+    "beaconRequests": [
+      {
+        "url": "https://static.cloudflareinsights.com/beacon.min.js",
+        "status": 200
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 204
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "page": "no-signal",
+    "locale": "ca",
+    "url": "https://lutzseverino.com/ca/404.html",
+    "fetchTime": "2026-11-03T10:33:46.850Z",
+    "performance": 100,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 66,
+    "pass": true,
+    "runtimeError": null,
+    "beaconRequests": [
+      {
+        "url": "https://static.cloudflareinsights.com/beacon.min.js",
+        "status": 200
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 204
+      },
+      {
+        "url": "https://cloudflareinsights.com/cdn-cgi/rum",
+        "status": 200
+      }
+    ]
+  }
+]

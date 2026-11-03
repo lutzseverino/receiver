@@ -1,0 +1,30 @@
+[
+  {
+    "requested": "https://lutzseverino.com/",
+    "status": 200,
+    "finalUrl": "https://lutzseverino.com/",
+    "redirects": 0,
+    "tlsVerify": 0
+  },
+  {
+    "requested": "http://lutzseverino.com/",
+    "status": 200,
+    "finalUrl": "https://lutzseverino.com/",
+    "redirects": 1,
+    "tlsVerify": 0
+  },
+  {
+    "requested": "https://www.lutzseverino.com/",
+    "status": 200,
+    "finalUrl": "https://lutzseverino.com/",
+    "redirects": 1,
+    "tlsVerify": 0
+  },
+  {
+    "requested": "http://www.lutzseverino.com/",
+    "status": 200,
+    "finalUrl": "https://lutzseverino.com/",
+    "redirects": 1,
+    "tlsVerify": 0
+  }
+]
