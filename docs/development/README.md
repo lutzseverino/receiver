@@ -92,9 +92,9 @@ reaches GitHub. `readme.test.ts` and `projects.test.ts` check what each README
 and GitHub answer gives a project, and how the allowlist and failures are
 handled. `build.test.ts` reads the built HTML: every route in every locale,
 its `lang`, headings, landmarks and navigation, its canonical and `hreflang`
-links, the projects and their pages, and the absence of the channel
-frequencies, the email address, unlisted repositories and the analytics
-beacon. `plain-pages.test.ts`, `reply.test.ts` and
+links, the projects and their pages, the absence of the channel
+frequencies, the email address and unlisted repositories, and the deferred
+analytics beacon with its configured public token. `plain-pages.test.ts`, `reply.test.ts` and
 `language.test.ts` drive a headless browser through the Chrome DevTools
 Protocol over Node's own WebSocket (`test/support/browser.ts`), with no
 browser package. They check every page without JavaScript at 320, 360 and

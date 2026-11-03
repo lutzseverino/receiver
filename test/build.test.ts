@@ -6,7 +6,7 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { before, test } from "node:test";
-import { EMAIL, SITE_URL } from "../src/config.ts";
+import { ANALYTICS_TOKEN, EMAIL, SITE_URL } from "../src/config.ts";
 import { format } from "../src/i18n/format.ts";
 import { LOCALES, localePath, type SiteLocale } from "../src/i18n/locales.ts";
 import { CHANNELS } from "../src/lib/channels.ts";
@@ -438,11 +438,21 @@ test("no repository outside the allowlist appears, such as the private zarcerog/
     assert.doesNotMatch(content, /odonta|homelab/i, file);
 });
 
-test("without a site token, no page carries the analytics beacon", () => {
-  for (const file of site.pages)
-    assert.doesNotMatch(
-      site.read(file),
-      /cloudflareinsights|data-cf-beacon/,
+test("every page carries the configured public analytics beacon", () => {
+  assert.ok(ANALYTICS_TOKEN, "the deployed site has a public analytics token");
+  for (const file of site.pages) {
+    const scripts = findAll(parseHtml(site.read(file)), byTag("script"));
+    const beacons = scripts.filter(
+      (script) =>
+        attr(script, "src") ===
+        "https://static.cloudflareinsights.com/beacon.min.js",
+    );
+    assert.equal(beacons.length, 1, `${file}: one beacon`);
+    assert.equal(attr(beacons[0]!, "defer"), "", `${file}: deferred beacon`);
+    assert.deepEqual(
+      JSON.parse(attr(beacons[0]!, "data-cf-beacon") ?? "null"),
+      { token: ANALYTICS_TOKEN },
       file,
     );
+  }
 });
