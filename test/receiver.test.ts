@@ -780,7 +780,20 @@ test("with the display running, every page passes the WCAG 2.2 A and AA audit, a
   for (const file of site.pages)
     for (const width of [320, 1280]) {
       const tab = await open(pagePath(file), { width });
-      await skipIntro(tab);
+      try {
+        await skipIntro(tab);
+      } catch (error) {
+        const startup = await tab.evaluate(() => ({
+          classes: document.documentElement.className,
+          marks: performance
+            .getEntriesByType("mark")
+            .map(({ name, startTime }) => ({ name, startTime })),
+          focus: document.activeElement?.tagName,
+        }));
+        throw new Error(`${file} at ${width} px: ${JSON.stringify(startup)}`, {
+          cause: error,
+        });
+      }
       const violations = await audit(tab);
       assert.deepEqual(violations, [], `${file} at ${width} px`);
       const { nodes } = (await tab.send("Accessibility.getFullAXTree")) as {
