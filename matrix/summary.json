@@ -1,0 +1,725 @@
+{
+  "sourceBase": "ef8c164d29f642f2b145bae88fdc5ac56abac4b2",
+  "sourceCandidate": "4d3e345d6782bbb440c211189d517cc3efc71bfc",
+  "lighthouse": "13.6.0",
+  "chrome": "153.0.8010.12",
+  "reports": 126,
+  "complete": true,
+  "failures": [],
+  "summary": [
+    {
+      "key": "home-en",
+      "base": {
+        "samples": 3,
+        "lcp": 900.7406000000001,
+        "lcpRange": [
+          900.6234999999999,
+          900.7941000000001
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "candidate": {
+        "samples": 3,
+        "lcp": 901.2837,
+        "lcpRange": [
+          900.9956,
+          901.3661999999999
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "lcpDelta": 0.5430999999998676
+    },
+    {
+      "key": "projects-en",
+      "base": {
+        "samples": 3,
+        "lcp": 900.9368999999999,
+        "lcpRange": [
+          900.7983999999999,
+          901.0725
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "candidate": {
+        "samples": 3,
+        "lcp": 901.0281,
+        "lcpRange": [
+          900.7577000000001,
+          901.0990999999999
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "lcpDelta": 0.09120000000007167
+    },
+    {
+      "key": "project-en",
+      "base": {
+        "samples": 3,
+        "lcp": 900.8512000000001,
+        "lcpRange": [
+          900.7433000000001,
+          931.8303000000001
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "candidate": {
+        "samples": 3,
+        "lcp": 900.9313999999999,
+        "lcpRange": [
+          900.7656,
+          900.9767999999999
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "lcpDelta": 0.08019999999987704
+    },
+    {
+      "key": "wire-en",
+      "base": {
+        "samples": 3,
+        "lcp": 900.7445,
+        "lcpRange": [
+          900.7208,
+          900.8507
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "candidate": {
+        "samples": 3,
+        "lcp": 900.8152,
+        "lcpRange": [
+          900.6960999999999,
+          900.9096999999999
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "lcpDelta": 0.070699999999988
+    },
+    {
+      "key": "post-en",
+      "base": {
+        "samples": 3,
+        "lcp": 900.8503000000001,
+        "lcpRange": [
+          900.7854,
+          900.8892000000001
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "candidate": {
+        "samples": 3,
+        "lcp": 900.6966,
+        "lcpRange": [
+          900.6592,
+          900.8463999999999
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "lcpDelta": -0.15370000000007167
+    },
+    {
+      "key": "reply-en",
+      "base": {
+        "samples": 3,
+        "lcp": 1651.81425,
+        "lcpRange": [
+          1500.8142,
+          1801.104
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "candidate": {
+        "samples": 3,
+        "lcp": 1200.9596,
+        "lcpRange": [
+          1200.6708,
+          1350.8402
+        ],
+        "cls": 0.01285188063158477,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "lcpDelta": -450.85465
+    },
+    {
+      "key": "no-signal-en",
+      "base": {
+        "samples": 3,
+        "lcp": 900.6869999999999,
+        "lcpRange": [
+          900.5208,
+          921.653
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 0.66
+        }
+      },
+      "candidate": {
+        "samples": 3,
+        "lcp": 900.8715,
+        "lcpRange": [
+          900.7959000000001,
+          900.8743999999999
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 0.66
+        }
+      },
+      "lcpDelta": 0.18450000000007094
+    },
+    {
+      "key": "home-es",
+      "base": {
+        "samples": 3,
+        "lcp": 900.7537,
+        "lcpRange": [
+          900.7405000000001,
+          900.8523
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "candidate": {
+        "samples": 3,
+        "lcp": 900.7059999999999,
+        "lcpRange": [
+          900.5077000000001,
+          900.9100000000001
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "lcpDelta": -0.047700000000077125
+    },
+    {
+      "key": "projects-es",
+      "base": {
+        "samples": 3,
+        "lcp": 900.7806,
+        "lcpRange": [
+          900.6081999999999,
+          900.7855
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "candidate": {
+        "samples": 3,
+        "lcp": 900.7783999999999,
+        "lcpRange": [
+          900.7134000000001,
+          900.9721999999999
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "lcpDelta": -0.002200000000129876
+    },
+    {
+      "key": "project-es",
+      "base": {
+        "samples": 3,
+        "lcp": 900.7158999999999,
+        "lcpRange": [
+          900.7139,
+          900.7907
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "candidate": {
+        "samples": 3,
+        "lcp": 900.7221999999999,
+        "lcpRange": [
+          900.5485000000001,
+          900.8558
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "lcpDelta": 0.006300000000010186
+    },
+    {
+      "key": "wire-es",
+      "base": {
+        "samples": 3,
+        "lcp": 929.6532,
+        "lcpRange": [
+          900.5130999999999,
+          930.6216999999999
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "candidate": {
+        "samples": 3,
+        "lcp": 900.7994000000001,
+        "lcpRange": [
+          900.6252,
+          900.8140000000001
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "lcpDelta": -28.853799999999865
+    },
+    {
+      "key": "post-es",
+      "base": {
+        "samples": 3,
+        "lcp": 900.5835999999999,
+        "lcpRange": [
+          900.5835,
+          900.6246000000001
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "candidate": {
+        "samples": 3,
+        "lcp": 900.4762000000001,
+        "lcpRange": [
+          900.4609,
+          900.7140999999999
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "lcpDelta": -0.10739999999987049
+    },
+    {
+      "key": "reply-es",
+      "base": {
+        "samples": 3,
+        "lcp": 1650.99795,
+        "lcpRange": [
+          1500.6719,
+          1801.07205
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "candidate": {
+        "samples": 3,
+        "lcp": 1350.5258,
+        "lcpRange": [
+          1200.5827,
+          1650.8577
+        ],
+        "cls": 0.01285188063158477,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "lcpDelta": -300.47215000000006
+    },
+    {
+      "key": "no-signal-es",
+      "base": {
+        "samples": 3,
+        "lcp": 900.6320000000001,
+        "lcpRange": [
+          900.5686000000001,
+          900.6389999999999
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 0.66
+        }
+      },
+      "candidate": {
+        "samples": 3,
+        "lcp": 900.4853,
+        "lcpRange": [
+          900.3737000000001,
+          900.662
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 0.66
+        }
+      },
+      "lcpDelta": -0.14670000000000982
+    },
+    {
+      "key": "home-ca",
+      "base": {
+        "samples": 3,
+        "lcp": 900.6368,
+        "lcpRange": [
+          900.6307999999999,
+          924.6291000000001
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "candidate": {
+        "samples": 3,
+        "lcp": 900.6954000000001,
+        "lcpRange": [
+          900.5927999999999,
+          900.7217
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "lcpDelta": 0.058600000000069485
+    },
+    {
+      "key": "projects-ca",
+      "base": {
+        "samples": 3,
+        "lcp": 900.6235999999999,
+        "lcpRange": [
+          900.6008999999999,
+          900.8236999999999
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "candidate": {
+        "samples": 3,
+        "lcp": 900.5519999999999,
+        "lcpRange": [
+          900.4384,
+          900.7458999999999
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "lcpDelta": -0.07159999999998945
+    },
+    {
+      "key": "project-ca",
+      "base": {
+        "samples": 3,
+        "lcp": 900.6349,
+        "lcpRange": [
+          900.5805,
+          900.7392
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "candidate": {
+        "samples": 3,
+        "lcp": 900.6648,
+        "lcpRange": [
+          900.6193000000001,
+          900.6809000000001
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "lcpDelta": 0.029899999999997817
+    },
+    {
+      "key": "wire-ca",
+      "base": {
+        "samples": 3,
+        "lcp": 900.6047000000001,
+        "lcpRange": [
+          900.5405000000001,
+          924.7559000000001
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "candidate": {
+        "samples": 3,
+        "lcp": 900.5938000000001,
+        "lcpRange": [
+          900.5452,
+          900.6016999999999
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "lcpDelta": -0.01089999999999236
+    },
+    {
+      "key": "post-ca",
+      "base": {
+        "samples": 3,
+        "lcp": 900.7367999999999,
+        "lcpRange": [
+          900.6708000000001,
+          921.5675000000001
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "candidate": {
+        "samples": 3,
+        "lcp": 900.5821000000001,
+        "lcpRange": [
+          900.5545999999999,
+          900.6469999999999
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "lcpDelta": -0.15469999999982065
+    },
+    {
+      "key": "reply-ca",
+      "base": {
+        "samples": 3,
+        "lcp": 1651.11255,
+        "lcpRange": [
+          1650.8805,
+          1801.06815
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "candidate": {
+        "samples": 3,
+        "lcp": 1200.6488,
+        "lcpRange": [
+          1200.5685,
+          1650.8583
+        ],
+        "cls": 0.01285188063158477,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 1
+        }
+      },
+      "lcpDelta": -450.4637500000001
+    },
+    {
+      "key": "no-signal-ca",
+      "base": {
+        "samples": 3,
+        "lcp": 900.6325999999999,
+        "lcpRange": [
+          900.5933,
+          900.7264
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 0.66
+        }
+      },
+      "candidate": {
+        "samples": 3,
+        "lcp": 900.4570000000001,
+        "lcpRange": [
+          900.3704,
+          900.5492999999999
+        ],
+        "cls": 0,
+        "scores": {
+          "performance": 1,
+          "accessibility": 1,
+          "best-practices": 1,
+          "seo": 0.66
+        }
+      },
+      "lcpDelta": -0.1755999999998039
+    }
+  ]
+}

@@ -1,0 +1,834 @@
+[
+  {
+    "name": "redirect-es-390-normal",
+    "warmPrimedReceiving": null,
+    "marks": [
+      {
+        "name": "receiver:gate",
+        "startTime": 26.09999990463257
+      },
+      {
+        "name": "receiver:first-frame",
+        "startTime": 170.39999985694885
+      }
+    ],
+    "resources": [
+      {
+        "name": "http://127.0.0.1:37357/_astro/Base.CWyADxSn.css",
+        "transferSize": 0,
+        "duration": 2.700000047683716
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/Base.astro_astro_type_script_index_0_lang.3imfR8eX.js",
+        "transferSize": 0,
+        "duration": 2.5999999046325684
+      },
+      {
+        "name": "http://127.0.0.1:37357/es/site.webmanifest",
+        "transferSize": 656,
+        "duration": 5.699999809265137
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/receiver.DLbh4Lrx.js",
+        "transferSize": 60582,
+        "duration": 4.799999952316284
+      },
+      {
+        "name": "http://127.0.0.1:37357/favicon.svg",
+        "transferSize": 1044,
+        "duration": 4.6000001430511475
+      },
+      {
+        "name": "http://127.0.0.1:37357/apple-touch-icon.png",
+        "transferSize": 3590,
+        "duration": 2.9000000953674316
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/tube-worker-mY-O1UvE.js",
+        "transferSize": 7032,
+        "duration": -3.5
+      }
+    ],
+    "frames": 15
+  },
+  {
+    "name": "slow-es-390-normal",
+    "warmPrimedReceiving": null,
+    "marks": [
+      {
+        "name": "receiver:gate",
+        "startTime": 199.29999995231628
+      },
+      {
+        "name": "receiver:first-frame",
+        "startTime": 1482.5999999046326
+      }
+    ],
+    "resources": [
+      {
+        "name": "http://127.0.0.1:37357/_astro/Base.CWyADxSn.css",
+        "transferSize": 29131,
+        "duration": 319.2000000476837
+      },
+      {
+        "name": "http://127.0.0.1:37357/es/site.webmanifest",
+        "transferSize": 656,
+        "duration": 164.29999995231628
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/Base.astro_astro_type_script_index_0_lang.3imfR8eX.js",
+        "transferSize": 4151,
+        "duration": 190.70000004768372
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/receiver.DLbh4Lrx.js",
+        "transferSize": 60582,
+        "duration": 471.09999990463257
+      },
+      {
+        "name": "http://127.0.0.1:37357/favicon.svg",
+        "transferSize": 1044,
+        "duration": 163.40000009536743
+      },
+      {
+        "name": "http://127.0.0.1:37357/apple-touch-icon.png",
+        "transferSize": 3590,
+        "duration": 193.10000014305115
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/tube-worker-mY-O1UvE.js",
+        "transferSize": 7032,
+        "duration": 22.799999952316284
+      }
+    ],
+    "frames": 7
+  },
+  {
+    "name": "redirect-es-390-reduced",
+    "warmPrimedReceiving": null,
+    "marks": [
+      {
+        "name": "receiver:gate",
+        "startTime": 20.699999809265137
+      },
+      {
+        "name": "receiver:first-frame",
+        "startTime": 167.29999995231628
+      }
+    ],
+    "resources": [
+      {
+        "name": "http://127.0.0.1:37357/_astro/Base.CWyADxSn.css",
+        "transferSize": 0,
+        "duration": 4.699999809265137
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/Base.astro_astro_type_script_index_0_lang.3imfR8eX.js",
+        "transferSize": 0,
+        "duration": 4.700000047683716
+      },
+      {
+        "name": "http://127.0.0.1:37357/es/site.webmanifest",
+        "transferSize": 656,
+        "duration": 4.400000095367432
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/receiver.DLbh4Lrx.js",
+        "transferSize": 60582,
+        "duration": 8.099999904632568
+      },
+      {
+        "name": "http://127.0.0.1:37357/favicon.svg",
+        "transferSize": 1044,
+        "duration": 7.5
+      },
+      {
+        "name": "http://127.0.0.1:37357/apple-touch-icon.png",
+        "transferSize": 3590,
+        "duration": 3.799999952316284
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/tube-worker-mY-O1UvE.js",
+        "transferSize": 7032,
+        "duration": -3.299999952316284
+      }
+    ],
+    "frames": 6
+  },
+  {
+    "name": "slow-es-390-reduced",
+    "warmPrimedReceiving": null,
+    "marks": [
+      {
+        "name": "receiver:gate",
+        "startTime": 197.79999995231628
+      },
+      {
+        "name": "receiver:first-frame",
+        "startTime": 1496.1000001430511
+      }
+    ],
+    "resources": [
+      {
+        "name": "http://127.0.0.1:37357/_astro/Base.CWyADxSn.css",
+        "transferSize": 29131,
+        "duration": 319.39999985694885
+      },
+      {
+        "name": "http://127.0.0.1:37357/es/site.webmanifest",
+        "transferSize": 656,
+        "duration": 164.09999990463257
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/Base.astro_astro_type_script_index_0_lang.3imfR8eX.js",
+        "transferSize": 4151,
+        "duration": 191.20000004768372
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/receiver.DLbh4Lrx.js",
+        "transferSize": 60582,
+        "duration": 471.40000009536743
+      },
+      {
+        "name": "http://127.0.0.1:37357/favicon.svg",
+        "transferSize": 1044,
+        "duration": 166.59999990463257
+      },
+      {
+        "name": "http://127.0.0.1:37357/apple-touch-icon.png",
+        "transferSize": 3590,
+        "duration": 195.29999995231628
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/tube-worker-mY-O1UvE.js",
+        "transferSize": 7032,
+        "duration": 22.200000047683716
+      }
+    ],
+    "frames": 5
+  },
+  {
+    "name": "redirect-es-1280-normal",
+    "warmPrimedReceiving": null,
+    "marks": [
+      {
+        "name": "receiver:gate",
+        "startTime": 23.300000190734863
+      },
+      {
+        "name": "receiver:first-frame",
+        "startTime": 201.30000019073486
+      }
+    ],
+    "resources": [
+      {
+        "name": "http://127.0.0.1:37357/_astro/Base.CWyADxSn.css",
+        "transferSize": 0,
+        "duration": 2
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/Base.astro_astro_type_script_index_0_lang.3imfR8eX.js",
+        "transferSize": 0,
+        "duration": 3
+      },
+      {
+        "name": "http://127.0.0.1:37357/es/site.webmanifest",
+        "transferSize": 656,
+        "duration": 2.700000047683716
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/receiver.DLbh4Lrx.js",
+        "transferSize": 60582,
+        "duration": 4.799999952316284
+      },
+      {
+        "name": "http://127.0.0.1:37357/favicon.svg",
+        "transferSize": 1044,
+        "duration": 4.599999904632568
+      },
+      {
+        "name": "http://127.0.0.1:37357/apple-touch-icon.png",
+        "transferSize": 3590,
+        "duration": 3.700000047683716
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/tube-worker-mY-O1UvE.js",
+        "transferSize": 7032,
+        "duration": -4.099999904632568
+      }
+    ],
+    "frames": 14
+  },
+  {
+    "name": "slow-es-1280-normal",
+    "warmPrimedReceiving": null,
+    "marks": [
+      {
+        "name": "receiver:gate",
+        "startTime": 198.90000009536743
+      },
+      {
+        "name": "receiver:first-frame",
+        "startTime": 1573.9000000953674
+      }
+    ],
+    "resources": [
+      {
+        "name": "http://127.0.0.1:37357/_astro/Base.CWyADxSn.css",
+        "transferSize": 29131,
+        "duration": 320.60000014305115
+      },
+      {
+        "name": "http://127.0.0.1:37357/es/site.webmanifest",
+        "transferSize": 656,
+        "duration": 165.09999990463257
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/Base.astro_astro_type_script_index_0_lang.3imfR8eX.js",
+        "transferSize": 4151,
+        "duration": 190.70000004768372
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/receiver.DLbh4Lrx.js",
+        "transferSize": 60582,
+        "duration": 473.59999990463257
+      },
+      {
+        "name": "http://127.0.0.1:37357/favicon.svg",
+        "transferSize": 1044,
+        "duration": 166.5
+      },
+      {
+        "name": "http://127.0.0.1:37357/apple-touch-icon.png",
+        "transferSize": 3590,
+        "duration": 197.79999995231628
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/tube-worker-mY-O1UvE.js",
+        "transferSize": 7032,
+        "duration": 23
+      }
+    ],
+    "frames": 7
+  },
+  {
+    "name": "redirect-es-1280-reduced",
+    "warmPrimedReceiving": null,
+    "marks": [
+      {
+        "name": "receiver:gate",
+        "startTime": 29
+      },
+      {
+        "name": "receiver:first-frame",
+        "startTime": 261.09999990463257
+      }
+    ],
+    "resources": [
+      {
+        "name": "http://127.0.0.1:37357/_astro/Base.CWyADxSn.css",
+        "transferSize": 0,
+        "duration": 2.5999999046325684
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/Base.astro_astro_type_script_index_0_lang.3imfR8eX.js",
+        "transferSize": 0,
+        "duration": 4.5
+      },
+      {
+        "name": "http://127.0.0.1:37357/es/site.webmanifest",
+        "transferSize": 656,
+        "duration": 3.8999998569488525
+      },
+      {
+        "name": "http://127.0.0.1:37357/favicon.svg",
+        "transferSize": 1044,
+        "duration": 6
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/receiver.DLbh4Lrx.js",
+        "transferSize": 60582,
+        "duration": 5.799999952316284
+      },
+      {
+        "name": "http://127.0.0.1:37357/apple-touch-icon.png",
+        "transferSize": 3590,
+        "duration": 4.799999952316284
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/tube-worker-mY-O1UvE.js",
+        "transferSize": 7032,
+        "duration": -3.200000047683716
+      }
+    ],
+    "frames": 5
+  },
+  {
+    "name": "slow-es-1280-reduced",
+    "warmPrimedReceiving": null,
+    "marks": [
+      {
+        "name": "receiver:gate",
+        "startTime": 198.80000019073486
+      },
+      {
+        "name": "receiver:first-frame",
+        "startTime": 1622.5
+      }
+    ],
+    "resources": [
+      {
+        "name": "http://127.0.0.1:37357/_astro/Base.CWyADxSn.css",
+        "transferSize": 29131,
+        "duration": 320.40000009536743
+      },
+      {
+        "name": "http://127.0.0.1:37357/es/site.webmanifest",
+        "transferSize": 656,
+        "duration": 165.20000004768372
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/Base.astro_astro_type_script_index_0_lang.3imfR8eX.js",
+        "transferSize": 4151,
+        "duration": 193.20000004768372
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/receiver.DLbh4Lrx.js",
+        "transferSize": 60582,
+        "duration": 467.09999990463257
+      },
+      {
+        "name": "http://127.0.0.1:37357/favicon.svg",
+        "transferSize": 1044,
+        "duration": 160.5
+      },
+      {
+        "name": "http://127.0.0.1:37357/apple-touch-icon.png",
+        "transferSize": 3590,
+        "duration": 198.20000004768372
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/tube-worker-mY-O1UvE.js",
+        "transferSize": 7032,
+        "duration": 22.799999952316284
+      }
+    ],
+    "frames": 5
+  },
+  {
+    "name": "redirect-ca-390-normal",
+    "warmPrimedReceiving": null,
+    "marks": [
+      {
+        "name": "receiver:gate",
+        "startTime": 24.90000009536743
+      },
+      {
+        "name": "receiver:first-frame",
+        "startTime": 180.5
+      }
+    ],
+    "resources": [
+      {
+        "name": "http://127.0.0.1:37357/_astro/Base.CWyADxSn.css",
+        "transferSize": 0,
+        "duration": 2.3999998569488525
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/Base.astro_astro_type_script_index_0_lang.3imfR8eX.js",
+        "transferSize": 0,
+        "duration": 3.799999952316284
+      },
+      {
+        "name": "http://127.0.0.1:37357/ca/site.webmanifest",
+        "transferSize": 656,
+        "duration": 3.700000047683716
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/receiver.DLbh4Lrx.js",
+        "transferSize": 60582,
+        "duration": 5.6000001430511475
+      },
+      {
+        "name": "http://127.0.0.1:37357/favicon.svg",
+        "transferSize": 1044,
+        "duration": 5
+      },
+      {
+        "name": "http://127.0.0.1:37357/apple-touch-icon.png",
+        "transferSize": 3590,
+        "duration": 2.6999998092651367
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/tube-worker-mY-O1UvE.js",
+        "transferSize": 7032,
+        "duration": -3
+      }
+    ],
+    "frames": 13
+  },
+  {
+    "name": "slow-ca-390-normal",
+    "warmPrimedReceiving": null,
+    "marks": [
+      {
+        "name": "receiver:gate",
+        "startTime": 198.60000014305115
+      },
+      {
+        "name": "receiver:first-frame",
+        "startTime": 1509.1000001430511
+      }
+    ],
+    "resources": [
+      {
+        "name": "http://127.0.0.1:37357/_astro/Base.CWyADxSn.css",
+        "transferSize": 29131,
+        "duration": 317.80000019073486
+      },
+      {
+        "name": "http://127.0.0.1:37357/ca/site.webmanifest",
+        "transferSize": 656,
+        "duration": 162.5
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/Base.astro_astro_type_script_index_0_lang.3imfR8eX.js",
+        "transferSize": 4151,
+        "duration": 190.10000014305115
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/receiver.DLbh4Lrx.js",
+        "transferSize": 60582,
+        "duration": 471.5
+      },
+      {
+        "name": "http://127.0.0.1:37357/favicon.svg",
+        "transferSize": 1044,
+        "duration": 167
+      },
+      {
+        "name": "http://127.0.0.1:37357/apple-touch-icon.png",
+        "transferSize": 3590,
+        "duration": 193.09999990463257
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/tube-worker-mY-O1UvE.js",
+        "transferSize": 7032,
+        "duration": 20.90000009536743
+      }
+    ],
+    "frames": 7
+  },
+  {
+    "name": "redirect-ca-390-reduced",
+    "warmPrimedReceiving": null,
+    "marks": [
+      {
+        "name": "receiver:gate",
+        "startTime": 23.699999809265137
+      },
+      {
+        "name": "receiver:first-frame",
+        "startTime": 167.89999985694885
+      }
+    ],
+    "resources": [
+      {
+        "name": "http://127.0.0.1:37357/_astro/Base.CWyADxSn.css",
+        "transferSize": 0,
+        "duration": 3
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/Base.astro_astro_type_script_index_0_lang.3imfR8eX.js",
+        "transferSize": 0,
+        "duration": 5.099999904632568
+      },
+      {
+        "name": "http://127.0.0.1:37357/ca/site.webmanifest",
+        "transferSize": 656,
+        "duration": 3.5
+      },
+      {
+        "name": "http://127.0.0.1:37357/favicon.svg",
+        "transferSize": 1044,
+        "duration": 4.800000190734863
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/receiver.DLbh4Lrx.js",
+        "transferSize": 60582,
+        "duration": 6.5
+      },
+      {
+        "name": "http://127.0.0.1:37357/apple-touch-icon.png",
+        "transferSize": 3590,
+        "duration": 3.299999952316284
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/tube-worker-mY-O1UvE.js",
+        "transferSize": 7032,
+        "duration": -3.6999998092651367
+      }
+    ],
+    "frames": 6
+  },
+  {
+    "name": "slow-ca-390-reduced",
+    "warmPrimedReceiving": null,
+    "marks": [
+      {
+        "name": "receiver:gate",
+        "startTime": 195.70000004768372
+      },
+      {
+        "name": "receiver:first-frame",
+        "startTime": 1519.6000001430511
+      }
+    ],
+    "resources": [
+      {
+        "name": "http://127.0.0.1:37357/ca/site.webmanifest",
+        "transferSize": 656,
+        "duration": 159.39999985694885
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/Base.CWyADxSn.css",
+        "transferSize": 29131,
+        "duration": 320.90000009536743
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/Base.astro_astro_type_script_index_0_lang.3imfR8eX.js",
+        "transferSize": 4151,
+        "duration": 190.60000014305115
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/receiver.DLbh4Lrx.js",
+        "transferSize": 60582,
+        "duration": 469.2999999523163
+      },
+      {
+        "name": "http://127.0.0.1:37357/favicon.svg",
+        "transferSize": 1044,
+        "duration": 158.80000019073486
+      },
+      {
+        "name": "http://127.0.0.1:37357/apple-touch-icon.png",
+        "transferSize": 3590,
+        "duration": 197.09999990463257
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/tube-worker-mY-O1UvE.js",
+        "transferSize": 7032,
+        "duration": 22
+      }
+    ],
+    "frames": 5
+  },
+  {
+    "name": "redirect-ca-1280-normal",
+    "warmPrimedReceiving": null,
+    "marks": [
+      {
+        "name": "receiver:gate",
+        "startTime": 22.799999952316284
+      },
+      {
+        "name": "receiver:first-frame",
+        "startTime": 191.29999995231628
+      }
+    ],
+    "resources": [
+      {
+        "name": "http://127.0.0.1:37357/_astro/Base.CWyADxSn.css",
+        "transferSize": 0,
+        "duration": 4.299999952316284
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/Base.astro_astro_type_script_index_0_lang.3imfR8eX.js",
+        "transferSize": 0,
+        "duration": 4.299999952316284
+      },
+      {
+        "name": "http://127.0.0.1:37357/ca/site.webmanifest",
+        "transferSize": 656,
+        "duration": 6.599999904632568
+      },
+      {
+        "name": "http://127.0.0.1:37357/favicon.svg",
+        "transferSize": 1044,
+        "duration": 5.900000095367432
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/receiver.DLbh4Lrx.js",
+        "transferSize": 60582,
+        "duration": 6.599999904632568
+      },
+      {
+        "name": "http://127.0.0.1:37357/apple-touch-icon.png",
+        "transferSize": 3590,
+        "duration": 2.799999952316284
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/tube-worker-mY-O1UvE.js",
+        "transferSize": 7032,
+        "duration": -3.5
+      }
+    ],
+    "frames": 12
+  },
+  {
+    "name": "slow-ca-1280-normal",
+    "warmPrimedReceiving": null,
+    "marks": [
+      {
+        "name": "receiver:gate",
+        "startTime": 200.70000004768372
+      },
+      {
+        "name": "receiver:first-frame",
+        "startTime": 1605.9000000953674
+      }
+    ],
+    "resources": [
+      {
+        "name": "http://127.0.0.1:37357/_astro/Base.CWyADxSn.css",
+        "transferSize": 29131,
+        "duration": 318.90000009536743
+      },
+      {
+        "name": "http://127.0.0.1:37357/ca/site.webmanifest",
+        "transferSize": 656,
+        "duration": 162.79999995231628
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/Base.astro_astro_type_script_index_0_lang.3imfR8eX.js",
+        "transferSize": 4151,
+        "duration": 191.39999985694885
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/receiver.DLbh4Lrx.js",
+        "transferSize": 60582,
+        "duration": 473
+      },
+      {
+        "name": "http://127.0.0.1:37357/favicon.svg",
+        "transferSize": 1044,
+        "duration": 168
+      },
+      {
+        "name": "http://127.0.0.1:37357/apple-touch-icon.png",
+        "transferSize": 3590,
+        "duration": 196
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/tube-worker-mY-O1UvE.js",
+        "transferSize": 7032,
+        "duration": 21.90000009536743
+      }
+    ],
+    "frames": 7
+  },
+  {
+    "name": "redirect-ca-1280-reduced",
+    "warmPrimedReceiving": null,
+    "marks": [
+      {
+        "name": "receiver:gate",
+        "startTime": 27.700000047683716
+      },
+      {
+        "name": "receiver:first-frame",
+        "startTime": 247.60000014305115
+      }
+    ],
+    "resources": [
+      {
+        "name": "http://127.0.0.1:37357/_astro/Base.CWyADxSn.css",
+        "transferSize": 0,
+        "duration": 5.200000047683716
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/Base.astro_astro_type_script_index_0_lang.3imfR8eX.js",
+        "transferSize": 0,
+        "duration": 5
+      },
+      {
+        "name": "http://127.0.0.1:37357/ca/site.webmanifest",
+        "transferSize": 656,
+        "duration": 4.099999904632568
+      },
+      {
+        "name": "http://127.0.0.1:37357/favicon.svg",
+        "transferSize": 1044,
+        "duration": 5.299999952316284
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/receiver.DLbh4Lrx.js",
+        "transferSize": 60582,
+        "duration": 5.1000001430511475
+      },
+      {
+        "name": "http://127.0.0.1:37357/apple-touch-icon.png",
+        "transferSize": 3590,
+        "duration": 4.1000001430511475
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/tube-worker-mY-O1UvE.js",
+        "transferSize": 7032,
+        "duration": -2.5
+      }
+    ],
+    "frames": 5
+  },
+  {
+    "name": "slow-ca-1280-reduced",
+    "warmPrimedReceiving": null,
+    "marks": [
+      {
+        "name": "receiver:gate",
+        "startTime": 204.09999990463257
+      },
+      {
+        "name": "receiver:first-frame",
+        "startTime": 1660.5999999046326
+      }
+    ],
+    "resources": [
+      {
+        "name": "http://127.0.0.1:37357/_astro/Base.CWyADxSn.css",
+        "transferSize": 29131,
+        "duration": 322.2999999523163
+      },
+      {
+        "name": "http://127.0.0.1:37357/ca/site.webmanifest",
+        "transferSize": 656,
+        "duration": 167.09999990463257
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/Base.astro_astro_type_script_index_0_lang.3imfR8eX.js",
+        "transferSize": 4151,
+        "duration": 190.29999995231628
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/receiver.DLbh4Lrx.js",
+        "transferSize": 60582,
+        "duration": 469.10000014305115
+      },
+      {
+        "name": "http://127.0.0.1:37357/favicon.svg",
+        "transferSize": 1044,
+        "duration": 159.90000009536743
+      },
+      {
+        "name": "http://127.0.0.1:37357/apple-touch-icon.png",
+        "transferSize": 3590,
+        "duration": 194.59999990463257
+      },
+      {
+        "name": "http://127.0.0.1:37357/_astro/tube-worker-mY-O1UvE.js",
+        "transferSize": 7032,
+        "duration": 22.799999952316284
+      }
+    ],
+    "frames": 5
+  }
+]

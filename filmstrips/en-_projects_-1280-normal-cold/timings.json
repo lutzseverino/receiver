@@ -1,0 +1,108 @@
+{
+  "group": "filmstrips",
+  "name": "en-_projects_-1280-normal-cold",
+  "navigationURLs": [
+    "http://127.0.0.1:37357/projects/"
+  ],
+  "initialBrowserBlankFrames": [],
+  "unexpectedPendingFrames": [],
+  "drawMs": 153.864,
+  "plainMs": null,
+  "firstBlackMs": 34.17,
+  "firstNonUniformFrameMs": 306.814,
+  "firstBrightFrameMs": 1502.496,
+  "pendingFrames": 2,
+  "pendingNonBlack": [],
+  "marks": [
+    {
+      "name": "receiver:gate",
+      "ts": 1270735125696
+    },
+    {
+      "name": "receiver:first-frame",
+      "ts": 1270735279560
+    }
+  ],
+  "frames": [
+    {
+      "jpg": "000.jpg",
+      "ms": -5.664,
+      "min": 255,
+      "max": 255,
+      "stdev": 0,
+      "meanMax": 255
+    },
+    {
+      "jpg": "001.jpg",
+      "ms": 34.17,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "002.jpg",
+      "ms": 129.904,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "003.jpg",
+      "ms": 167.638,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "004.jpg",
+      "ms": 306.814,
+      "min": 0,
+      "max": 53,
+      "stdev": 5.607119444595972,
+      "meanMax": 9.210931818181818
+    },
+    {
+      "jpg": "005.jpg",
+      "ms": 411.47,
+      "min": 0,
+      "max": 78,
+      "stdev": 5.829605128690365,
+      "meanMax": 9.258426136363637
+    },
+    {
+      "jpg": "006.jpg",
+      "ms": 1502.496,
+      "min": 0,
+      "max": 227,
+      "stdev": 40.88264822334422,
+      "meanMax": 68.58361363636364
+    },
+    {
+      "jpg": "007.jpg",
+      "ms": 1596.047,
+      "min": 0,
+      "max": 252,
+      "stdev": 62.265858059980744,
+      "meanMax": 105.63140340909091
+    },
+    {
+      "jpg": "008.jpg",
+      "ms": 1693.285,
+      "min": 0,
+      "max": 252,
+      "stdev": 62.265858059980744,
+      "meanMax": 105.63140340909091
+    },
+    {
+      "jpg": "009.jpg",
+      "ms": 1793.657,
+      "min": 0,
+      "max": 76,
+      "stdev": 9.483938766283694,
+      "meanMax": 15.781829545454546
+    }
+  ]
+}

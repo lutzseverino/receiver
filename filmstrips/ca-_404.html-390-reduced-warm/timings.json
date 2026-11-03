@@ -1,0 +1,75 @@
+{
+  "group": "filmstrips",
+  "name": "ca-_404.html-390-reduced-warm",
+  "navigationURLs": [
+    "http://127.0.0.1:37357/ca/404.html"
+  ],
+  "initialBrowserBlankFrames": [],
+  "unexpectedPendingFrames": [],
+  "drawMs": 116.98,
+  "plainMs": null,
+  "firstBlackMs": 15.896,
+  "firstNonUniformFrameMs": 282.357,
+  "pendingFrames": 3,
+  "pendingNonBlack": [],
+  "marks": [
+    {
+      "name": "receiver:gate",
+      "ts": 1271054944632
+    },
+    {
+      "name": "receiver:first-frame",
+      "ts": 1271055061612
+    }
+  ],
+  "frames": [
+    {
+      "jpg": "000.jpg",
+      "ms": -95.585,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "001.jpg",
+      "ms": 15.896,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "002.jpg",
+      "ms": 30.809,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "003.jpg",
+      "ms": 80.959,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "004.jpg",
+      "ms": 132.435,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "005.jpg",
+      "ms": 282.357,
+      "min": 0,
+      "max": 218,
+      "stdev": 12.763131203877805,
+      "meanMax": 9.72716393442623
+    }
+  ]
+}

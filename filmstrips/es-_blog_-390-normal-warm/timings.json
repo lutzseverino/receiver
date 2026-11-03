@@ -1,0 +1,116 @@
+{
+  "group": "filmstrips",
+  "name": "es-_blog_-390-normal-warm",
+  "navigationURLs": [
+    "http://127.0.0.1:37357/es/blog/"
+  ],
+  "initialBrowserBlankFrames": [],
+  "unexpectedPendingFrames": [],
+  "drawMs": 167.858,
+  "plainMs": null,
+  "firstBlackMs": 23.143,
+  "firstNonUniformFrameMs": 341.108,
+  "firstBrightFrameMs": 1580.546,
+  "pendingFrames": 3,
+  "pendingNonBlack": [],
+  "marks": [
+    {
+      "name": "receiver:gate",
+      "ts": 1270879030185
+    },
+    {
+      "name": "receiver:first-frame",
+      "ts": 1270879198043
+    }
+  ],
+  "frames": [
+    {
+      "jpg": "000.jpg",
+      "ms": -103.544,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "001.jpg",
+      "ms": 23.143,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "002.jpg",
+      "ms": 41.724,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "003.jpg",
+      "ms": 138.878,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "004.jpg",
+      "ms": 188.734,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "005.jpg",
+      "ms": 341.108,
+      "min": 0,
+      "max": 29,
+      "stdev": 5.785221958109538,
+      "meanMax": 8.005040983606557
+    },
+    {
+      "jpg": "006.jpg",
+      "ms": 416.034,
+      "min": 0,
+      "max": 50,
+      "stdev": 5.890571330769584,
+      "meanMax": 8.059532786885246
+    },
+    {
+      "jpg": "007.jpg",
+      "ms": 486.285,
+      "min": 0,
+      "max": 50,
+      "stdev": 5.891748040988015,
+      "meanMax": 8.06645081967213
+    },
+    {
+      "jpg": "008.jpg",
+      "ms": 1580.546,
+      "min": 0,
+      "max": 255,
+      "stdev": 61.928187069019,
+      "meanMax": 80.18273770491804
+    },
+    {
+      "jpg": "009.jpg",
+      "ms": 1681.555,
+      "min": 0,
+      "max": 255,
+      "stdev": 66.75147759868763,
+      "meanMax": 88.29552459016394
+    },
+    {
+      "jpg": "010.jpg",
+      "ms": 1783.664,
+      "min": 0,
+      "max": 255,
+      "stdev": 66.75147759868763,
+      "meanMax": 88.29552459016394
+    }
+  ]
+}

@@ -1,0 +1,100 @@
+{
+  "group": "filmstrips",
+  "name": "en-_projects_repo-standards_-1280-normal-warm",
+  "navigationURLs": [
+    "http://127.0.0.1:37357/projects/repo-standards/"
+  ],
+  "initialBrowserBlankFrames": [],
+  "unexpectedPendingFrames": [],
+  "drawMs": 185.217,
+  "plainMs": null,
+  "firstBlackMs": 41.495,
+  "firstNonUniformFrameMs": 362.427,
+  "firstBrightFrameMs": 1522.002,
+  "pendingFrames": 2,
+  "pendingNonBlack": [],
+  "marks": [
+    {
+      "name": "receiver:gate",
+      "ts": 1270754064815
+    },
+    {
+      "name": "receiver:first-frame",
+      "ts": 1270754250032
+    }
+  ],
+  "frames": [
+    {
+      "jpg": "000.jpg",
+      "ms": 41.495,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "001.jpg",
+      "ms": 151.985,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "002.jpg",
+      "ms": 194.148,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "003.jpg",
+      "ms": 362.427,
+      "min": 0,
+      "max": 53,
+      "stdev": 5.610332126279524,
+      "meanMax": 9.21259659090909
+    },
+    {
+      "jpg": "004.jpg",
+      "ms": 403.402,
+      "min": 0,
+      "max": 78,
+      "stdev": 5.838522210909244,
+      "meanMax": 9.25865340909091
+    },
+    {
+      "jpg": "005.jpg",
+      "ms": 469.624,
+      "min": 0,
+      "max": 78,
+      "stdev": 5.843242528049648,
+      "meanMax": 9.260119318181818
+    },
+    {
+      "jpg": "006.jpg",
+      "ms": 1522.002,
+      "min": 0,
+      "max": 227,
+      "stdev": 40.882697323765264,
+      "meanMax": 68.58406818181818
+    },
+    {
+      "jpg": "007.jpg",
+      "ms": 1611.682,
+      "min": 0,
+      "max": 252,
+      "stdev": 62.265858059980744,
+      "meanMax": 105.63140340909091
+    },
+    {
+      "jpg": "008.jpg",
+      "ms": 1712.348,
+      "min": 0,
+      "max": 252,
+      "stdev": 62.265858059980744,
+      "meanMax": 105.63140340909091
+    }
+  ]
+}

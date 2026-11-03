@@ -1,0 +1,59 @@
+{
+  "group": "filmstrips",
+  "name": "ca-_404.html-1280-reduced-cold",
+  "navigationURLs": [
+    "http://127.0.0.1:37357/ca/404.html"
+  ],
+  "initialBrowserBlankFrames": [],
+  "unexpectedPendingFrames": [],
+  "drawMs": 184.941,
+  "plainMs": null,
+  "firstBlackMs": 28.712,
+  "firstNonUniformFrameMs": 320.938,
+  "pendingFrames": 2,
+  "pendingNonBlack": [],
+  "marks": [
+    {
+      "name": "receiver:gate",
+      "ts": 1271061103547
+    },
+    {
+      "name": "receiver:first-frame",
+      "ts": 1271061288488
+    }
+  ],
+  "frames": [
+    {
+      "jpg": "000.jpg",
+      "ms": 28.712,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "001.jpg",
+      "ms": 143.624,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "002.jpg",
+      "ms": 194.295,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "003.jpg",
+      "ms": 320.938,
+      "min": 0,
+      "max": 154,
+      "stdev": 10.340592871050946,
+      "meanMax": 10.3764375
+    }
+  ]
+}

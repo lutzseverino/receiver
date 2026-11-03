@@ -1,0 +1,59 @@
+{
+  "group": "filmstrips",
+  "name": "es-_projects_repo-standards_-390-reduced-cold",
+  "navigationURLs": [
+    "http://127.0.0.1:37357/es/projects/repo-standards/"
+  ],
+  "initialBrowserBlankFrames": [],
+  "unexpectedPendingFrames": [],
+  "drawMs": 136.636,
+  "plainMs": null,
+  "firstBlackMs": 22.689,
+  "firstNonUniformFrameMs": 294.539,
+  "pendingFrames": 2,
+  "pendingNonBlack": [],
+  "marks": [
+    {
+      "name": "receiver:gate",
+      "ts": 1270864340484
+    },
+    {
+      "name": "receiver:first-frame",
+      "ts": 1270864477120
+    }
+  ],
+  "frames": [
+    {
+      "jpg": "000.jpg",
+      "ms": 22.689,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "001.jpg",
+      "ms": 115.147,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "002.jpg",
+      "ms": 143.239,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "003.jpg",
+      "ms": 294.539,
+      "min": 0,
+      "max": 216,
+      "stdev": 21.399243274044608,
+      "meanMax": 15.115090163934426
+    }
+  ]
+}

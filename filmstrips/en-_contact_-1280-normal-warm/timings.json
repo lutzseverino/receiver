@@ -1,0 +1,156 @@
+{
+  "group": "filmstrips",
+  "name": "en-_contact_-1280-normal-warm",
+  "navigationURLs": [
+    "http://127.0.0.1:37357/contact/"
+  ],
+  "initialBrowserBlankFrames": [],
+  "unexpectedPendingFrames": [],
+  "drawMs": 198.568,
+  "plainMs": null,
+  "firstBlackMs": 32.235,
+  "firstNonUniformFrameMs": 333.128,
+  "firstBrightFrameMs": 1535.097,
+  "pendingFrames": 9,
+  "pendingNonBlack": [],
+  "marks": [
+    {
+      "name": "receiver:gate",
+      "ts": 1270804129673
+    },
+    {
+      "name": "receiver:first-frame",
+      "ts": 1270804328241
+    }
+  ],
+  "frames": [
+    {
+      "jpg": "000.jpg",
+      "ms": -68.582,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "001.jpg",
+      "ms": 32.235,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "002.jpg",
+      "ms": 46.146,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "003.jpg",
+      "ms": 56.97,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "004.jpg",
+      "ms": 73.042,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "005.jpg",
+      "ms": 89.587,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "006.jpg",
+      "ms": 106.933,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "007.jpg",
+      "ms": 125.26,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "008.jpg",
+      "ms": 142.107,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "009.jpg",
+      "ms": 164.722,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "010.jpg",
+      "ms": 212.577,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "011.jpg",
+      "ms": 333.128,
+      "min": 0,
+      "max": 53,
+      "stdev": 5.602918087461522,
+      "meanMax": 9.2023125
+    },
+    {
+      "jpg": "012.jpg",
+      "ms": 438.701,
+      "min": 0,
+      "max": 78,
+      "stdev": 5.807014562505531,
+      "meanMax": 9.241460227272727
+    },
+    {
+      "jpg": "013.jpg",
+      "ms": 1535.097,
+      "min": 0,
+      "max": 227,
+      "stdev": 40.88637719648471,
+      "meanMax": 68.57686363636364
+    },
+    {
+      "jpg": "014.jpg",
+      "ms": 1632.916,
+      "min": 0,
+      "max": 252,
+      "stdev": 62.265858059980744,
+      "meanMax": 105.63140340909091
+    },
+    {
+      "jpg": "015.jpg",
+      "ms": 1730.271,
+      "min": 0,
+      "max": 252,
+      "stdev": 62.265858059980744,
+      "meanMax": 105.63140340909091
+    }
+  ]
+}

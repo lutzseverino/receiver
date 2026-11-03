@@ -1,0 +1,102 @@
+{
+  "group": "filmstrips",
+  "name": "es-_contact_-1280-normal-cold",
+  "navigationURLs": [
+    "about:blank",
+    "about:blank",
+    "http://127.0.0.1:37357/es/contact/"
+  ],
+  "initialBrowserBlankFrames": [],
+  "unexpectedPendingFrames": [],
+  "drawMs": 165.48,
+  "plainMs": null,
+  "firstBlackMs": 37.164,
+  "firstNonUniformFrameMs": 302.663,
+  "firstBrightFrameMs": 1521.079,
+  "pendingFrames": 2,
+  "pendingNonBlack": [],
+  "marks": [
+    {
+      "name": "receiver:gate",
+      "ts": 1270918421405
+    },
+    {
+      "name": "receiver:first-frame",
+      "ts": 1270918586885
+    }
+  ],
+  "frames": [
+    {
+      "jpg": "000.jpg",
+      "ms": 37.164,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "001.jpg",
+      "ms": 140.745,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "002.jpg",
+      "ms": 181.889,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "003.jpg",
+      "ms": 302.663,
+      "min": 0,
+      "max": 53,
+      "stdev": 5.62807406337027,
+      "meanMax": 9.221875
+    },
+    {
+      "jpg": "004.jpg",
+      "ms": 408.791,
+      "min": 0,
+      "max": 78,
+      "stdev": 5.905783678520931,
+      "meanMax": 9.276823863636364
+    },
+    {
+      "jpg": "005.jpg",
+      "ms": 1521.079,
+      "min": 0,
+      "max": 227,
+      "stdev": 40.87884705509619,
+      "meanMax": 68.5925965909091
+    },
+    {
+      "jpg": "006.jpg",
+      "ms": 1626.76,
+      "min": 0,
+      "max": 252,
+      "stdev": 62.265858059980744,
+      "meanMax": 105.63140340909091
+    },
+    {
+      "jpg": "007.jpg",
+      "ms": 1719.926,
+      "min": 0,
+      "max": 252,
+      "stdev": 62.265858059980744,
+      "meanMax": 105.63140340909091
+    },
+    {
+      "jpg": "008.jpg",
+      "ms": 1822.724,
+      "min": 0,
+      "max": 79,
+      "stdev": 7.150548242673807,
+      "meanMax": 11.829119318181819
+    }
+  ]
+}

@@ -1,0 +1,100 @@
+{
+  "group": "filmstrips",
+  "name": "es-_projects_repo-standards_-1280-normal-cold",
+  "navigationURLs": [
+    "http://127.0.0.1:37357/es/projects/repo-standards/"
+  ],
+  "initialBrowserBlankFrames": [],
+  "unexpectedPendingFrames": [],
+  "drawMs": 191.271,
+  "plainMs": null,
+  "firstBlackMs": 35.996,
+  "firstNonUniformFrameMs": 375.114,
+  "firstBrightFrameMs": 1545.861,
+  "pendingFrames": 2,
+  "pendingNonBlack": [],
+  "marks": [
+    {
+      "name": "receiver:gate",
+      "ts": 1270868506178
+    },
+    {
+      "name": "receiver:first-frame",
+      "ts": 1270868697449
+    }
+  ],
+  "frames": [
+    {
+      "jpg": "000.jpg",
+      "ms": -8.281,
+      "min": 255,
+      "max": 255,
+      "stdev": 0,
+      "meanMax": 255
+    },
+    {
+      "jpg": "001.jpg",
+      "ms": 35.996,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "002.jpg",
+      "ms": 140.013,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "003.jpg",
+      "ms": 221.196,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "004.jpg",
+      "ms": 375.114,
+      "min": 0,
+      "max": 53,
+      "stdev": 5.610332126279524,
+      "meanMax": 9.21259659090909
+    },
+    {
+      "jpg": "005.jpg",
+      "ms": 445.753,
+      "min": 0,
+      "max": 78,
+      "stdev": 5.843242528049648,
+      "meanMax": 9.260119318181818
+    },
+    {
+      "jpg": "006.jpg",
+      "ms": 1545.861,
+      "min": 0,
+      "max": 227,
+      "stdev": 40.882697323765264,
+      "meanMax": 68.58406818181818
+    },
+    {
+      "jpg": "007.jpg",
+      "ms": 1639.422,
+      "min": 0,
+      "max": 252,
+      "stdev": 62.265858059980744,
+      "meanMax": 105.63140340909091
+    },
+    {
+      "jpg": "008.jpg",
+      "ms": 1744.009,
+      "min": 0,
+      "max": 252,
+      "stdev": 62.265858059980744,
+      "meanMax": 105.63140340909091
+    }
+  ]
+}

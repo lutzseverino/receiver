@@ -1,0 +1,58 @@
+[
+  {
+    "name": "deadline-before-module-and-late-import",
+    "display": false,
+    "workers": 0,
+    "marks": [
+      {
+        "name": "receiver:gate",
+        "startTime": 25.799999952316284
+      },
+      {
+        "name": "receiver:plain",
+        "startTime": 1526.5
+      }
+    ]
+  },
+  {
+    "name": "real-page-freeze-and-resume",
+    "firstActive": {
+      "hidden": true,
+      "pending": true,
+      "now": 1843
+    },
+    "hidden": false,
+    "display": false,
+    "pending": false,
+    "marks": [
+      {
+        "name": "receiver:gate",
+        "startTime": 22.200000047683716
+      },
+      {
+        "name": "test:visibility:hidden",
+        "startTime": 38.5
+      },
+      {
+        "name": "test:freeze",
+        "startTime": 38.799999952316284
+      },
+      {
+        "name": "test:resume",
+        "startTime": 1841.4000000953674
+      },
+      {
+        "name": "test:first-active-evaluation",
+        "startTime": 1843
+      },
+      {
+        "name": "test:visibility:visible",
+        "startTime": 1844.5
+      },
+      {
+        "name": "receiver:plain",
+        "startTime": 1844.6000001430511
+      }
+    ]
+  }
+]

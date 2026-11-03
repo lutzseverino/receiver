@@ -1,0 +1,75 @@
+{
+  "group": "filmstrips",
+  "name": "ca-_blog_-390-reduced-warm",
+  "navigationURLs": [
+    "http://127.0.0.1:37357/ca/blog/"
+  ],
+  "initialBrowserBlankFrames": [],
+  "unexpectedPendingFrames": [],
+  "drawMs": 121.254,
+  "plainMs": null,
+  "firstBlackMs": 30.975,
+  "firstNonUniformFrameMs": 259.947,
+  "pendingFrames": 3,
+  "pendingNonBlack": [],
+  "marks": [
+    {
+      "name": "receiver:gate",
+      "ts": 1271004904562
+    },
+    {
+      "name": "receiver:first-frame",
+      "ts": 1271005025816
+    }
+  ],
+  "frames": [
+    {
+      "jpg": "000.jpg",
+      "ms": -99.544,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "001.jpg",
+      "ms": 30.975,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "002.jpg",
+      "ms": 43.876,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "003.jpg",
+      "ms": 96.251,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "004.jpg",
+      "ms": 140.295,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "005.jpg",
+      "ms": 259.947,
+      "min": 0,
+      "max": 148,
+      "stdev": 9.259196453220605,
+      "meanMax": 9.105008196721311
+    }
+  ]
+}

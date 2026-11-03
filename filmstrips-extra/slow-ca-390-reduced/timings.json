@@ -1,0 +1,67 @@
+{
+  "group": "filmstrips-extra",
+  "name": "slow-ca-390-reduced",
+  "navigationURLs": [
+    "http://127.0.0.1:37357/ca/projects/repo-standards/"
+  ],
+  "initialBrowserBlankFrames": [],
+  "unexpectedPendingFrames": [],
+  "drawMs": 1323.875,
+  "plainMs": null,
+  "firstBlackMs": 383.029,
+  "firstNonUniformFrameMs": 1496.014,
+  "pendingFrames": 2,
+  "pendingNonBlack": [],
+  "marks": [
+    {
+      "name": "receiver:gate",
+      "ts": 1271097460018
+    },
+    {
+      "name": "receiver:first-frame",
+      "ts": 1271098783893
+    }
+  ],
+  "frames": [
+    {
+      "jpg": "000.jpg",
+      "ms": -181.241,
+      "min": 255,
+      "max": 255,
+      "stdev": 0,
+      "meanMax": 255
+    },
+    {
+      "jpg": "001.jpg",
+      "ms": 383.029,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "002.jpg",
+      "ms": 1284.918,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "003.jpg",
+      "ms": 1333.543,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "004.jpg",
+      "ms": 1496.014,
+      "min": 0,
+      "max": 216,
+      "stdev": 20.999938065139542,
+      "meanMax": 14.907327868852459
+    }
+  ]
+}

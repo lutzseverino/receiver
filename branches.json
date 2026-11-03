@@ -1,0 +1,210 @@
+[
+  {
+    "name": "saved-plain",
+    "pendingSemanticNodes": 9,
+    "receiving": false,
+    "display": false,
+    "plainWidth": 358,
+    "marks": [],
+    "saved": "on"
+  },
+  {
+    "name": "no-webgl",
+    "pendingSemanticNodes": 9,
+    "receiving": false,
+    "display": false,
+    "plainWidth": 358,
+    "marks": [],
+    "saved": null
+  },
+  {
+    "name": "throwing-probe",
+    "pendingSemanticNodes": 9,
+    "receiving": false,
+    "display": false,
+    "plainWidth": 358,
+    "marks": [],
+    "saved": null
+  },
+  {
+    "name": "denied-storage",
+    "pendingSemanticNodes": 9,
+    "receiving": true,
+    "display": true,
+    "plainWidth": 1,
+    "marks": [
+      {
+        "name": "receiver:gate",
+        "startTime": 26.699999809265137
+      },
+      {
+        "name": "receiver:first-frame",
+        "startTime": 159.79999995231628
+      }
+    ],
+    "saved": "denied"
+  },
+  {
+    "name": "no-worker",
+    "pendingSemanticNodes": 9,
+    "receiving": true,
+    "display": true,
+    "plainWidth": 1,
+    "marks": [
+      {
+        "name": "receiver:gate",
+        "startTime": 18
+      },
+      {
+        "name": "receiver:first-frame",
+        "startTime": 141.5
+      }
+    ],
+    "saved": null
+  },
+  {
+    "name": "no-offscreen",
+    "pendingSemanticNodes": 9,
+    "receiving": true,
+    "display": true,
+    "plainWidth": 1,
+    "marks": [
+      {
+        "name": "receiver:gate",
+        "startTime": 19.40000009536743
+      },
+      {
+        "name": "receiver:first-frame",
+        "startTime": 102.90000009536743
+      }
+    ],
+    "saved": null
+  },
+  {
+    "name": "no-transfer",
+    "pendingSemanticNodes": 9,
+    "receiving": true,
+    "display": true,
+    "plainWidth": 1,
+    "marks": [
+      {
+        "name": "receiver:gate",
+        "startTime": 20.299999952316284
+      },
+      {
+        "name": "receiver:first-frame",
+        "startTime": 109.09999990463257
+      }
+    ],
+    "saved": null
+  },
+  {
+    "name": "worker-init-false",
+    "pendingSemanticNodes": 9,
+    "receiving": false,
+    "display": false,
+    "plainWidth": 358,
+    "marks": [
+      {
+        "name": "receiver:gate",
+        "startTime": 17.799999952316284
+      },
+      {
+        "name": "receiver:plain",
+        "startTime": 38.799999952316284
+      }
+    ],
+    "saved": null
+  },
+  {
+    "name": "worker-init-error",
+    "pendingSemanticNodes": 9,
+    "receiving": false,
+    "display": false,
+    "plainWidth": 358,
+    "marks": [
+      {
+        "name": "receiver:gate",
+        "startTime": 23
+      },
+      {
+        "name": "receiver:plain",
+        "startTime": 51.60000014305115
+      }
+    ],
+    "saved": null
+  },
+  {
+    "name": "worker-late-draw",
+    "pendingSemanticNodes": 9,
+    "receiving": false,
+    "display": false,
+    "plainWidth": 358,
+    "marks": [
+      {
+        "name": "receiver:gate",
+        "startTime": 25.399999856948853
+      },
+      {
+        "name": "receiver:plain",
+        "startTime": 1526
+      }
+    ],
+    "saved": null
+  },
+  {
+    "name": "blocked-receiver",
+    "pendingSemanticNodes": 9,
+    "receiving": false,
+    "display": false,
+    "plainWidth": 358,
+    "marks": [
+      {
+        "name": "receiver:gate",
+        "startTime": 22.200000047683716
+      },
+      {
+        "name": "receiver:plain",
+        "startTime": 44
+      }
+    ],
+    "saved": null
+  },
+  {
+    "name": "blocked-worker",
+    "pendingSemanticNodes": 9,
+    "receiving": false,
+    "display": false,
+    "plainWidth": 358,
+    "marks": [
+      {
+        "name": "receiver:gate",
+        "startTime": 37.90000009536743
+      },
+      {
+        "name": "receiver:plain",
+        "startTime": 81.90000009536743
+      }
+    ],
+    "saved": null,
+    "blockedWorkers": 1
+  },
+  {
+    "name": "no-js",
+    "pendingSemanticNodes": 9,
+    "receiving": false,
+    "display": false,
+    "plainWidth": 358,
+    "marks": [],
+    "saved": null
+  },
+  {
+    "name": "blocked-inline",
+    "pendingSemanticNodes": 9,
+    "receiving": false,
+    "display": false,
+    "plainWidth": 358,
+    "marks": [],
+    "saved": null
+  }
+]

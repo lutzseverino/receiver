@@ -1,0 +1,164 @@
+[
+  {
+    "locale": "en",
+    "page": "home",
+    "max": 0,
+    "changed": 0
+  },
+  {
+    "locale": "en",
+    "page": "projects",
+    "max": 0,
+    "changed": 0
+  },
+  {
+    "locale": "en",
+    "page": "project",
+    "max": 0,
+    "changed": 0
+  },
+  {
+    "locale": "en",
+    "page": "wire",
+    "max": 0,
+    "changed": 0
+  },
+  {
+    "locale": "en",
+    "page": "post",
+    "max": 0,
+    "changed": 0
+  },
+  {
+    "locale": "en",
+    "page": "reply",
+    "max": 0,
+    "changed": 0
+  },
+  {
+    "locale": "en",
+    "page": "no-signal",
+    "max": 0,
+    "changed": 0
+  },
+  {
+    "locale": "en",
+    "page": "projects-compact",
+    "max": 0,
+    "changed": 0
+  },
+  {
+    "locale": "en",
+    "page": "reply-split",
+    "max": 0,
+    "changed": 0
+  },
+  {
+    "locale": "es",
+    "page": "home",
+    "max": 0,
+    "changed": 0
+  },
+  {
+    "locale": "es",
+    "page": "projects",
+    "max": 0,
+    "changed": 0
+  },
+  {
+    "locale": "es",
+    "page": "project",
+    "max": 0,
+    "changed": 0
+  },
+  {
+    "locale": "es",
+    "page": "wire",
+    "max": 0,
+    "changed": 0
+  },
+  {
+    "locale": "es",
+    "page": "post",
+    "max": 0,
+    "changed": 0
+  },
+  {
+    "locale": "es",
+    "page": "reply",
+    "max": 0,
+    "changed": 0
+  },
+  {
+    "locale": "es",
+    "page": "no-signal",
+    "max": 0,
+    "changed": 0
+  },
+  {
+    "locale": "es",
+    "page": "projects-compact",
+    "max": 0,
+    "changed": 0
+  },
+  {
+    "locale": "es",
+    "page": "reply-split",
+    "max": 0,
+    "changed": 0
+  },
+  {
+    "locale": "ca",
+    "page": "home",
+    "max": 0,
+    "changed": 0
+  },
+  {
+    "locale": "ca",
+    "page": "projects",
+    "max": 0,
+    "changed": 0
+  },
+  {
+    "locale": "ca",
+    "page": "project",
+    "max": 0,
+    "changed": 0
+  },
+  {
+    "locale": "ca",
+    "page": "wire",
+    "max": 0,
+    "changed": 0
+  },
+  {
+    "locale": "ca",
+    "page": "post",
+    "max": 0,
+    "changed": 0
+  },
+  {
+    "locale": "ca",
+    "page": "reply",
+    "max": 0,
+    "changed": 0
+  },
+  {
+    "locale": "ca",
+    "page": "no-signal",
+    "max": 0,
+    "changed": 0
+  },
+  {
+    "locale": "ca",
+    "page": "projects-compact",
+    "max": 0,
+    "changed": 0
+  },
+  {
+    "locale": "ca",
+    "page": "reply-split",
+    "max": 0,
+    "changed": 0
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "mode": "candidate",
+    "sample": 1,
+    "lcp": 900.7298000000001,
+    "cls": 0,
+    "scores": {
+      "performance": 1,
+      "accessibility": 1,
+      "best-practices": 1,
+      "seo": 1
+    }
+  },
+  {
+    "mode": "base",
+    "sample": 1,
+    "lcp": 919.5739000000001,
+    "cls": 0,
+    "scores": {
+      "performance": 1,
+      "accessibility": 1,
+      "best-practices": 1,
+      "seo": 1
+    }
+  },
+  {
+    "mode": "candidate",
+    "sample": 2,
+    "lcp": 900.6179999999999,
+    "cls": 0,
+    "scores": {
+      "performance": 1,
+      "accessibility": 1,
+      "best-practices": 1,
+      "seo": 1
+    }
+  },
+  {
+    "mode": "base",
+    "sample": 2,
+    "lcp": 900.5790999999999,
+    "cls": 0,
+    "scores": {
+      "performance": 1,
+      "accessibility": 1,
+      "best-practices": 1,
+      "seo": 1
+    }
+  },
+  {
+    "mode": "candidate",
+    "sample": 3,
+    "lcp": 900.6949999999999,
+    "cls": 0,
+    "scores": {
+      "performance": 1,
+      "accessibility": 1,
+      "best-practices": 1,
+      "seo": 1
+    }
+  },
+  {
+    "mode": "base",
+    "sample": 3,
+    "lcp": 900.5929000000001,
+    "cls": 0,
+    "scores": {
+      "performance": 1,
+      "accessibility": 1,
+      "best-practices": 1,
+      "seo": 1
+    }
+  }
+]

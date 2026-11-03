@@ -1,0 +1,135 @@
+{
+  "group": "filmstrips-extra",
+  "name": "redirect-ca-390-normal",
+  "navigationURLs": [
+    "about:blank",
+    "about:blank",
+    "http://127.0.0.1:37357/projects/repo-standards/",
+    "http://127.0.0.1:37357/ca/projects/repo-standards/"
+  ],
+  "initialBrowserBlankFrames": [],
+  "unexpectedPendingFrames": [],
+  "drawMs": 155.663,
+  "plainMs": null,
+  "firstBlackMs": 66.701,
+  "firstNonUniformFrameMs": 323.555,
+  "firstBrightFrameMs": 1483.543,
+  "pendingFrames": 2,
+  "pendingNonBlack": [],
+  "marks": [
+    {
+      "name": "receiver:gate",
+      "ts": 1271090337967
+    },
+    {
+      "name": "receiver:first-frame",
+      "ts": 1271090493630
+    }
+  ],
+  "frames": [
+    {
+      "jpg": "000.jpg",
+      "ms": -24.116,
+      "min": 255,
+      "max": 255,
+      "stdev": 0,
+      "meanMax": 255
+    },
+    {
+      "jpg": "001.jpg",
+      "ms": 66.701,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "002.jpg",
+      "ms": 131.817,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "003.jpg",
+      "ms": 174.442,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "004.jpg",
+      "ms": 323.555,
+      "min": 0,
+      "max": 29,
+      "stdev": 5.789331921565124,
+      "meanMax": 8.006352459016393
+    },
+    {
+      "jpg": "005.jpg",
+      "ms": 419.279,
+      "min": 0,
+      "max": 50,
+      "stdev": 5.902550734521297,
+      "meanMax": 8.066918032786885
+    },
+    {
+      "jpg": "006.jpg",
+      "ms": 456.373,
+      "min": 0,
+      "max": 50,
+      "stdev": 5.9074404111508985,
+      "meanMax": 8.070016393442623
+    },
+    {
+      "jpg": "007.jpg",
+      "ms": 1483.543,
+      "min": 0,
+      "max": 252,
+      "stdev": 45.77354931870046,
+      "meanMax": 58.823524590163935
+    },
+    {
+      "jpg": "008.jpg",
+      "ms": 1567.892,
+      "min": 0,
+      "max": 255,
+      "stdev": 62.49515650253846,
+      "meanMax": 81.00708196721311
+    },
+    {
+      "jpg": "009.jpg",
+      "ms": 1655.367,
+      "min": 0,
+      "max": 255,
+      "stdev": 66.75147759868763,
+      "meanMax": 88.29552459016394
+    },
+    {
+      "jpg": "010.jpg",
+      "ms": 1780.764,
+      "min": 0,
+      "max": 56,
+      "stdev": 10.58595490056204,
+      "meanMax": 13.725581967213115
+    },
+    {
+      "jpg": "011.jpg",
+      "ms": 1909.647,
+      "min": 0,
+      "max": 50,
+      "stdev": 5.9074404111508985,
+      "meanMax": 8.070016393442623
+    },
+    {
+      "jpg": "012.jpg",
+      "ms": 1973.455,
+      "min": 0,
+      "max": 167,
+      "stdev": 8.544643175289352,
+      "meanMax": 8.536918032786886
+    }
+  ]
+}

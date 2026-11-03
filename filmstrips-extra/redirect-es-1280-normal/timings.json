@@ -1,0 +1,143 @@
+{
+  "group": "filmstrips-extra",
+  "name": "redirect-es-1280-normal",
+  "navigationURLs": [
+    "about:blank",
+    "about:blank",
+    "http://127.0.0.1:37357/projects/repo-standards/",
+    "http://127.0.0.1:37357/es/projects/repo-standards/"
+  ],
+  "initialBrowserBlankFrames": [],
+  "unexpectedPendingFrames": [],
+  "drawMs": 178.046,
+  "plainMs": null,
+  "firstBlackMs": 78.828,
+  "firstNonUniformFrameMs": 351.455,
+  "firstBrightFrameMs": 1519.8,
+  "pendingFrames": 2,
+  "pendingNonBlack": [],
+  "marks": [
+    {
+      "name": "receiver:gate",
+      "ts": 1271080716882
+    },
+    {
+      "name": "receiver:first-frame",
+      "ts": 1271080894928
+    }
+  ],
+  "frames": [
+    {
+      "jpg": "000.jpg",
+      "ms": -11.283,
+      "min": 255,
+      "max": 255,
+      "stdev": 0,
+      "meanMax": 255
+    },
+    {
+      "jpg": "001.jpg",
+      "ms": 78.828,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "002.jpg",
+      "ms": 134.452,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "003.jpg",
+      "ms": 196.594,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "004.jpg",
+      "ms": 351.455,
+      "min": 0,
+      "max": 53,
+      "stdev": 5.610332126279524,
+      "meanMax": 9.21259659090909
+    },
+    {
+      "jpg": "005.jpg",
+      "ms": 396.737,
+      "min": 0,
+      "max": 78,
+      "stdev": 5.843242528049648,
+      "meanMax": 9.260119318181818
+    },
+    {
+      "jpg": "006.jpg",
+      "ms": 456.796,
+      "min": 0,
+      "max": 78,
+      "stdev": 5.843242528049648,
+      "meanMax": 9.260119318181818
+    },
+    {
+      "jpg": "007.jpg",
+      "ms": 1519.8,
+      "min": 0,
+      "max": 227,
+      "stdev": 40.882697323765264,
+      "meanMax": 68.58406818181818
+    },
+    {
+      "jpg": "008.jpg",
+      "ms": 1618.05,
+      "min": 0,
+      "max": 252,
+      "stdev": 62.265858059980744,
+      "meanMax": 105.63140340909091
+    },
+    {
+      "jpg": "009.jpg",
+      "ms": 1721.115,
+      "min": 0,
+      "max": 252,
+      "stdev": 62.265858059980744,
+      "meanMax": 105.63140340909091
+    },
+    {
+      "jpg": "010.jpg",
+      "ms": 1822.75,
+      "min": 0,
+      "max": 77,
+      "stdev": 9.492323098094177,
+      "meanMax": 15.785096590909092
+    },
+    {
+      "jpg": "011.jpg",
+      "ms": 1887.39,
+      "min": 0,
+      "max": 78,
+      "stdev": 5.843242528049648,
+      "meanMax": 9.260119318181818
+    },
+    {
+      "jpg": "012.jpg",
+      "ms": 1949.648,
+      "min": 0,
+      "max": 185,
+      "stdev": 15.471133804711162,
+      "meanMax": 11.293545454545454
+    },
+    {
+      "jpg": "013.jpg",
+      "ms": 2010.029,
+      "min": 0,
+      "max": 221,
+      "stdev": 20.580895263470545,
+      "meanMax": 12.0810625
+    }
+  ]
+}

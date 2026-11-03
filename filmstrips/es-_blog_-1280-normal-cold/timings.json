@@ -1,0 +1,102 @@
+{
+  "group": "filmstrips",
+  "name": "es-_blog_-1280-normal-cold",
+  "navigationURLs": [
+    "about:blank",
+    "about:blank",
+    "http://127.0.0.1:37357/es/blog/"
+  ],
+  "initialBrowserBlankFrames": [],
+  "unexpectedPendingFrames": [],
+  "drawMs": 180.843,
+  "plainMs": null,
+  "firstBlackMs": 26.819,
+  "firstNonUniformFrameMs": 359.835,
+  "firstBrightFrameMs": 1527.423,
+  "pendingFrames": 2,
+  "pendingNonBlack": [],
+  "marks": [
+    {
+      "name": "receiver:gate",
+      "ts": 1270885072792
+    },
+    {
+      "name": "receiver:first-frame",
+      "ts": 1270885253635
+    }
+  ],
+  "frames": [
+    {
+      "jpg": "000.jpg",
+      "ms": 26.819,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "001.jpg",
+      "ms": 142.375,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "002.jpg",
+      "ms": 204.526,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "003.jpg",
+      "ms": 359.835,
+      "min": 0,
+      "max": 53,
+      "stdev": 5.602046574225724,
+      "meanMax": 9.20815909090909
+    },
+    {
+      "jpg": "004.jpg",
+      "ms": 402.885,
+      "min": 0,
+      "max": 79,
+      "stdev": 5.810294889514241,
+      "meanMax": 9.251465909090909
+    },
+    {
+      "jpg": "005.jpg",
+      "ms": 459.707,
+      "min": 0,
+      "max": 84,
+      "stdev": 5.821973746621735,
+      "meanMax": 9.253079545454545
+    },
+    {
+      "jpg": "006.jpg",
+      "ms": 1527.423,
+      "min": 0,
+      "max": 227,
+      "stdev": 40.88389751562463,
+      "meanMax": 68.57877272727272
+    },
+    {
+      "jpg": "007.jpg",
+      "ms": 1631.421,
+      "min": 0,
+      "max": 252,
+      "stdev": 62.265858059980744,
+      "meanMax": 105.63140340909091
+    },
+    {
+      "jpg": "008.jpg",
+      "ms": 1731.911,
+      "min": 0,
+      "max": 252,
+      "stdev": 62.265858059980744,
+      "meanMax": 105.63140340909091
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "group": "filmstrips",
+  "name": "en-_blog_-390-reduced-warm",
+  "navigationURLs": [
+    "http://127.0.0.1:37357/blog/"
+  ],
+  "initialBrowserBlankFrames": [],
+  "unexpectedPendingFrames": [],
+  "drawMs": 160.319,
+  "plainMs": null,
+  "firstBlackMs": 18.044,
+  "firstNonUniformFrameMs": 325.703,
+  "pendingFrames": 2,
+  "pendingNonBlack": [],
+  "marks": [
+    {
+      "name": "receiver:gate",
+      "ts": 1270766536713
+    },
+    {
+      "name": "receiver:first-frame",
+      "ts": 1270766697032
+    }
+  ],
+  "frames": [
+    {
+      "jpg": "000.jpg",
+      "ms": -93.163,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "001.jpg",
+      "ms": 18.044,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "002.jpg",
+      "ms": 135.466,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "003.jpg",
+      "ms": 169.468,
+      "min": 3,
+      "max": 3,
+      "stdev": 0,
+      "meanMax": 3
+    },
+    {
+      "jpg": "004.jpg",
+      "ms": 325.703,
+      "min": 0,
+      "max": 169,
+      "stdev": 8.80155847642859,
+      "meanMax": 8.957672131147541
+    }
+  ]
+}
