@@ -73,6 +73,9 @@ const beacon = analyticsBeacon(ANALYTICS_TOKEN);
     <meta charset="utf-8" />
     <LocaleScript locale={locale} redirect={redirect} />
     <style is:inline>
+      html.receiver-pending {
+        overflow: hidden;
+      }
       html.receiver-pending::after {
         content: "";
         position: fixed;

@@ -1626,6 +1626,7 @@ export async function startReceiver({
     stop();
     return null;
   }
+  if (stopped) return null;
   syncControls();
   introDone = (powerOn ? runIntro() : Promise.resolve(compose())).finally(
     () => {

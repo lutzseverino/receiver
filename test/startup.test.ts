@@ -233,3 +233,42 @@ test("a post-start worker failure restores ordinary content and DISPLAY", async 
   );
   await tab.close();
 });
+
+test("a post-start main-thread texture failure removes the covering display", async () => {
+  const tab = await openTab(browser, origin, "/projects/", {
+    reducedMotion: true,
+    scripts: [
+      "HTMLCanvasElement.prototype.transferControlToOffscreen=undefined;",
+    ],
+  });
+  await until(
+    () =>
+      tab.evaluate(
+        () =>
+          document.documentElement.classList.contains("receiving") &&
+          !document.documentElement.classList.contains("receiver-pending"),
+      ),
+    "main-thread first frame",
+  );
+  await tab.evaluate(() => {
+    WebGLRenderingContext.prototype.texImage2D = () => {
+      throw new Error("upload failed");
+    };
+    window.dispatchEvent(new Event("resize"));
+  });
+  await until(
+    () => tab.evaluate(() => !document.querySelector(".display")),
+    "main-thread recovery",
+  );
+  assert.equal(
+    await tab.evaluate(
+      () =>
+        !document.documentElement.classList.contains("receiving") &&
+        !document.querySelector<HTMLButtonElement>('[data-control="display"]')!
+          .hidden &&
+        localStorage.getItem("receiver.plain") === null,
+    ),
+    true,
+  );
+  await tab.close();
+});

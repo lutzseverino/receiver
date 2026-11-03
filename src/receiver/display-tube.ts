@@ -37,14 +37,34 @@ export async function createDisplayTube(
   ) {
     const tube = createTube(canvas);
     if (!tube) return null;
-    return {
-      ...tube,
-      draw(frame) {
+    let failed = false;
+    const guard =
+      <A extends unknown[]>(action: (...args: A) => void) =>
+      (...args: A) => {
+        if (failed) return;
         try {
-          tube.draw(frame);
-          drawn();
+          action(...args);
         } catch {
+          failed = true;
           onFailure();
+        }
+      };
+    return {
+      resetLit: guard(tube.resetLit),
+      paintCell: guard(tube.paintCell),
+      relight: guard(tube.relight),
+      resize: guard(tube.resize),
+      upload: guard(tube.upload),
+      draw: guard((frame: TubeFrame) => {
+        tube.draw(frame);
+        drawn();
+      }),
+      dispose() {
+        // A lost renderer must never prevent removal of the covering display.
+        try {
+          tube.dispose();
+        } catch {
+          /* already unusable */
         }
       },
     };
