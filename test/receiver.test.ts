@@ -480,9 +480,12 @@ test("a final frame pending at tab sleep is presented on return", async () => {
       Object.defineProperty(document, "hidden", { get: () => window.pretendHidden });
       window.Worker = class extends Worker {
         handlers = 0;
+        firstDraw = true;
         set onmessage(handler) {
           this.handlers++;
           super.onmessage = this.handlers === 1 ? handler : (event) => {
+            // Startup requires its first draw before subsequent frames may wait.
+            if (this.firstDraw) { this.firstDraw = false; handler(event); return; }
             if (window.holdAck) window.releaseAck = () => {
               window.holdAck = false;
               handler(event);

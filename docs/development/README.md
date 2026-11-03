@@ -110,6 +110,17 @@ parsing each feed as XML in the browser, and that the production build holds
 none of them. `posts.test.ts` checks each construct a post may and may not use,
 the front matter, translations, reading time and the dithering itself.
 
+A classic inline head script covers eligible full loads with the display's
+near-black background until the first completed draw. The HTML layer remains
+in the accessibility tree. Keyboard focus during startup reveals the plain
+page. Recovery runs independently of the receiver download: detected failures
+reveal immediately, and a stalled attempt is abandoned 1,500 ms after the
+head gate activates, at the first runnable opportunity. Late imports and
+workers cannot cover the recovered page; DISPLAY permits an explicit retry.
+The `receiver:gate`, `receiver:first-frame` and `receiver:plain` performance
+marks record the handoff and recovery. `startup.test.ts` exercises startup
+stalls, cancellation, focus, first draw and post-start failure in the browser.
+
 The receiver rasterises its dots, light map and unchanged WebGL shader in an
 OffscreenCanvas worker where available. Layout, input and stepped effect
 scheduling stay on the page. Only the newest pending frame is presented, so

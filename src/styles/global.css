@@ -1,7 +1,6 @@
 /* The plain style: the HTML layer as a readable page on its own, in the
-   display's colours, blue on near-black (ADR 0001). Visitors see it until the
-   receiver draws the page, and without JavaScript, without WebGL or in PLAIN
-   mode. Tailwind and the theme tokens serve the shadcn components; the rest
+   display's colours, blue on near-black (ADR 0001). Visitors see it when
+   startup fails, without JavaScript, without WebGL or in PLAIN mode. Tailwind and the theme tokens serve the shadcn components; the rest
    styles the semantic HTML directly. */
 @import "tailwindcss";
 @import "tw-animate-css";

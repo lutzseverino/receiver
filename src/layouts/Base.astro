@@ -28,6 +28,7 @@ import {
 import { analyticsBeacon } from "@/lib/analytics";
 import { feedPath } from "@/lib/feed";
 import "@/styles/global.css";
+import { startupScript } from "@/receiver/startup";
 
 type Props = {
   locale: Locale;
@@ -71,6 +72,17 @@ const beacon = analyticsBeacon(ANALYTICS_TOKEN);
   <head>
     <meta charset="utf-8" />
     <LocaleScript locale={locale} redirect={redirect} />
+    <style is:inline>
+      html.receiver-pending::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: #030303;
+        z-index: 2147483647;
+        pointer-events: none;
+      }
+    </style>
+    <script is:inline set:html={startupScript} />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex" />}
