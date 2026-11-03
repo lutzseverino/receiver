@@ -20,16 +20,65 @@ export type RenderMessage = {
 export async function createDisplayTube(
   canvas: HTMLCanvasElement,
   onFailure: () => void,
+  onFrame: () => void = () => {},
+  signal?: AbortSignal,
 ): Promise<Tube | null> {
-  if (!canvas.transferControlToOffscreen || typeof Worker === "undefined")
-    return createTube(canvas);
+  let first = true;
+  const drawn = () => {
+    if (!first) return;
+    first = false;
+    onFrame();
+  };
+  if (signal?.aborted) return null;
+  if (
+    !canvas.transferControlToOffscreen ||
+    typeof Worker === "undefined" ||
+    typeof OffscreenCanvas === "undefined"
+  ) {
+    const tube = createTube(canvas);
+    if (!tube) return null;
+    let failed = false;
+    const guard =
+      <A extends unknown[]>(action: (...args: A) => void) =>
+      (...args: A) => {
+        if (failed) return;
+        try {
+          action(...args);
+        } catch {
+          failed = true;
+          onFailure();
+        }
+      };
+    return {
+      resetLit: guard(tube.resetLit),
+      paintCell: guard(tube.paintCell),
+      relight: guard(tube.relight),
+      resize: guard(tube.resize),
+      upload: guard(tube.upload),
+      draw: guard((frame: TubeFrame) => {
+        tube.draw(frame);
+        drawn();
+      }),
+      dispose() {
+        // A lost renderer must never prevent removal of the covering display.
+        try {
+          tube.dispose();
+        } catch {
+          /* already unusable */
+        }
+      },
+    };
+  }
   const worker = new Worker(new URL("./tube-worker.ts", import.meta.url), {
     type: "module",
   });
+  const cancel = () => worker.terminate();
+  signal?.addEventListener("abort", cancel, { once: true });
   try {
     const ready = new Promise<boolean>((resolve, reject) => {
       worker.onmessage = (event: MessageEvent<boolean>) => resolve(event.data);
       worker.onerror = reject;
+      signal?.addEventListener("abort", () => resolve(false), { once: true });
     });
     const offscreen = canvas.transferControlToOffscreen();
     worker.postMessage(offscreen, [offscreen]);
@@ -53,6 +102,13 @@ export async function createDisplayTube(
   // Like the browser compositor, present the newest frame when the renderer
   // is ready rather than accumulating a queue of obsolete animation steps.
   function present() {
+    try {
+      submit();
+    } catch {
+      fail();
+    }
+  }
+  function submit() {
     if (busy || disposed || !latest || document.hidden) return;
     busy = true;
     const frame = latest;
@@ -88,14 +144,16 @@ export async function createDisplayTube(
   document.addEventListener("visibilitychange", present, {
     signal: visibility.signal,
   });
-  worker.onerror = () => {
+  const fail = () => {
     visibility.abort();
     worker.terminate();
     disposed = true;
     onFailure();
   };
+  worker.onerror = fail;
   worker.onmessage = () => {
     busy = false;
+    drawn();
     present();
   };
   return {
@@ -124,6 +182,7 @@ export async function createDisplayTube(
       visibility.abort();
       disposed = true;
       worker.terminate();
+      signal?.removeEventListener("abort", cancel);
     },
   };
 }

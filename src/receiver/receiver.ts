@@ -37,6 +37,8 @@ import { settings } from "./settings.ts";
 import { Sound } from "./sound.ts";
 
 export type Options = {
+  signal?: AbortSignal;
+  onFrame?: () => void;
   /** The channel layouts that draw their own pages, made for the receiver
    * that runs them. */
   layouts?: (context: LayoutContext) => readonly ChannelLayout[];
@@ -154,18 +156,36 @@ export async function startReceiver({
   layouts: makeLayouts = channelLayouts,
   onPlain,
   intro: powerOn = true,
+  signal: startupSignal,
+  onFrame = () => {},
 }: Options): Promise<Receiver | null> {
   const canvas = document.createElement("canvas");
+  let firstDraw!: () => void;
+  const firstFrame = new Promise<void>((resolve) => {
+    firstDraw = resolve;
+  });
   let tube: Tube | null;
   try {
-    tube = await createDisplayTube(canvas, () => {
-      stop();
-      onPlain();
-    });
+    tube = await createDisplayTube(
+      canvas,
+      () => {
+        stop();
+        onPlain();
+      },
+      () => {
+        firstDraw();
+        onFrame();
+      },
+      startupSignal,
+    );
   } catch {
     tube = null;
   }
   if (!tube) return null;
+  if (startupSignal?.aborted) {
+    tube.dispose();
+    return null;
+  }
   const gl: Tube = tube;
 
   const root = document.documentElement;
@@ -182,6 +202,14 @@ export async function startReceiver({
 
   const controller = new AbortController();
   const listen = { signal: controller.signal };
+  canvas.addEventListener(
+    "webglcontextlost",
+    () => {
+      stop();
+      onPlain();
+    },
+    listen,
+  );
   const motion = matchMedia("(prefers-reduced-motion: reduce)");
   const still = () => motion.matches;
   const sound = new Sound();
@@ -208,6 +236,7 @@ export async function startReceiver({
   let rowsText: string[] = [];
   let marker: Inspection["marker"] = null;
   let stopped = false;
+  startupSignal?.addEventListener("abort", stop, { once: true });
   /** When the visitor last gave any input. */
   let lastInput = performance.now();
   /** How often the channel layout asks to be drawn, and its timer. */
@@ -952,6 +981,10 @@ export async function startReceiver({
       bar: 0,
     };
     intro = state;
+    // Start the settled intro's clock only after its opening frame is drawn.
+    compose();
+    await firstFrame;
+    if (stopped) return;
     // a moment fully off: only the cover, its scratches and reflections
     await tween(900);
     sound.power();
@@ -1536,6 +1569,8 @@ export async function startReceiver({
   function stop() {
     if (stopped) return;
     stopped = true;
+    firstDraw();
+    startupSignal?.removeEventListener("abort", stop);
     controller.abort();
     cancelAnimationFrame(frame);
     clearTimeout(pacer);
@@ -1579,7 +1614,10 @@ export async function startReceiver({
       };
     }),
   });
-  Object.assign(display, { inspect });
+  // Inspection describes a drawn display, never an initialized blank surface.
+  void firstFrame.then(() => {
+    if (!stopped) Object.assign(display, { inspect });
+  });
 
   try {
     build();
@@ -1588,6 +1626,7 @@ export async function startReceiver({
     stop();
     return null;
   }
+  if (stopped) return null;
   syncControls();
   introDone = (powerOn ? runIntro() : Promise.resolve(compose())).finally(
     () => {

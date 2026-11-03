@@ -8,6 +8,9 @@ let tube: Tube;
 self.onmessage = (event: MessageEvent<OffscreenCanvas | RenderMessage>) => {
   if (event.data instanceof OffscreenCanvas) {
     canvas = event.data;
+    canvas.addEventListener("webglcontextlost", () => {
+      throw new Error("Display context lost");
+    });
     try {
       const created = createTube(canvas);
       if (!created) {

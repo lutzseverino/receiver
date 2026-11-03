@@ -1,6 +1,6 @@
 // Every page's loader for the receiver. Unless the visitor chose PLAIN, it
-// loads the receiver after the first paint, so the HTML layer is readable
-// first; if the receiver can't start, as without WebGL, the plain page stays
+// loads the receiver after the wait surface paints. If startup fails,
+// the head gate restores the plain page independently of this module
 // and nothing replaces it. In PLAIN mode the plain page offers the way back
 // to the display, which the choice also remembers.
 import { settings } from "./settings.ts";
@@ -14,12 +14,30 @@ function offerDisplay() {
 }
 
 function load(intro: boolean) {
+  const startup = intro ? window.receiverStartup : undefined;
+  if (intro && !startup) return;
+  if (startup?.signal.aborted) return;
   import("./receiver.ts")
-    .then(({ startReceiver }) =>
-      startReceiver({ onPlain: offerDisplay, intro }),
-    )
-    // a receiver that fails to load or start leaves the plain page
-    .catch(() => {});
+    .then(async ({ startReceiver }) => {
+      if (startup?.signal.aborted) return;
+      const receiver = await startReceiver({
+        onPlain: () => {
+          startup?.recover();
+          offerDisplay();
+        },
+        intro,
+        signal: startup?.signal,
+        onFrame: () => startup?.ready(),
+      });
+      if (!receiver) {
+        startup?.recover();
+        offerDisplay();
+      } else if (startup?.signal.aborted) receiver.stop();
+    })
+    .catch(() => {
+      startup?.recover();
+      offerDisplay();
+    });
 }
 
 document.addEventListener("click", (event) => {

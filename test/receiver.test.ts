@@ -480,9 +480,12 @@ test("a final frame pending at tab sleep is presented on return", async () => {
       Object.defineProperty(document, "hidden", { get: () => window.pretendHidden });
       window.Worker = class extends Worker {
         handlers = 0;
+        firstDraw = true;
         set onmessage(handler) {
           this.handlers++;
           super.onmessage = this.handlers === 1 ? handler : (event) => {
+            // Startup requires its first draw before subsequent frames may wait.
+            if (this.firstDraw) { this.firstDraw = false; handler(event); return; }
             if (window.holdAck) window.releaseAck = () => {
               window.holdAck = false;
               handler(event);
@@ -777,7 +780,20 @@ test("with the display running, every page passes the WCAG 2.2 A and AA audit, a
   for (const file of site.pages)
     for (const width of [320, 1280]) {
       const tab = await open(pagePath(file), { width });
-      await skipIntro(tab);
+      try {
+        await skipIntro(tab);
+      } catch (error) {
+        const startup = await tab.evaluate(() => ({
+          classes: document.documentElement.className,
+          marks: performance
+            .getEntriesByType("mark")
+            .map(({ name, startTime }) => ({ name, startTime })),
+          focus: document.activeElement?.tagName,
+        }));
+        throw new Error(`${file} at ${width} px: ${JSON.stringify(startup)}`, {
+          cause: error,
+        });
+      }
       const violations = await audit(tab);
       assert.deepEqual(violations, [], `${file} at ${width} px`);
       const { nodes } = (await tab.send("Accessibility.getFullAXTree")) as {
