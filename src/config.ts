@@ -17,4 +17,5 @@ export const GITHUB_URL = "https://github.com/lutzseverino";
 
 /** The Cloudflare Web Analytics site token, which is public: it appears in
  * every page's source. Until it is set, no page carries the beacon. */
-export const ANALYTICS_TOKEN: string | undefined = undefined;
+export const ANALYTICS_TOKEN: string | undefined =
+  "4d0a7d8f96b64b9e96c7f2616324ab19";
